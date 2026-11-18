@@ -163,7 +163,7 @@ function Grupo({ titulo, opcoes, valor, onChange }) {
 export function Rodape() {
   return (
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
-      <Logo className="mx-auto mb-2 h-10 w-auto text-ink" />
+      <Logo className="mx-auto mb-2 h-12 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
     </footer>
   )
