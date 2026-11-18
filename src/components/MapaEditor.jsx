@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { buscarLugares, detalharLugar, usaGoogle } from '../lib/lugares'
 
 const CENTRO_PADRAO = [-26.0811, -53.0550] // Francisco Beltrão
 
@@ -10,24 +11,6 @@ const pino = L.divIcon({
   iconSize: [30, 30],
   iconAnchor: [15, 30],
 })
-
-// Busca locais com sugestões (Photon / OpenStreetMap, grátis e sem chave).
-async function buscarLugares(texto, perto) {
-  const [lat, lon] = perto || CENTRO_PADRAO
-  const r = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(texto)}&lat=${lat}&lon=${lon}&limit=6`)
-  const j = await r.json()
-  return (j.features || []).map((f) => {
-    const p = f.properties
-    const rua = [p.street, p.housenumber].filter(Boolean).join(', ')
-    return {
-      nome: p.name || rua || p.city,
-      endereco: [rua, p.district || p.locality].filter(Boolean).join(' · '),
-      cidade: p.city || p.town || p.village || p.county || '',
-      lat: f.geometry.coordinates[1],
-      lng: f.geometry.coordinates[0],
-    }
-  })
-}
 
 // Aceita "-26.08, -53.05" ou um link do Google Maps com coordenadas.
 export function lerCoordenadas(texto) {
@@ -54,7 +37,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
 
   // Cria o mapa uma vez
   useEffect(() => {
-    const m = L.map(div.current, { scrollWheelZoom: false }).setView(temPonto ? [lat, lng] : CENTRO_PADRAO, temPonto ? 17 : 13)
+    const m = L.map(div.current, { scrollWheelZoom: true, tap: true }).setView(temPonto ? [lat, lng] : CENTRO_PADRAO, temPonto ? 17 : 13)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, attribution: '&copy; OpenStreetMap',
     }).addTo(m)
@@ -87,14 +70,16 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
       setBuscando(true)
       try {
         const c = mapa.current?.getCenter()
-        setSugestoes(await buscarLugares(t, c ? [c.lat, c.lng] : null))
+        setSugestoes(await buscarLugares(t, c ? [c.lat, c.lng] : CENTRO_PADRAO))
       } catch { setSugestoes([]) }
       setBuscando(false)
     }, 350)
     return () => clearTimeout(id)
   }, [texto])
 
-  const escolher = (s) => {
+  const escolher = async (item) => {
+    let s
+    try { s = await detalharLugar(item) } catch { setAviso('Não consegui pegar esse local. Tente outro ou toque no mapa.'); return }
     onEscolherLugar?.(s)
     onChange({ lat: s.lat, lng: s.lng })
     mapa.current?.setView([s.lat, s.lng], 17)
@@ -125,6 +110,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
                 </button>
               </li>
             ))}
+            {usaGoogle && <li className="px-4 py-1.5 text-right text-[11px] text-muted">powered by Google</li>}
           </ul>
         )}
       </div>
