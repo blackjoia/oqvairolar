@@ -99,6 +99,9 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
         <input className="campo pl-10" value={texto} onChange={(e) => setTexto(e.target.value)}
           placeholder={dicaBusca || 'Buscar local: nome do bar, rua, praça…'} />
         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">🔎</span>
+        {!buscando && texto.trim().length >= 3 && sugestoes.length === 0 && (
+          <p className="mt-1 text-sm text-muted">Nada encontrado. Toque no mapa ou cole o local do Google Maps logo abaixo.</p>
+        )}
         {(sugestoes.length > 0 || buscando) && (
           <ul className="absolute inset-x-0 top-full z-[1000] mt-1 max-h-72 overflow-auto rounded-xl border border-line bg-surface shadow-xl">
             {buscando && <li className="px-4 py-3 text-sm text-muted">Procurando…</li>}
@@ -126,14 +129,14 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
       <p className="text-sm text-muted">Toque no mapa para mover o pino, ou arraste ele.</p>
       {aviso && <p className="text-sm font-semibold text-brand">{aviso}</p>}
 
-      <details className="text-sm">
-        <summary className="cursor-pointer font-semibold text-muted">Colar local do Google Maps</summary>
-        <p className="mt-2 text-muted">No Google Maps, segure o dedo em cima do local. Copie os números que aparecem (ex.: -26.0811, -53.0550) ou o link do navegador, e cole aqui.</p>
+      <div className="rounded-xl border border-dashed border-line p-3 text-sm">
+        <p className="font-semibold">Não achou na busca? Use o Google Maps</p>
+        <p className="mt-1 text-muted">No Google Maps, segure o dedo em cima do local. Copie os números que aparecem (ex.: -26.0811, -53.0550) ou o link do navegador, e cole aqui.</p>
         <div className="mt-2 flex gap-2">
           <input className="campo" value={colar} onChange={(e) => setColar(e.target.value)} placeholder="-26.0811, -53.0550" />
           <button type="button" onClick={aplicarColado} className="btn-ghost">Usar</button>
         </div>
-      </details>
+      </div>
     </div>
   )
 }
