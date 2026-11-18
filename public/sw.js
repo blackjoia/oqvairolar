@@ -1,13 +1,23 @@
-// O site antigo instalava um service worker que guardava páginas em cache.
-// Este arquivo substitui o antigo: limpa os caches e se desinstala,
-// para ninguém ficar preso na versão velha.
-self.addEventListener('install', () => self.skipWaiting());
+// Service worker do O Que Vai Rolar: permite instalar o site como app no celular.
+// Não guarda páginas em cache (o site está sempre atualizado); só mostra uma tela simples sem internet.
+const CACHE = 'oqvr-offline-v1'
+const OFFLINE = '/offline.html'
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting()
+  event.waitUntil(caches.open(CACHE).then((c) => c.add(OFFLINE)))
+})
+
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map((k) => caches.delete(k)));
-    await self.registration.unregister();
-    const clients = await self.clients.matchAll({ type: 'window' });
-    clients.forEach((c) => c.navigate(c.url));
-  })());
-});
+    // Limpa caches antigos (inclusive os do site velho)
+    const keys = await caches.keys()
+    await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    await self.clients.claim()
+  })())
+})
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode !== 'navigate') return
+  event.respondWith(fetch(event.request).catch(() => caches.match(OFFLINE)))
+})

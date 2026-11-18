@@ -3,6 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
 import Logo from '../components/Logo'
+import Deslizar from '../components/Deslizar'
+import { abrirInstalar } from '../components/InstalarApp'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
@@ -85,18 +87,20 @@ export default function Inicio() {
 
         <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
           <div className="flex items-center gap-2">
-            <div className="no-scrollbar flex flex-1 gap-2 overflow-x-auto">
+            <Deslizar className="flex-1">
               {DIAS.map((d) => (
-                <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
+                <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip shrink-0 ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
               ))}
-            </div>
-            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} className={`chip flex items-center gap-1.5 ${gaveta || nExtras ? 'border-brand text-brand' : ''}`}>
-              <SlidersHorizontal className="size-4" aria-hidden /> Filtros{nExtras ? ` (${nExtras})` : ''}
+            </Deslizar>
+            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade e gênero"
+              className={`chip relative flex shrink-0 items-center gap-1.5 px-3 ${gaveta || nExtras ? 'border-brand text-brand' : ''}`}>
+              <SlidersHorizontal className="size-4" aria-hidden /><span className="hidden sm:inline">Filtros</span>
               <ChevronDown className={`size-4 transition-transform ${gaveta ? 'rotate-180' : ''}`} aria-hidden />
+              {nExtras > 0 && <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-brand text-[11px] font-bold text-on-brand">{nExtras}</span>}
             </button>
           </div>
 
-          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+          <Deslizar className="mt-2">
             {CATEGORIAS.map((c) => {
               const on = cat === c.id
               return (
@@ -106,7 +110,7 @@ export default function Inicio() {
                 </button>
               )
             })}
-          </div>
+          </Deslizar>
 
           <div className={`grid transition-[grid-template-rows] duration-300 ${gaveta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
             <div className="overflow-hidden">
@@ -173,6 +177,7 @@ export function Rodape() {
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
       <Logo className="mx-auto mb-2 h-12 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
+      <button onClick={abrirInstalar} className="mt-3 font-semibold text-brand hover:underline">Instalar o app no celular</button>
     </footer>
   )
 }
