@@ -1,0 +1,40 @@
+# Publica o site com uma prévia (WhatsApp, Instagram, Google) para cada evento.
+# Roda a cada hora, a cada mudança no main e quando você clica em "Run workflow".
+name: Publicar site com prévias
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Chave do Firebase
+        env:
+          CHAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$CHAVE" ]; then echo "::error::Falta o secret FIREBASE_SERVICE_ACCOUNT no GitHub"; exit 1; fi
+          printf '%s' "$CHAVE" > "$RUNNER_TEMP/chave.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
+      - run: npm run previas
+      - name: Publicar no Firebase Hosting
+        run: npx -y firebase-tools@14 deploy --only hosting --project oquevairolar-b0129 --non-interactive
+      - name: Apagar a chave
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave.json"
