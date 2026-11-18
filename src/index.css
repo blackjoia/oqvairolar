@@ -75,3 +75,6 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 /* Mapa no tema escuro: inverte as cores do OpenStreetMap e puxa para o roxo do site */
 .mapa-escuro .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(.95) contrast(.9) saturate(.6); }
 .mapa-escuro .leaflet-container, .mapa-escuro { background: #1a1630; }
+
+/* Setinha que "cutuca" para o lado, indicando que dá para deslizar */
+@keyframes cutucar { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }

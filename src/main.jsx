@@ -11,11 +11,12 @@ const Divulgar = lazy(() => import('./pages/Divulgar'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
+import InstalarApp from './components/InstalarApp'
 const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
-// Remove o service worker do site antigo, se ainda estiver instalado.
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()))
+// Service worker: permite instalar como app (substitui o do site antigo).
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}))
 }
 
 // Conta cada página aberta (menos o painel admin).
@@ -44,6 +45,7 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <BrowserRouter>
         <ContarVisitas />
+        <InstalarApp />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Inicio />} />
