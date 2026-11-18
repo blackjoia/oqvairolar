@@ -1,7 +1,7 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import { registrar } from './lib/visitas'
 import './index.css'
 import { AuthProvider } from './lib/auth'
@@ -50,9 +50,10 @@ createRoot(document.getElementById('root')).render(
           <Route path="/evento/:id" element={<Evento />} />
           <Route path="/divulgar" element={<Divulgar />} />
           <Route path="/admin" element={<Admin />}>
-            <Route index element={<Lista />} />
+            <Route index element={<Estatisticas />} />
+            <Route path="eventos" element={<Lista />} />
+            <Route path="estatisticas" element={<Navigate to="/admin" replace />} />
             <Route path="evento/:id" element={<FormEvento />} />
-            <Route path="estatisticas" element={<Estatisticas />} />
           </Route>
           {import.meta.env.DEV && <Route path="/dev-estatisticas" element={<main className="mx-auto max-w-5xl px-4 py-4"><Estatisticas /></main>} />}
           <Route path="*" element={<NaoEncontrado />} />

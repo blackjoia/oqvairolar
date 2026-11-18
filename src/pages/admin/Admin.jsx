@@ -32,9 +32,9 @@ export default function Admin() {
 function MenuAdmin() {
   const { pathname } = useLocation()
   const itens = [
-    { to: '/admin', nome: 'Eventos' },
+    { to: '/admin', nome: 'Painel' },
+    { to: '/admin/eventos', nome: 'Eventos' },
     { to: '/admin/evento/novo', nome: '+ Novo evento' },
-    { to: '/admin/estatisticas', nome: 'Estatísticas' },
     { to: '/', nome: 'Ver site' },
   ]
   return (

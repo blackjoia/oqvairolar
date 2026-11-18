@@ -1,6 +1,6 @@
 // Contador de visitas próprio (grava no Firestore, coleção "visitas").
 // Não guarda nome, IP nem nada pessoal: só um código aleatório do aparelho.
-import { addDoc, collection, serverTimestamp, query, where, orderBy, limit, getDocs, Timestamp } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp, query, where, orderBy, limit, getDocs, startAfter, Timestamp } from 'firebase/firestore'
 import { db, auth, ADMIN_UIDS } from './firebase'
 
 const aleatorio = () => Math.random().toString(36).slice(2, 12)
@@ -75,7 +75,15 @@ export const filtro = (acao, valor) => registrar('filtro', { acao, valor })
 export async function listarVisitas(dias) {
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return (await import('./demo')).visitasDemo(dias)
   const desde = Timestamp.fromDate(new Date(Date.now() - dias * 86400000))
-  const q = query(collection(db, 'visitas'), where('em', '>=', desde), orderBy('em', 'asc'), limit(50000))
-  const s = await getDocs(q)
-  return s.docs.map((x) => { const v = x.data(); return { ...v, em: v.em?.toDate?.() || new Date() } })
+  // O Firestore entrega no máximo 10 mil por vez: busca em páginas (até 60 mil)
+  const todos = []; let ultimo = null
+  for (let i = 0; i < 6; i++) {
+    const partes = [collection(db, 'visitas'), where('em', '>=', desde), orderBy('em', 'asc'), limit(10000)]
+    if (ultimo) partes.push(startAfter(ultimo))
+    const s = await getDocs(query(...partes))
+    s.docs.forEach((x) => { const v = x.data(); todos.push({ ...v, em: v.em?.toDate?.() || new Date() }) })
+    if (s.docs.length < 10000) break
+    ultimo = s.docs[s.docs.length - 1]
+  }
+  return todos
 }

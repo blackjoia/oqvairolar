@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Cartaz from '../../components/Cartaz'
 import { Download, MoreHorizontal, Plus } from 'lucide-react'
 import { listarTodos, mudarStatus, apagarEvento, criarEvento } from '../../lib/eventos'
@@ -15,7 +15,8 @@ const ABAS = [
 
 export default function Lista() {
   const [eventos, setEventos] = useState(null)
-  const [aba, setAba] = useState('proximos')
+  const [params] = useSearchParams()
+  const [aba, setAba] = useState(params.get('aba') || 'proximos')
   const [busca, setBusca] = useState('')
   const [erro, setErro] = useState('')
 

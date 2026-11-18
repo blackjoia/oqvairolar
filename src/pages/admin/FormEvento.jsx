@@ -36,7 +36,7 @@ export default function FormEvento() {
   }, [id, novo])
 
   if (e === null) return <p className="text-muted">Carregando…</p>
-  if (e === false) return <p>Evento não encontrado. <Link className="text-brand" to="/admin">Voltar</Link></p>
+  if (e === false) return <p>Evento não encontrado. <Link className="text-brand" to="/admin/eventos">Voltar</Link></p>
 
   const set = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.type === 'checkbox' ? ev.target.checked : ev.target.value }))
   const setData = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.value ? new Date(ev.target.value) : null }))
@@ -63,7 +63,7 @@ export default function FormEvento() {
     }
     try {
       if (novo) await criarEvento(dados); else await salvarEvento(id, dados)
-      nav('/admin')
+      nav('/admin/eventos')
     } catch (err) { setMsg('Erro ao salvar: ' + err.message); setSalvando(false) }
   }
 
@@ -72,7 +72,7 @@ export default function FormEvento() {
       <form onSubmit={(ev) => { ev.preventDefault(); salvar('publicado') }} className="space-y-5">
         <div className="flex items-center justify-between">
           <h1 className="font-display text-3xl uppercase">{novo ? 'Novo evento' : 'Editar evento'}</h1>
-          <Link to="/admin" className="text-sm font-semibold text-muted">Cancelar</Link>
+          <Link to="/admin/eventos" className="text-sm font-semibold text-muted">Cancelar</Link>
         </div>
 
         {e.enviadoPor && (

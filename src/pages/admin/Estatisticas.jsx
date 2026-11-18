@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { listarVisitas } from '../../lib/visitas'
 import { listarTodos } from '../../lib/eventos'
 import { CATEGORIAS } from '../../lib/constantes'
-import { Users, Eye, Ticket, Share2, Send, MousePointerClick } from 'lucide-react'
+import { Users, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDays, Plus } from 'lucide-react'
 
 const PERIODOS = [[7, '7 dias'], [30, '30 dias'], [90, '90 dias']]
 const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -82,7 +82,9 @@ export default function Estatisticas() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <Resumo eventos={eventos} />
+
+      <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl uppercase">Estatísticas</h1>
           <p className="text-sm text-muted">Quem visitou o site, o que viu e o que clicou. Suas visitas como admin não entram.</p>
@@ -160,6 +162,31 @@ export default function Estatisticas() {
           </Caixa>
         </div>
       </>)}
+    </div>
+  )
+}
+
+// Topo do painel: o que precisa de atenção na agenda
+function Resumo({ eventos }) {
+  const agora = new Date()
+  const pend = eventos.filter((e) => e.status === 'pendente').length
+  const prox = eventos.filter((e) => e.status === 'publicado' && (e.fim || e.inicio) >= agora)
+  const semana = prox.filter((e) => e.inicio - agora < 7 * 86400000).length
+  return (
+    <div className="grid gap-3 sm:grid-cols-3">
+      <Link to="/admin/eventos?aba=pendente" className={`rounded-2xl border p-4 transition hover:border-brand ${pend ? 'border-accent bg-accent text-on-accent' : 'border-line bg-surface'}`}>
+        <p className="flex items-center gap-1.5 text-sm font-semibold"><Inbox className="size-4" aria-hidden /> Esperando aprovação</p>
+        <p className="mt-1 font-display text-4xl tabular-nums">{pend}</p>
+        <p className="text-xs opacity-80">{pend ? 'Toque para revisar' : 'Nada pendente'}</p>
+      </Link>
+      <Link to="/admin/eventos" className="rounded-2xl border border-line bg-surface p-4 transition hover:border-brand">
+        <p className="flex items-center gap-1.5 text-sm font-semibold text-muted"><CalendarDays className="size-4 text-brand" aria-hidden /> Na agenda</p>
+        <p className="mt-1 font-display text-4xl tabular-nums">{prox.length}</p>
+        <p className="text-xs text-muted">{semana} nos próximos 7 dias</p>
+      </Link>
+      <Link to="/admin/evento/novo" className="flex items-center justify-center gap-2 rounded-2xl bg-brand p-4 font-display text-2xl uppercase text-on-brand transition hover:bg-brand-strong">
+        <Plus className="size-6" aria-hidden /> Novo evento
+      </Link>
     </div>
   )
 }
