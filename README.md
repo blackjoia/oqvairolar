@@ -1,23 +1,46 @@
-# O Que Vai Rolar
+# O Que Vai Rolar?
 
-Agenda de eventos de Francisco Beltrão e região — [oquevairolar.com.br](https://oquevairolar.com.br).
+Agenda de eventos de Francisco Beltrão e região: oquevairolar.com.br
 
-Site estático (HTML + JS) com Firebase: Firestore para os eventos, Authentication para o admin e Hosting para publicar.
+Feito com Vite, React, Tailwind e Firebase (Firestore, Auth e Hosting).
+
+## Rodar no computador
+
+```
+npm install
+npm run dev
+```
+
+Abra http://localhost:5173. Com `?demo` no endereço (ex.: http://localhost:5173/?demo) a página inicial mostra eventos de exemplo.
 
 ## Publicar
 
-```bash
-npm install -g firebase-tools   # uma vez
-firebase login                  # uma vez
-firebase deploy                 # publica o site e as regras do banco
+No PowerShell do Windows use `npx.cmd` no lugar de `npx`.
+
+```
+npm run build
+npx firebase-tools deploy --only hosting,firestore
 ```
 
-`firebase deploy --only hosting` publica só o site; `firebase deploy --only firestore:rules` publica só as regras.
+Prévia sem mexer no site no ar:
 
-## Admin
+```
+npm run build
+npx firebase-tools hosting:channel:deploy previa --expires 7d
+```
 
-Acesse `/admin` e entre com a conta de administrador. No painel há o botão **Baixar backup**, que salva todos os eventos num arquivo JSON.
+## Painel admin
 
-## Plano
+Em /admin, entrando com a conta admin. O UID da conta está em `src/lib/firebase.js` e em `firestore.rules`.
 
-O plano em fases está no projeto do Claude ("Plano O Que Vai Rolar"). Esta versão corresponde à **Fase 0**: organização e segurança.
+## Eventos (coleção `eventos`)
+
+O id do documento é o link fixo do evento: `/evento/<id>`.
+
+Campos:
+- `titulo`, `categoria`, `generos[]` e `descricao`
+- `inicio` e `fim`
+- `localNome`, `endereco`, `cidade`, `lat` e `lng`
+- `cartazUrl`, `ingressoUrl`, `gratuito`, `preco` e `instagram`
+- `status`: `publicado`, `pendente`, `rascunho` ou `rejeitado`
+- `origem`, `criadoEm` e `atualizadoEm`
