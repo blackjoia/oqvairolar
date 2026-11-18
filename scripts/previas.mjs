@@ -3,6 +3,7 @@
 // Uso: GOOGLE_APPLICATION_CREDENTIALS=chave.json node scripts/previas.mjs   (ou --demo para testar sem banco)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { Resvg } from '@resvg/resvg-js'
+import sharp from 'sharp'
 
 const SITE = 'https://oquevairolar.com.br'
 const DIST = new URL('../dist/', import.meta.url)
@@ -75,7 +76,9 @@ function imagem(e, cartaz) {
   <text x="70" y="572" font-family="Anton" font-size="30" fill="#fff" fill-opacity=".9">${esc(local.slice(0, cartaz ? 38 : 64))}</text>
   ${cartaz ? `<image href="${cartaz}" x="770" y="50" width="380" height="530" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp)"/>` : ''}
 </svg>`
-  return new Resvg(svg, { font: { fontFiles: [FONTE], loadSystemFonts: false, defaultFontFamily: 'Anton' } }).render().asPng()
+  const png = new Resvg(svg, { font: { fontFiles: [FONTE], loadSystemFonts: false, defaultFontFamily: 'Anton' } }).render().asPng()
+  // JPEG pequeno: o WhatsApp ignora imagens de prévia muito pesadas
+  return sharp(png).jpeg({ quality: 82, mozjpeg: true }).toBuffer()
 }
 
 async function carregarEventos() {
@@ -99,7 +102,7 @@ function pagina(e, temImagem) {
   const titulo = `${e.titulo} · O Que Vai Rolar?`
   const desc = [dataLonga(e.inicio), [e.localNome, e.cidade].filter(Boolean).join(', '), e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
   const url = `${SITE}/evento/${e.id}`
-  const img = temImagem ? `${SITE}/og/${e.id}.png` : `${SITE}/og.jpg`
+  const img = temImagem ? `${SITE}/og/${e.id}.jpg` : `${SITE}/og.jpg`
   const troca = (html, re, valor) => { if (!re.test(html)) throw new Error('marcação não encontrada: ' + re); return html.replace(re, valor) }
   let h = base
   h = troca(h, /<title>[^<]*<\/title>/, `<title>${esc(titulo)}</title>`)
@@ -119,7 +122,7 @@ let n = 0
 for (const e of eventos) {
   if (!/^[a-z0-9-]+$/.test(e.id) || !e.inicio) continue
   let temImagem = false
-  try { writeFileSync(new URL(`og/${e.id}.png`, DIST), imagem(e, await cartazEmbutido(e.cartazUrl))); temImagem = true } catch (err) { console.warn('imagem falhou', e.id, err.message) }
+  try { writeFileSync(new URL(`og/${e.id}.jpg`, DIST), await imagem(e, await cartazEmbutido(e.cartazUrl))); temImagem = true } catch (err) { console.warn('imagem falhou', e.id, err.message) }
   writeFileSync(new URL(`evento/${e.id}.html`, DIST), pagina(e, temImagem)); n++
 }
 // Mapa do site para o Google (só eventos que ainda não passaram)
