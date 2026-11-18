@@ -6,7 +6,7 @@ import Logo from '../components/Logo'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
-import { SlidersHorizontal, X, CalendarX2 } from 'lucide-react'
+import { SlidersHorizontal, X, CalendarX2, ChevronDown } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -41,7 +41,6 @@ export default function Inicio() {
 
   const cidades = useMemo(() => [...new Set(futuros.map((e) => e.cidade).filter(Boolean))].sort(), [futuros])
   const generos = useMemo(() => [...new Set(futuros.flatMap((e) => e.generos || []))].sort(), [futuros])
-  const categoriasUsadas = useMemo(() => CATEGORIAS.filter((c) => futuros.some((e) => e.categoria === c.id)), [futuros])
 
   const filtrados = useMemo(() => {
     const [ini, fim] = faixaDia(dia)
@@ -67,7 +66,8 @@ export default function Inicio() {
     return [...m.values()]
   }, [filtrados])
 
-  const nFiltros = [cidade, genero, cat].filter(Boolean).length
+  const nExtras = [cidade, genero].filter(Boolean).length
+  const nFiltros = nExtras + (cat ? 1 : 0)
   const temFiltro = dia !== 'todos' || nFiltros > 0
 
   return (
@@ -89,39 +89,46 @@ export default function Inicio() {
                 <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
               ))}
             </div>
-            <button onClick={() => setGaveta(true)} className={`chip flex items-center gap-1.5 ${nFiltros ? 'border-brand text-brand' : ''}`}>
-              <SlidersHorizontal className="size-4" aria-hidden /> Filtros{nFiltros ? ` (${nFiltros})` : ''}
+            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} className={`chip flex items-center gap-1.5 ${gaveta || nExtras ? 'border-brand text-brand' : ''}`}>
+              <SlidersHorizontal className="size-4" aria-hidden /> Filtros{nExtras ? ` (${nExtras})` : ''}
+              <ChevronDown className={`size-4 transition-transform ${gaveta ? 'rotate-180' : ''}`} aria-hidden />
             </button>
           </div>
-          {nFiltros > 0 && (
+
+          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+            {CATEGORIAS.map((c) => {
+              const on = cat === c.id
+              return (
+                <button key={c.id} onClick={() => setFiltro('categoria', on ? '' : c.id)} aria-pressed={on}
+                  className={`chip flex shrink-0 items-center gap-1.5 py-1.5 text-sm ${on ? 'chip-on' : ''}`}>
+                  <c.Icone className="size-4" style={on ? undefined : { color: c.cor }} aria-hidden /> {c.nome}
+                </button>
+              )
+            })}
+          </div>
+
+          <div className={`grid transition-[grid-template-rows] duration-300 ${gaveta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+            <div className="overflow-hidden">
+              <div className="mt-3 rounded-2xl border border-line bg-surface p-4">
+                <Grupo titulo="Cidade" opcoes={cidades.map((c) => [c, c])} valor={cidade} onChange={(v) => setFiltro('cidade', v)} />
+                <Grupo titulo="Gênero" opcoes={generos.map((g) => [g, g])} valor={genero} onChange={(v) => setFiltro('genero', v)} />
+                {!cidades.length && !generos.length && <p className="mb-3 text-sm text-muted">Mais filtros aparecem quando tiver eventos na agenda.</p>}
+                <div className="flex gap-2">
+                  <button onClick={() => { setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
+                  <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {!gaveta && nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {[['cidade', cidade], ['genero', genero], ['categoria', cat && CATEGORIAS.find((c) => c.id === cat)?.nome]].filter(([, v]) => v).map(([k, v]) => (
+              {[['cidade', cidade], ['genero', genero]].filter(([, v]) => v).map(([k, v]) => (
                 <button key={k} onClick={() => setFiltro(k, '')} className="chip chip-on flex items-center gap-1 py-1 text-xs">{v} <X className="size-3.5" aria-label="Tirar filtro" /></button>
               ))}
             </div>
           )}
         </div>
-
-        {gaveta && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center" onClick={() => setGaveta(false)}>
-            <div className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl bg-surface p-5 sm:max-w-lg sm:rounded-3xl" onClick={(ev) => ev.stopPropagation()}>
-              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-line sm:hidden" />
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-display text-2xl uppercase">Filtros</h2>
-                <button onClick={() => setGaveta(false)} aria-label="Fechar" className="grid size-9 place-items-center rounded-full hover:bg-surface-2"><X className="size-5" /></button>
-              </div>
-              <Grupo titulo="Cidade" opcoes={cidades.map((c) => [c, c])} valor={cidade} onChange={(v) => setFiltro('cidade', v)} />
-              <Grupo titulo="Gênero" opcoes={generos.map((g) => [g, g])} valor={genero} onChange={(v) => setFiltro('genero', v)} />
-              {categoriasUsadas.length > 1 && (
-                <Grupo titulo="Tipo de evento" opcoes={categoriasUsadas.map((c) => [c.id, c.nome])} valor={cat} onChange={(v) => setFiltro('categoria', v)} />
-              )}
-              <div className="sticky bottom-0 -mx-5 mt-2 flex gap-2 border-t border-line bg-surface px-5 pt-3">
-                <button onClick={() => { setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
-                <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {erro && <p className="mt-8 rounded-xl bg-danger/10 p-4 text-danger">{erro}</p>}
         {!eventos && !erro && (
