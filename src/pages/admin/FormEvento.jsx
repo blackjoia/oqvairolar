@@ -82,7 +82,7 @@ export default function FormEvento() {
             <div className="flex flex-wrap gap-2">
               {CATEGORIAS.map((c) => (
                 <button type="button" key={c.id} onClick={() => setE((x) => ({ ...x, categoria: c.id }))}
-                  className={`chip ${e.categoria === c.id ? 'chip-on' : ''}`}>{c.emoji} {c.nome}</button>
+                  className={`chip inline-flex items-center gap-1.5 ${e.categoria === c.id ? 'chip-on' : ''}`}><c.Icone className="size-4" aria-hidden /> {c.nome}</button>
               ))}
             </div>
           </div>

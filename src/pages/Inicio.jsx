@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
+import Logo from '../components/Logo'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
+import { SlidersHorizontal, X, CalendarX2 } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -17,6 +19,7 @@ const DIAS = [
 export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
+  const [gaveta, setGaveta] = useState(false)
   const [params, setParams] = useSearchParams()
   const dia = params.get('dia') || 'todos'
   const cidade = params.get('cidade') || ''
@@ -64,7 +67,8 @@ export default function Inicio() {
     return [...m.values()]
   }, [filtrados])
 
-  const temFiltro = dia !== 'todos' || cidade || genero || cat
+  const nFiltros = [cidade, genero, cat].filter(Boolean).length
+  const temFiltro = dia !== 'todos' || nFiltros > 0
 
   return (
     <>
@@ -78,35 +82,46 @@ export default function Inicio() {
           <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.</p>
         </section>
 
-        <div className="sticky top-[61px] z-20 -mx-4 space-y-2 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto">
-            {DIAS.map((d) => (
-              <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
-            ))}
+        <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
+          <div className="flex items-center gap-2">
+            <div className="no-scrollbar flex flex-1 gap-2 overflow-x-auto">
+              {DIAS.map((d) => (
+                <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
+              ))}
+            </div>
+            <button onClick={() => setGaveta(true)} className={`chip flex items-center gap-1.5 ${nFiltros ? 'border-brand text-brand' : ''}`}>
+              <SlidersHorizontal className="size-4" aria-hidden /> Filtros{nFiltros ? ` (${nFiltros})` : ''}
+            </button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <select value={cidade} onChange={(e) => setFiltro('cidade', e.target.value)} aria-label="Cidade"
-              className="chip max-w-[45%] appearance-none sm:max-w-none">
-              <option value="">📍 Cidade</option>
-              {cidades.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <select value={genero} onChange={(e) => setFiltro('genero', e.target.value)} aria-label="Gênero"
-              className="chip max-w-[45%] appearance-none sm:max-w-none">
-              <option value="">🎵 Gênero</option>
-              {generos.map((g) => <option key={g} value={g}>{g}</option>)}
-            </select>
-            {categoriasUsadas.length > 1 && (
-              <select value={cat} onChange={(e) => setFiltro('categoria', e.target.value)} aria-label="Tipo de evento"
-                className="chip appearance-none">
-                <option value="">✨ Tipo</option>
-                {categoriasUsadas.map((c) => <option key={c.id} value={c.id}>{c.emoji} {c.nome}</option>)}
-              </select>
-            )}
-            {temFiltro && (
-              <button onClick={() => setParams({}, { replace: true })} className="chip border-transparent bg-transparent text-brand underline">Limpar</button>
-            )}
-          </div>
+          {nFiltros > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {[['cidade', cidade], ['genero', genero], ['categoria', cat && CATEGORIAS.find((c) => c.id === cat)?.nome]].filter(([, v]) => v).map(([k, v]) => (
+                <button key={k} onClick={() => setFiltro(k, '')} className="chip chip-on flex items-center gap-1 py-1 text-xs">{v} <X className="size-3.5" aria-label="Tirar filtro" /></button>
+              ))}
+            </div>
+          )}
         </div>
+
+        {gaveta && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center" onClick={() => setGaveta(false)}>
+            <div className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl bg-surface p-5 sm:max-w-lg sm:rounded-3xl" onClick={(ev) => ev.stopPropagation()}>
+              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-line sm:hidden" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-display text-2xl uppercase">Filtros</h2>
+                <button onClick={() => setGaveta(false)} aria-label="Fechar" className="grid size-9 place-items-center rounded-full hover:bg-surface-2"><X className="size-5" /></button>
+              </div>
+              <Grupo titulo="Cidade" opcoes={cidades.map((c) => [c, c])} valor={cidade} onChange={(v) => setFiltro('cidade', v)} />
+              <Grupo titulo="Gênero" opcoes={generos.map((g) => [g, g])} valor={genero} onChange={(v) => setFiltro('genero', v)} />
+              {categoriasUsadas.length > 1 && (
+                <Grupo titulo="Tipo de evento" opcoes={categoriasUsadas.map((c) => [c.id, c.nome])} valor={cat} onChange={(v) => setFiltro('categoria', v)} />
+              )}
+              <div className="sticky bottom-0 -mx-5 mt-2 flex gap-2 border-t border-line bg-surface px-5 pt-3">
+                <button onClick={() => { setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
+                <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {erro && <p className="mt-8 rounded-xl bg-danger/10 p-4 text-danger">{erro}</p>}
         {!eventos && !erro && (
@@ -115,32 +130,39 @@ export default function Inicio() {
 
         {eventos && grupos.length === 0 && (
           <div className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center">
+            <CalendarX2 className="mx-auto mb-2 size-10 text-brand" aria-hidden />
             <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : 'por enquanto'}</p>
             <p className="mt-1 text-muted">{temFiltro ? 'Tenta tirar algum filtro.' : 'Volta logo que a agenda enche.'}</p>
           </div>
         )}
 
-        {grupos.map((g) => (
-          <section key={g.titulo} className="mt-7">
-            <h2 className="mb-3 flex items-center gap-2 font-display text-2xl uppercase tracking-wide">
-              <span className="h-6 w-1.5 rounded-full bg-brand" />{g.titulo}
-              <span className="font-sans text-sm font-semibold normal-case text-muted">· {g.itens.length} {g.itens.length === 1 ? 'evento' : 'eventos'}</span>
-            </h2>
-            <div className="grid gap-3 md:grid-cols-2">
-              {g.itens.map((e) => <CardEvento key={e.id} evento={e} />)}
-            </div>
-          </section>
-        ))}
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {filtrados.map((e) => <CardEvento key={e.id} evento={e} />)}
+        </div>
       </main>
       <Rodape />
     </>
   )
 }
 
+function Grupo({ titulo, opcoes, valor, onChange }) {
+  if (!opcoes.length) return null
+  return (
+    <div className="mb-5">
+      <p className="rotulo">{titulo}</p>
+      <div className="flex flex-wrap gap-2">
+        {opcoes.map(([v, nome]) => (
+          <button key={v} onClick={() => onChange(valor === v ? '' : v)} className={`chip ${valor === v ? 'chip-on' : ''}`}>{nome}</button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function Rodape() {
   return (
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
-      <p className="font-display text-lg uppercase text-ink">O que vai rolar<span className="text-brand">?</span></p>
+      <Logo className="mx-auto mb-2 h-10 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
     </footer>
   )

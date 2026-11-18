@@ -15,6 +15,7 @@
   --accent: #c6ff00;
   --on-accent: #1a1630;
   --danger: #e11d48;
+  --logo-q: #6d28ff;
   color-scheme: light;
 }
 .dark {
@@ -30,6 +31,7 @@
   --accent: #c6ff00;
   --on-accent: #1a1630;
   --danger: #fb7185;
+  --logo-q: #c6ff00;
   color-scheme: dark;
 }
 
