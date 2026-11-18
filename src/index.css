@@ -71,3 +71,7 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   @apply shrink-0 whitespace-nowrap rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition;
 }
 @utility chip-on { @apply border-brand bg-brand text-on-brand; }
+
+/* Mapa no tema escuro: inverte as cores do OpenStreetMap e puxa para o roxo do site */
+.mapa-escuro .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(.95) contrast(.9) saturate(.6); }
+.mapa-escuro .leaflet-container, .mapa-escuro { background: #1a1630; }
