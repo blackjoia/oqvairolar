@@ -9,10 +9,36 @@ service cloud.firestore {
         && request.auth.uid in ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2'];
     }
 
+    function texto(campo, max) {
+      return !(campo in request.resource.data) || request.resource.data[campo] == null
+        || (request.resource.data[campo] is string && request.resource.data[campo].size() <= max);
+    }
+
+    // Envio do formulário público: só cria, sempre como pendente, com campos limitados.
+    function envioPublicoValido() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['titulo', 'categoria', 'generos', 'inicio', 'fim', 'localNome', 'endereco', 'cidade',
+          'lat', 'lng', 'descricao', 'cartazUrl', 'ingressoUrl', 'gratuito', 'preco', 'instagram', 'enviadoPor',
+          'status', 'origem', 'criadoEm', 'atualizadoEm'])
+        && d.status == 'pendente'
+        && d.origem == 'formulario'
+        && d.titulo is string && d.titulo.size() > 0 && d.titulo.size() <= 120
+        && d.inicio is timestamp && d.inicio > request.time - duration.value(1, 'd')
+        && d.criadoEm == request.time
+        && texto('categoria', 30) && texto('localNome', 120) && texto('endereco', 200) && texto('cidade', 80)
+        && texto('descricao', 2000) && texto('cartazUrl', 500) && texto('ingressoUrl', 500)
+        && texto('preco', 80) && texto('instagram', 60)
+        && (d.generos == null || (d.generos is list && d.generos.size() <= 10))
+        && d.enviadoPor is map && d.enviadoPor.keys().hasOnly(['nome', 'contato'])
+        && d.enviadoPor.nome is string && d.enviadoPor.nome.size() <= 80
+        && d.enviadoPor.contato is string && d.enviadoPor.contato.size() <= 120;
+    }
+
     match /eventos/{eventoId} {
       // O público só vê eventos publicados. O admin vê todos (pendentes, ocultos).
       allow read: if resource.data.status == 'publicado' || isAdmin();
-      allow create, update: if isAdmin()
+      allow create: if isAdmin() || envioPublicoValido();
+      allow update: if isAdmin()
         && request.resource.data.titulo is string
         && request.resource.data.titulo.size() > 0
         && request.resource.data.inicio is timestamp

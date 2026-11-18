@@ -84,3 +84,20 @@ export async function geocodificar(endereco, cidade) {
   if (!j[0]) return null
   return { lat: Number(j[0].lat), lng: Number(j[0].lon) }
 }
+
+// Formulário público: o evento entra como "pendente" e só aparece depois da aprovação.
+const CAMPOS_PUBLICOS = ['titulo', 'categoria', 'generos', 'inicio', 'fim', 'localNome', 'endereco', 'cidade',
+  'lat', 'lng', 'descricao', 'cartazUrl', 'ingressoUrl', 'gratuito', 'preco', 'instagram', 'enviadoPor']
+
+export async function enviarParaAprovacao(e) {
+  const dados = Object.fromEntries(CAMPOS_PUBLICOS.map((k) => [k, e[k] ?? null]))
+  const id = gerarId(e.titulo, e.inicio)
+  await setDoc(doc(db, 'eventos', id), {
+    ...paraFirestore(dados),
+    status: 'pendente',
+    origem: 'formulario',
+    criadoEm: serverTimestamp(),
+    atualizadoEm: serverTimestamp(),
+  })
+  return id
+}

@@ -96,6 +96,7 @@ export default function Lista() {
               </div>
               <Link to={`/admin/evento/${e.id}`} className="block truncate font-bold hover:text-brand">{e.titulo}</Link>
               <p className="truncate text-sm text-muted">{[e.localNome, e.cidade].filter(Boolean).join(' · ')}</p>
+              {e.enviadoPor && <p className="truncate text-xs text-muted">Enviado por {e.enviadoPor.nome} · {e.enviadoPor.contato}</p>}
             </div>
             <div className="flex shrink-0 flex-col gap-1 sm:flex-row">
               {e.status !== 'publicado'
