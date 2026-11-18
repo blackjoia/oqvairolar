@@ -50,7 +50,7 @@ export default function Evento() {
 
   return (
     <>
-      <Topo>{isAdmin && <Link to={`/admin/evento/${e.id}`} className="btn-ghost py-2 text-sm">Editar</Link>}</Topo>
+      <Topo>{isAdmin ? <Link to={`/admin/evento/${e.id}`} className="btn-ghost py-2 text-sm">Editar</Link> : undefined}</Topo>
       <main className="mx-auto max-w-5xl px-4 pb-16 pt-4">
         <Link to="/" className="inline-flex items-center gap-1 text-sm font-semibold text-brand"><ArrowLeft className="size-4" /> Agenda</Link>
         {e.status !== 'publicado' && (

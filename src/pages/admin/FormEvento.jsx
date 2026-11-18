@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Cartaz from '../../components/Cartaz'
 import MapaEditor from '../../components/MapaEditor'
+import CampoCartaz from '../../components/CampoCartaz'
 import { buscarEvento, criarEvento, salvarEvento } from '../../lib/eventos'
 import { paraInputLocal } from '../../lib/datas'
 import { CATEGORIAS, GENEROS, CIDADES } from '../../lib/constantes'
@@ -74,6 +75,12 @@ export default function FormEvento() {
           <Link to="/admin" className="text-sm font-semibold text-muted">Cancelar</Link>
         </div>
 
+        {e.enviadoPor && (
+          <div className="rounded-2xl border border-amber-400 bg-amber-400/10 p-4 text-sm">
+            <p className="font-bold">Enviado pelo formulário</p>
+            <p>{e.enviadoPor.nome} · {e.enviadoPor.contato}</p>
+          </div>
+        )}
         <Bloco titulo="O quê">
           <label className="block"><span className="rotulo">Nome do evento *</span>
             <input className="campo" value={e.titulo} onChange={set('titulo')} placeholder="Ex.: Noite do Rock com Banda X" /></label>
@@ -141,9 +148,7 @@ export default function FormEvento() {
         </Bloco>
 
         <Bloco titulo="Cartaz">
-          <label className="block"><span className="rotulo">Link da imagem do cartaz</span>
-            <input className="campo" type="url" value={e.cartazUrl} onChange={set('cartazUrl')} placeholder="https://…/cartaz.jpg" /></label>
-          <p className="text-sm text-muted">Por enquanto é por link. O envio direto da foto entra na próxima etapa.</p>
+          <CampoCartaz valor={e.cartazUrl} onChange={(v) => setE((x) => ({ ...x, cartazUrl: v }))} />
         </Bloco>
 
         {msg && <p className="rounded-xl bg-danger/10 p-3 font-semibold text-danger">{msg}</p>}

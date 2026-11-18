@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
 import Logo from '../components/Logo'
@@ -133,6 +133,7 @@ export default function Inicio() {
             <CalendarX2 className="mx-auto mb-2 size-10 text-brand" aria-hidden />
             <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : 'por enquanto'}</p>
             <p className="mt-1 text-muted">{temFiltro ? 'Tenta tirar algum filtro.' : 'Volta logo que a agenda enche.'}</p>
+            <Link to="/divulgar" className="btn-accent mt-4">Divulgar um evento</Link>
           </div>
         )}
 

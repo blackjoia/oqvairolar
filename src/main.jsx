@@ -5,6 +5,7 @@ import './index.css'
 import { AuthProvider } from './lib/auth'
 import Inicio from './pages/Inicio'
 import Evento from './pages/Evento'
+const Divulgar = lazy(() => import('./pages/Divulgar'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
@@ -32,6 +33,7 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/evento/:id" element={<Evento />} />
+          <Route path="/divulgar" element={<Divulgar />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Lista />} />
             <Route path="evento/:id" element={<FormEvento />} />
