@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
+import { Search } from 'lucide-react'
 import 'leaflet/dist/leaflet.css'
+import { pinoIcone, seguirTema } from './MapaVer'
 import { buscarLugares, detalharLugar, usaGoogle } from '../lib/lugares'
 
 const CENTRO_PADRAO = [-26.0811, -53.0550] // Francisco Beltrão
-
-const pino = L.divIcon({
-  className: '',
-  html: '<div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#6d28ff;border:3px solid #c6ff00;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
-})
 
 // Aceita "-26.08, -53.05" ou um link do Google Maps com coordenadas.
 export function lerCoordenadas(texto) {
@@ -38,12 +33,10 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
   // Cria o mapa uma vez
   useEffect(() => {
     const m = L.map(div.current, { scrollWheelZoom: true }).setView(temPonto ? [lat, lng] : CENTRO_PADRAO, temPonto ? 17 : 13)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19, attribution: '&copy; OpenStreetMap',
-    }).addTo(m)
+    const pararTema = seguirTema(m)
     m.on('click', (e) => onChange({ lat: e.latlng.lat, lng: e.latlng.lng }))
     mapa.current = m
-    return () => { m.remove(); mapa.current = null; marcador.current = null }
+    return () => { pararTema(); m.remove(); mapa.current = null; marcador.current = null }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -54,7 +47,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
     if (!temPonto) { marcador.current?.remove(); marcador.current = null; return }
     const pos = [Number(lat), Number(lng)]
     if (!marcador.current || !m.hasLayer(marcador.current)) {
-      marcador.current = L.marker(pos, { draggable: true, icon: pino }).addTo(m)
+      marcador.current = L.marker(pos, { draggable: true, icon: pinoIcone() }).addTo(m)
       marcador.current.on('dragend', (e) => { const p = e.target.getLatLng(); onChange({ lat: p.lat, lng: p.lng }) })
     } else {
       marcador.current.setLatLng(pos)
@@ -98,7 +91,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
       <div className="relative">
         <input className="campo pl-10" value={texto} onChange={(e) => setTexto(e.target.value)}
           placeholder={dicaBusca || 'Buscar local: nome do bar, rua, praça…'} />
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">🔎</span>
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
         {!buscando && texto.trim().length >= 3 && sugestoes.length === 0 && (
           <p className="mt-1 text-sm text-muted">Nada encontrado. Toque no mapa ou cole o local do Google Maps logo abaixo.</p>
         )}

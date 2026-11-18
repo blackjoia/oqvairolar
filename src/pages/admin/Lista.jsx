@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Cartaz from '../../components/Cartaz'
+import { Download, MoreHorizontal, Plus } from 'lucide-react'
 import { listarTodos, mudarStatus, apagarEvento, criarEvento } from '../../lib/eventos'
 import { diaMes, mesCurto, hora, diaSemana } from '../../lib/datas'
 import { STATUS } from '../../lib/constantes'
@@ -66,8 +67,8 @@ export default function Lista() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-4xl uppercase">Eventos</h1>
         <div className="flex gap-2">
-          <button onClick={backup} className="btn-ghost text-sm">⬇️ Backup</button>
-          <Link to="/admin/evento/novo" className="btn-brand text-sm">+ Novo evento</Link>
+          <button onClick={backup} className="btn-ghost text-sm"><Download className="size-4" /> Backup</button>
+          <Link to="/admin/evento/novo" className="btn-brand text-sm"><Plus className="size-4" /> Novo evento</Link>
         </div>
       </div>
 
@@ -101,7 +102,7 @@ export default function Lista() {
                 ? <button onClick={() => acao(() => mudarStatus(e.id, 'publicado'))} className="btn-accent px-3 py-1.5 text-sm">Publicar</button>
                 : <button onClick={() => acao(() => mudarStatus(e.id, 'rascunho'))} className="btn-ghost px-3 py-1.5 text-sm">Ocultar</button>}
               <details className="relative">
-                <summary className="btn-ghost cursor-pointer list-none px-3 py-1.5 text-sm">⋯</summary>
+                <summary className="btn-ghost cursor-pointer list-none px-2.5 py-1.5 text-sm" aria-label="Mais ações"><MoreHorizontal className="size-4" /></summary>
                 <div className="absolute right-0 z-10 mt-1 w-40 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
                   <Link to={`/admin/evento/${e.id}`} className="block px-3 py-2 text-sm hover:bg-surface-2">Editar</Link>
                   <Link to={`/evento/${e.id}`} className="block px-3 py-2 text-sm hover:bg-surface-2">Ver página</Link>
