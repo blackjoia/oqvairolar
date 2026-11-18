@@ -2,18 +2,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Só a conta do administrador pode alterar dados.
-    // Antes: qualquer usuário logado podia criar, editar e apagar eventos.
     function isAdmin() {
       // UID da conta admin (Firebase > Authentication > Users > User UID).
-      // Mesmo valor de ADMIN_UIDS no index.html.
+      // Mesmo valor de ADMIN_UIDS em src/lib/firebase.js.
       return request.auth != null
         && request.auth.uid in ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2'];
     }
 
     match /eventos/{eventoId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      // O público só vê eventos publicados. O admin vê todos (pendentes, ocultos).
+      allow read: if resource.data.status == 'publicado' || isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() > 0
+        && request.resource.data.inicio is timestamp
+        && request.resource.data.status in ['publicado', 'pendente', 'rascunho', 'rejeitado'];
+      allow delete: if isAdmin();
     }
 
     match /{document=**} {

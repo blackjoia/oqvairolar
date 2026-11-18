@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #f6f4fb;
+  --surface: #ffffff;
+  --surface-2: #efebf9;
+  --ink: #1a1630;
+  --muted: #6b6585;
+  --line: #e4def3;
+  --brand: #6d28ff;
+  --brand-strong: #5a14f0;
+  --on-brand: #ffffff;
+  --accent: #c6ff00;
+  --on-accent: #1a1630;
+  --danger: #e11d48;
+  color-scheme: light;
+}
+.dark {
+  --bg: #1a1630;
+  --surface: #241e42;
+  --surface-2: #2e2752;
+  --ink: #f3f0ff;
+  --muted: #a8a1c8;
+  --line: #3a3166;
+  --brand: #8b5cff;
+  --brand-strong: #a07bff;
+  --on-brand: #ffffff;
+  --accent: #c6ff00;
+  --on-accent: #1a1630;
+  --danger: #fb7185;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-on-brand: var(--on-brand);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --font-display: "Anton", Impact, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+html, body { background: var(--bg); color: var(--ink); }
+body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@utility campo {
+  @apply w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-muted/70 focus:border-brand focus:ring-2 focus:ring-brand/25;
+}
+@utility rotulo { @apply mb-1 block text-sm font-semibold text-ink; }
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold transition active:scale-[.98] disabled:opacity-50;
+}
+@utility btn-brand { @apply btn bg-brand text-on-brand hover:bg-brand-strong; }
+@utility btn-accent { @apply btn bg-accent text-on-accent hover:brightness-95; }
+@utility btn-ghost { @apply btn border border-line bg-surface text-ink hover:bg-surface-2; }
+@utility chip {
+  @apply shrink-0 whitespace-nowrap rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition;
+}
+@utility chip-on { @apply border-brand bg-brand text-on-brand; }
