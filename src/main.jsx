@@ -1,6 +1,8 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { registrar } from './lib/visitas'
 import './index.css'
 import { AuthProvider } from './lib/auth'
 import Inicio from './pages/Inicio'
@@ -9,10 +11,22 @@ const Divulgar = lazy(() => import('./pages/Divulgar'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
+const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
 // Remove o service worker do site antigo, se ainda estiver instalado.
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()))
+}
+
+// Conta cada página aberta (menos o painel admin).
+function ContarVisitas() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    if (pathname.startsWith('/admin')) return
+    const t = setTimeout(() => registrar('pagina', { eventoId: pathname.startsWith('/evento/') ? pathname.slice(8) : null }), 800)
+    return () => clearTimeout(t)
+  }, [pathname])
+  return null
 }
 
 function NaoEncontrado() {
@@ -29,6 +43,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
       <BrowserRouter>
+        <ContarVisitas />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Inicio />} />
@@ -37,7 +52,9 @@ createRoot(document.getElementById('root')).render(
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Lista />} />
             <Route path="evento/:id" element={<FormEvento />} />
+            <Route path="estatisticas" element={<Estatisticas />} />
           </Route>
+          {import.meta.env.DEV && <Route path="/dev-estatisticas" element={<main className="mx-auto max-w-5xl px-4 py-4"><Estatisticas /></main>} />}
           <Route path="*" element={<NaoEncontrado />} />
         </Routes>
         </Suspense>

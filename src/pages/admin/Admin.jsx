@@ -16,6 +16,7 @@ export default function Admin() {
         <button onClick={sair} className="btn-ghost mt-6">Sair</button>
       </main></>
   )
+  try { localStorage.setItem('naoContar', '1') } catch {} // este aparelho não entra nas estatísticas
   return (
     <>
       <Topo>
@@ -33,6 +34,7 @@ function MenuAdmin() {
   const itens = [
     { to: '/admin', nome: 'Eventos' },
     { to: '/admin/evento/novo', nome: '+ Novo evento' },
+    { to: '/admin/estatisticas', nome: 'Estatísticas' },
     { to: '/', nome: 'Ver site' },
   ]
   return (
