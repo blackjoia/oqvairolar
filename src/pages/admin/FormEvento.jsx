@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Cartaz from '../../components/Cartaz'
-import { buscarEvento, criarEvento, salvarEvento, geocodificar } from '../../lib/eventos'
+import MapaEditor from '../../components/MapaEditor'
+import { buscarEvento, criarEvento, salvarEvento } from '../../lib/eventos'
 import { paraInputLocal } from '../../lib/datas'
 import { CATEGORIAS, GENEROS, CIDADES } from '../../lib/constantes'
 
@@ -19,8 +20,15 @@ export default function FormEvento() {
   const [e, setE] = useState(novo ? VAZIO : null)
   const [salvando, setSalvando] = useState(false)
   const [msg, setMsg] = useState('')
-  const [geoMsg, setGeoMsg] = useState('')
   const [generoExtra, setGeneroExtra] = useState('')
+
+  const mudarPonto = useCallback((p) => setE((x) => ({ ...x, lat: p.lat, lng: p.lng })), [])
+  const escolherLugar = useCallback((l) => setE((x) => ({
+    ...x,
+    localNome: x.localNome || l.nome || '',
+    endereco: x.endereco || l.endereco || '',
+    cidade: l.cidade || x.cidade,
+  })), [])
 
   useEffect(() => {
     if (!novo) buscarEvento(id).then((ev) => setE(ev ? { ...VAZIO, ...ev } : false))
@@ -36,16 +44,6 @@ export default function FormEvento() {
     const g = generoExtra.trim(); if (!g) return
     if (!e.generos.includes(g)) setE((x) => ({ ...x, generos: [...x.generos, g] }))
     setGeneroExtra('')
-  }
-
-  const buscarMapa = async () => {
-    setGeoMsg('Procurando…')
-    try {
-      const r = await geocodificar([e.localNome, e.endereco].filter(Boolean).join(', '), e.cidade)
-        || await geocodificar(e.endereco, e.cidade)
-      if (!r) { setGeoMsg('Não achei esse endereço. Confira a rua e o número, ou cole as coordenadas abaixo.'); return }
-      setE((x) => ({ ...x, ...r })); setGeoMsg('Achei! Confira o pino no mapa abaixo.')
-    } catch { setGeoMsg('Erro ao buscar o endereço.') }
   }
 
   const salvar = async (status) => {
@@ -67,9 +65,6 @@ export default function FormEvento() {
       nav('/admin')
     } catch (err) { setMsg('Erro ao salvar: ' + err.message); setSalvando(false) }
   }
-
-  const temMapa = e.lat && e.lng
-  const d = 0.004
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -128,22 +123,7 @@ export default function FormEvento() {
           </div>
           <label className="block"><span className="rotulo">Endereço</span>
             <input className="campo" value={e.endereco} onChange={set('endereco')} placeholder="Rua, número, bairro" /></label>
-          <div className="flex flex-wrap items-center gap-3">
-            <button type="button" onClick={buscarMapa} className="btn-ghost">📍 Achar no mapa</button>
-            {geoMsg && <span className="text-sm text-muted">{geoMsg}</span>}
-          </div>
-          {temMapa && (
-            <iframe title="Prévia do mapa" className="h-56 w-full rounded-xl border border-line"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${e.lng - d},${e.lat - d / 2},${+e.lng + d},${+e.lat + d / 2}&layer=mapnik&marker=${e.lat},${e.lng}`} />
-          )}
-          <details className="text-sm">
-            <summary className="cursor-pointer font-semibold text-muted">Ajustar coordenadas manualmente</summary>
-            <p className="mt-2 text-muted">No Google Maps, segure o dedo no local e copie os números (ex.: -26.0811, -53.0550).</p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <input className="campo" placeholder="Latitude" value={e.lat ?? ''} onChange={set('lat')} />
-              <input className="campo" placeholder="Longitude" value={e.lng ?? ''} onChange={set('lng')} />
-            </div>
-          </details>
+          <MapaEditor lat={e.lat} lng={e.lng} onChange={mudarPonto} onEscolherLugar={escolherLugar} />
         </Bloco>
 
         <Bloco titulo="Ingresso e links">
