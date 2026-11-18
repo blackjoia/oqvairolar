@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>O que vai rolar?</title>
+
+    <!-- Metadados PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#F97316" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        /* ---------- RESET E BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f7f5fc;
+            color: #1e1b4b;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* ---------- TOAST (notificações) ---------- */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 360px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease forwards;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; }
+        .toast.info { background: #3b82f6; }
+        .toast i { font-size: 18px; }
+        .toast.hide {
+            animation: slideOut 0.3s ease forwards;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        /* ---------- CABEÇALHO ---------- */
+        .app-header {
+            background: linear-gradient(135deg, #F97316, #ea580c);
+            color: #fff;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-header h1 small {
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-actions .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+        .header-actions button {
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .header-actions button:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .header-actions .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* ---------- TELA DE LOGIN (ADMIN) ---------- */
+        #loginScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-box {
+            background: #fff;
+            padding: 40px 32px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+        }
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #1e1b4b;
+            font-size: 24px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .login-box input:focus {
+            border-color: #F97316;
+        }
+        .login-box button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: #F97316;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-box button[type="submit"]:hover {
+            background: #ea580c;
+        }
+        .login-box .error-msg {
+            color: #dc2626;
+            margin-top: 12px;
+            display: none;
+            text-align: center;
+            font-size: 14px;
+        }
+        .login-box .login-footer {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* ---------- CONTEÚDO ---------- */
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* ---------- FILTROS (CARD) ---------- */
+        .filters-card {
+            background: #fff;
+            padding: 20px 20px 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            border: 1px solid #f1eff7;
+        }
+        .filters-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            align-items: flex-end;
+        }
+        .filter-group {
+            flex: 1 0 140px;
+            min-width: 120px;
+        }
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 4px;
+        }
+        .filter-group label i {
+            color: #F97316;
+            width: 16px;
+        }
+        .filter-group select,
+        .filter-group input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #fff;
+            transition: border-color 0.2s;
+            outline: none;
+            appearance: auto;
+        }
+        .filter-group select:focus,
+        .filter-group input:focus {
+            border-color: #F97316;
+        }
+
+        /* ---------- CARROSSEL DE DATAS ---------- */
+        .date-carousel {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 6px 2px 12px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 4px;
+        }
+        .date-carousel::-webkit-scrollbar {
+            height: 4px;
+        }
+        .date-carousel::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        .date-item {
+            flex: 0 0 68px;
+            padding: 10px 0;
+            border-radius: 16px;
+            background: #f3f4f6;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            scroll-snap-align: start;
+            border: 2px solid transparent;
+        }
+        .date-item:hover {
+            background: #e5e7eb;
+        }
+        .date-item .day-week {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+        .date-item .day-number {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e1b4b;
+            line-height: 1.2;
+        }
+        .date-item.active {
+            background: #F97316;
+            border-color: #ea580c;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+        .date-item.active .day-week,
+        .date-item.active .day-number {
+            color: #fff;
+        }
+
+        /* ---------- PAINEL ADMIN ---------- */
+        #adminPanel {
+            display: none;
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border-left: 4px solid #F97316;
+        }
+        #adminPanel button {
+            background: #F97316;
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        #adminPanel button:hover {
+            background: #ea580c;
+        }
+
+        /* ---------- LISTA DE EVENTOS ---------- */
+        #eventsList {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .event-card {
+            background: #fff;
+            padding: 18px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f1eff7;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .event-card:hover {
+            border-color: #fbd38d;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .event-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+        .event-icon {
+            width: 48px;
+            height: 48px;
+            background: #feebc8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #F97316;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .event-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e1b4b;
+        }
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            margin: 4px 0 8px;
+        }
+        .event-meta .genre-tag {
+            background: #feebc8;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #c2410c;
+        }
+        .event-meta .city-tag {
+            background: #e0e7ff;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+        .event-desc {
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 4px 0 10px;
+        }
+        .event-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        .event-footer i {
+            width: 16px;
+            margin-right: 4px;
+        }
+        .distance-badge {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .event-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-top: 1px solid #f1eff7;
+            padding-top: 12px;
+        }
+        .event-actions button {
+            background: transparent;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .event-actions .btn-share {
+            color: #16a34a;
+        }
+        .event-actions .btn-share:hover {
+            background: #dcfce7;
+        }
+        .event-actions .btn-edit {
+            color: #2563eb;
+        }
+        .event-actions .btn-edit:hover {
+            background: #dbeafe;
+        }
+        .event-actions .btn-delete {
+            color: #dc2626;
+        }
+        .event-actions .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        /* ---------- ESTADO VAZIO ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: #9ca3af;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+            color: #d1d5db;
+        }
+        .empty-state p {
+            font-size: 16px;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        .empty-state .empty-action {
+            margin-top: 16px;
+            font-weight: 600;
+            color: #F97316;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ---------- LOADING ---------- */
+        #loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        /* ---------- MODAL ---------- */
+        #eventModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 32px 28px;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #1e1b4b;
+            font-size: 22px;
+        }
+        .modal-content label {
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+            background: #fff;
+        }
+        .modal-content input:focus,
+        .modal-content textarea:focus {
+            border-color: #F97316;
+        }
+        .modal-content textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-content .row {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-content .row > div {
+            flex: 1;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+        .modal-actions button {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-actions .btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .modal-actions .btn-cancel:hover {
+            background: #d1d5db;
+        }
+        .modal-actions .btn-save {
+            background: #F97316;
+            color: #fff;
+        }
+        .modal-actions .btn-save:hover {
+            background: #ea580c;
+        }
+
+        /* ---------- FAB ---------- */
+        #fabAdd {
+            display: none;
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 64px;
+            height: 64px;
+            background: #F97316;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 32px;
+            box-shadow: 0 6px 24px rgba(249, 115, 22, 0.35);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 50;
+        }
+        #fabAdd:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 32px rgba(249, 115, 22, 0.45);
+        }
+
+        /* ---------- RESPONSIVO ---------- */
+        @media (max-width: 600px) {
+            .app-header h1 { font-size: 18px; }
+            .app-header h1 small { display: none; }
+            .filters-grid { flex-direction: column; gap: 12px; }
+            .filter-group { flex: 1 1 100%; min-width: 0; }
+            .modal-content { padding: 24px 18px; }
+            .modal-content .row { flex-direction: column; gap: 0; }
+            .date-item { flex: 0 0 58px; }
+            .date-item .day-number { font-size: 18px; }
+            .event-header h3 { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer"></div>
+
+    <!-- CABEÇALHO -->
+    <header class="app-header">
+        <h1>📅 O que vai rolar? <small>Agenda da cidade</small></h1>
+        <div class="header-actions">
+            <span id="adminBadge" class="admin-badge">👑 Admin</span>
+            <button id="btnLogin" class="btn-outline" style="display:none;">🔐 Admin</button>
+            <button id="btnLogout" style="display:none;">Sair</button>
+        </div>
+    </header>
+
+    <!-- TELA DE LOGIN -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2>🔐 Acesso Administrativo</h2>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="E-mail" required />
+                <input type="password" id="loginPass" placeholder="Senha" required />
+                <button type="submit">Entrar</button>
+                <div id="loginError" class="error-msg"></div>
+            </form>
+            <div class="login-footer">Apenas administradores autorizados.</div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CADASTRO/EDIÇÃO -->
+    <div id="eventModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Novo Evento</h2>
+            <form id="eventForm">
+                <input type="hidden" id="eventId" />
+                <label for="nome">Nome *</label>
+                <input type="text" id="nome" placeholder="Ex: Show da Banda" required />
+
+                <label for="descricao">Descrição *</label>
+                <textarea id="descricao" placeholder="Descreva o evento..." required></textarea>
+
+                <label for="genero">Gênero *</label>
+                <input type="text" id="genero" placeholder="Ex: Música, Esporte, Teatro" required />
+
+                <label for="endereco">Endereço *</label>
+                <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade" required />
+
+                <div class="row">
+                    <div>
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" placeholder="Ex: Francisco Beltrão" />
+                    </div>
+                    <div>
+                        <label for="estado">Estado</label>
+                        <input type="text" id="estado" placeholder="Ex: PR" maxlength="2" />
+                    </div>
+                </div>
+
+                <label for="dataEvento">Data *</label>
+                <input type="date" id="dataEvento" required />
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCloseModal">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <button id="fabAdd" title="Adicionar evento">+</button>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container">
+
+        <!-- FILTROS -->
+        <div class="filters-card">
+            <div class="filters-grid">
+                <div class="filter-group" style="flex: 2; min-width: 200px;">
+                    <label><i class="fas fa-calendar-day"></i> Data</label>
+                    <div class="date-carousel" id="dateCarousel"></div>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-tags"></i> Gênero</label>
+                    <select id="genreFilter">
+                        <option value="todos">📌 Todos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-city"></i> Cidade</label>
+                    <select id="cityFilter">
+                        <option value="todas">🌍 Todas as cidades</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAINEL ADMIN -->
+        <div id="adminPanel">
+            <button id="btnAddEvent"><i class="fas fa-plus-circle"></i> Adicionar evento</button>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading">Carregando eventos...</div>
+
+        <!-- LISTA DE EVENTOS -->
+        <div id="eventsList"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT (ES Module) -->
+    <script type="module">
+        // ---------- IMPORTS FIREBASE ----------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            doc,
+            onSnapshot,
+            query,
+            orderBy,
+            where,
+            Timestamp,
+            GeoPoint,
+            enableIndexedDbPersistence
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // ---------- CONFIGURAÇÃO DO FIREBASE (SUBSTITUA) ----------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDuE7XA7HaKzdoESHuYjJowoCrGPxi-Trc",
+            authDomain: "oquevairolar-b0129.firebaseapp.com",
+            projectId: "oquevairolar-b0129",
+            storageBucket: "oquevairolar-b0129.firebasestorage.app",
+            messagingSenderId: "79379680736",
+            appId: "1:79379680736:web:dcd7e4b425071c912d2f85"
+        };
+
+        // Inicializa
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Persistência offline
+        enableIndexedDbPersistence(db).catch(() => {});
+
+        // ---------- VARIÁVEIS ----------
+        let currentUser = null;
+        let isAdmin = false;
+        let allEvents = [];
+        let selectedDate = new Date();
+        let selectedGenre = 'todos';
+        let selectedCity = 'todas';
+        let userPosition = null;
+        let userCity = null;
+        let unsubscribeEvents = null;
+
+        const DEFAULT_CITY = 'Francisco Beltrão';
+        const DEFAULT_STATE = 'PR';
+        const DAYS_AHEAD = 10;
+
+        // ---------- REFERÊNCIAS DOM ----------
+        const loading = document.getElementById('loading');
+        const eventsList = document.getElementById('eventsList');
+        const dateCarousel = document.getElementById('dateCarousel');
+        const genreFilter = document.getElementById('genreFilter');
+        const cityFilter = document.getElementById('cityFilter');
+        const loginScreen = document.getElementById('loginScreen');
+        const loginForm = document.getElementById('loginForm');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPass = document.getElementById('loginPass');
+        const loginError = document.getElementById('loginError');
+        const btnLogin = document.getElementById('btnLogin');
+        const btnLogout = document.getElementById('btnLogout');
+        const adminBadge = document.getElementById('adminBadge');
+        const adminPanel = document.getElementById('adminPanel');
+        const fabAdd = document.getElementById('fabAdd');
+        const btnAddEvent = document.getElementById('btnAddEvent');
+        const eventModal = document.getElementById('eventModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const eventForm = document.getElementById('eventForm');
+        const eventId = document.getElementById('eventId');
+        const nomeInput = document.getElementById('nome');
+        const descricaoInput = document.getElementById('descricao');
+        const generoInput = document.getElementById('genero');
+        const enderecoInput = document.getElementById('endereco');
+        const cidadeInput = document.getElementById('cidade');
+        const estadoInput = document.getElementById('estado');
+        const dataEventoInput = document.getElementById('dataEvento');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+
+        // ---------- TOAST ----------
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const iconMap = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation', info: 'fa-info-circle' };
+            toast.innerHTML = `<i class="fas ${iconMap[type] || iconMap.info}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ---------- DISTÂNCIA ----------
+        function calcDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        // ---------- GEOCODIFICAÇÃO (com cidade/estado) ----------
+        async function geocodeAddress(endereco) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(endereco)}&limit=1`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                if (data && data.length > 0) {
+                    const result = data[0];
+                    const lat = parseFloat(result.lat);
+                    const lng = parseFloat(result.lon);
+                    // Extrai cidade e estado
+                    const addr = result.address || {};
+                    let cidade = addr.city || addr.town || addr.village || addr.municipality || '';
+                    let estado = addr.state || '';
+                    // Se estado for nome completo, tenta pegar a sigla
+                    if (estado && estado.length > 2) {
+                        // Pega a sigla do estado a partir do objeto address
+                        const stateCode = addr.state_code || '';
+                        if (stateCode) estado = stateCode.toUpperCase();
+                        else {
+                            // Fallback: tenta extrair a sigla do nome (ex: "São Paulo" -> "SP")
+                            const parts = estado.split(' ');
+                            if (parts.length > 1) {
+                                estado = parts.map(p => p[0]).join('').toUpperCase();
+                            } else {
+                                estado = estado.substring(0, 2).toUpperCase();
+                            }
+                        }
+                    }
+                    if (!cidade) {
+                        cidade = DEFAULT_CITY;
+                    }
+                    if (!estado) {
+                        estado = DEFAULT_STATE;
+                    }
+                    return { lat, lng, cidade, estado };
+                }
+                return null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        // ---------- RENDERIZAR EVENTOS ----------
+        function renderEvents() {
+            const filteredByDate = allEvents.filter(e => {
+                const d = new Date(e.data);
+                return d.getFullYear() === selectedDate.getFullYear() &&
+                    d.getMonth() === selectedDate.getMonth() &&
+                    d.getDate() === selectedDate.getDate();
+            });
+
+            let filtered = filteredByDate;
+            if (selectedGenre !== 'todos') {
+                filtered = filtered.filter(e => e.genero === selectedGenre);
+            }
+            if (selectedCity !== 'todas') {
+                filtered = filtered.filter(e => e.cidade === selectedCity);
+            }
+
+            // Ordena por distância (se tiver posição)
+            if (userPosition) {
+                filtered.sort((a, b) => {
+                    const dA = a.lat ? calcDistance(userPosition.coords.latitude, userPosition.coords.longitude, a.lat, a
+                        .lng) : Infinity;
+                    const dB = b.lat ? calcDistance(userPosition.coords.latitude, userPosition.coords.longitude, b.lat, b
+                        .lng) : Infinity;
+                    return dA - dB;
+                });
+            } else {
+                filtered.sort((a, b) => new Date(a.data) - new Date(b.data));
+            }
+
+            if (filtered.length === 0) {
+                const cityName = selectedCity === 'todas' ? 'todas as cidades' : selectedCity;
+                eventsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Nenhum evento em <strong>${cityName}</strong> para este dia.</p>
+                        <p style="font-size:14px;margin-top:8px;color:#9ca3af;">Que tal ver os eventos de outras cidades?</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(ev => {
+                let distStr = '';
+                if (userPosition && ev.lat) {
+                    const dist = calcDistance(userPosition.coords.latitude, userPosition.coords.longitude, ev.lat, ev
+                        .lng);
+                    distStr = dist < 1000 ? `📍 ${Math.round(dist)}m` : `📍 ${(dist/1000).toFixed(1)}km`;
+                }
+                const dateStr = new Date(ev.data).toLocaleDateString('pt-BR');
+                const icon = ev.genero ? ev.genero.charAt(0).toUpperCase() : '📌';
+                const cityDisplay = ev.cidade ? `${ev.cidade}${ev.estado ? ` - ${ev.estado}` : ''}` : '';
+
+                html += `
+                    <div class="event-card">
+                        <div class="event-header">
+                            <div class="event-icon">${icon}</div>
+                            <div>
+                                <h3>${ev.nome}</h3>
+                                <div class="event-meta">
+                                    <span class="genre-tag">${ev.genero || 'Geral'}</span>
+                                    ${cityDisplay ? `<span class="city-tag"><i class="fas fa-city"></i> ${cityDisplay}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="event-desc">${ev.descricao}</p>
+                        <div class="event-footer">
+                            <span><i class="fas fa-map-pin"></i> ${ev.endereco || 'Não informado'}</span>
+                            <span><i class="fas fa-calendar-day"></i> ${dateStr}</span>
+                            ${distStr ? `<span class="distance-badge">${distStr}</span>` : ''}
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn-share" data-id="${ev.id}"><i class="fas fa-share-alt"></i> Compartilhar</button>
+                            ${isAdmin ? `
+                                <button class="btn-edit" data-id="${ev.id}"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn-delete" data-id="${ev.id}"><i class="fas fa-trash"></i> Excluir</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            eventsList.innerHTML = html;
+
+            // Event listeners
+            eventsList.querySelectorAll('.btn-share').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const ev = allEvents.find(e => e.id === btn.dataset.id);
+                    if (ev) shareEvent(ev);
+                });
+            });
+            if (isAdmin) {
+                eventsList.querySelectorAll('.btn-edit').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const ev = allEvents.find(e => e.id === btn.dataset.id);
+                        if (ev) openModal(ev);
+                    });
+                });
+                eventsList.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const ev = allEvents.find(e => e.id === btn.dataset.id);
+                        if (ev) deleteEvent(ev.id);
+                    });
+                });
+            }
+        }
+
+        // ---------- COMPARTILHAR ----------
+        function shareEvent(evento) {
+            const text =
+                `📢 ${evento.nome}\n📝 ${evento.descricao}\n📍 ${evento.endereco}\n📅 ${new Date(evento.data).toLocaleDateString('pt-BR')}\n🎭 ${evento.genero}`;
+            if (navigator.share) {
+                navigator.share({ title: evento.nome, text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Evento copiado! Cole onde quiser.', 'success');
+                }).catch(() => {
+                    prompt('Copie o texto abaixo:', text);
+                });
+            }
+        }
+
+        // ---------- CARREGAR EVENTOS (COM OTIMIZAÇÃO) ----------
+        function loadEvents() {
+            if (unsubscribeEvents) unsubscribeEvents();
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const fim = new Date(hoje);
+            fim.setDate(fim.getDate() + DAYS_AHEAD);
+
+            const q = query(
+                collection(db, 'eventos'),
+                where('data', '>=', Timestamp.fromDate(hoje)),
+                where('data', '<=', Timestamp.fromDate(fim)),
+                orderBy('data', 'asc')
+            );
+
+            unsubscribeEvents = onSnapshot(q, (snapshot) => {
+                allEvents = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allEvents.push({
+                        id: doc.id,
+                        nome: data.nome || '',
+                        descricao: data.descricao || '',
+                        genero: data.genero || '',
+                        endereco: data.endereco || '',
+                        cidade: data.cidade || '',
+                        estado: data.estado || '',
+                        data: data.data?.toDate() || new Date(),
+                        lat: data.localizacao?.latitude || 0,
+                        lng: data.localizacao?.longitude || 0,
+                    });
+                });
+                updateFilters();
+                renderEvents();
+                loading.style.display = 'none';
+            }, (error) => {
+                console.error('Erro no Firestore:', error);
+                loading.innerHTML = '❌ Erro ao carregar eventos. Verifique sua conexão.';
+                loading.style.display = 'block';
+                showToast('Erro ao carregar eventos: ' + error.message, 'error');
+            });
+        }
+
+        // ---------- ATUALIZAR FILTROS (gênero e cidade) ----------
+        function updateFilters() {
+            // Gêneros
+            const genres = new Set(allEvents.map(e => e.genero).filter(g => g));
+            const currentGenre = genreFilter.value;
+            genreFilter.innerHTML = '<option value="todos">📌 Todos</option>';
+            genres.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                genreFilter.appendChild(opt);
+            });
+            if ([...genres].includes(currentGenre)) genreFilter.value = currentGenre;
+            else genreFilter.value = 'todos';
+
+            // Cidades
+            const cities = new Set(allEvents.map(e => e.cidade).filter(c => c));
+            const currentCity = cityFilter.value;
+            cityFilter.innerHTML = '<option value="todas">🌍 Todas as cidades</option>';
+            cities.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                cityFilter.appendChild(opt);
+            });
+            // Se a cidade do usuário estiver disponível, seleciona; senão, mantém "todas"
+            if (userCity && cities.has(userCity)) {
+                cityFilter.value = userCity;
+                selectedCity = userCity;
+            } else if (cities.has(DEFAULT_CITY)) {
+                cityFilter.value = DEFAULT_CITY;
+                selectedCity = DEFAULT_CITY;
+            } else {
+                cityFilter.value = 'todas';
+                selectedCity = 'todas';
+            }
+        }
+
+        // ---------- CARROSSEL DE DATAS ----------
+        function buildDateCarousel() {
+            dateCarousel.innerHTML = '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            for (let i = 0; i < DAYS_AHEAD; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() + i);
+                const dayNum = d.getDate();
+                const dayName = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+                const isActive = d.getFullYear() === selectedDate.getFullYear() &&
+                    d.getMonth() === selectedDate.getMonth() &&
+                    d.getDate() === selectedDate.getDate();
+
+                const el = document.createElement('div');
+                el.className = `date-item ${isActive ? 'active' : ''}`;
+                el.innerHTML = `<div class="day-week">${dayName}</div><div class="day-number">${dayNum}</div>`;
+                el.addEventListener('click', () => {
+                    selectedDate = new Date(d);
+                    // Atualiza visualmente
+                    document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
+                    el.classList.add('active');
+                    renderEvents();
+                });
+                dateCarousel.appendChild(el);
+            }
+        }
+
+        // ---------- ABRIR MODAL ----------
+        function openModal(evento = null) {
+            eventModal.style.display = 'flex';
+            if (evento) {
+                modalTitle.textContent = '✏️ Editar Evento';
+                eventId.value = evento.id;
+                nomeInput.value = evento.nome;
+                descricaoInput.value = evento.descricao;
+                generoInput.value = evento.genero;
+                enderecoInput.value = evento.endereco;
+                cidadeInput.value = evento.cidade || '';
+                estadoInput.value = evento.estado || '';
+                const d = new Date(evento.data);
+                dataEventoInput.value = d.toISOString().split('T')[0];
+            } else {
+                modalTitle.textContent = '➕ Novo Evento';
+                eventId.value = '';
+                nomeInput.value = '';
+                descricaoInput.value = '';
+                generoInput.value = '';
+                enderecoInput.value = '';
+                cidadeInput.value = '';
+                estadoInput.value = '';
+                dataEventoInput.value = new Date().toISOString().split('T')[0];
+            }
+        }
+
+        function closeModal() {
+            eventModal.style.display = 'none';
+        }
+
+        // ---------- SALVAR EVENTO ----------
+        async function saveEvent(e) {
+            e.preventDefault();
+            const id = eventId.value;
+            const nome = nomeInput.value.trim();
+            const descricao = descricaoInput.value.trim();
+            const genero = generoInput.value.trim();
+            const endereco = enderecoInput.value.trim();
+            const cidade = cidadeInput.value.trim() || DEFAULT_CITY;
+            const estado = estadoInput.value.trim().toUpperCase() || DEFAULT_STATE;
+            const dataStr = dataEventoInput.value;
+            const data = new Date(dataStr + 'T00:00:00');
+
+            if (!nome || !descricao || !genero || !endereco || !dataStr) {
+                showToast('Preencha todos os campos obrigatórios.', 'error');
+                return;
+            }
+
+            let lat = 0,
+                lng = 0;
+            let finalCidade = cidade;
+            let finalEstado = estado;
+
+            // Geocodifica para obter coordenadas e tentar extrair cidade/estado
+            const coords = await geocodeAddress(endereco);
+            if (coords) {
+                lat = coords.lat;
+                lng = coords.lng;
+                if (coords.cidade) finalCidade = coords.cidade;
+                if (coords.estado) finalEstado = coords.estado;
+            } else {
+                // Fallback
+                lat = -23.5505;
+                lng = -46.6333;
+                showToast('Endereço não encontrado. Usando coordenada padrão.', 'warning');
+            }
+
+            // Atualiza os campos do formulário com os valores extraídos (para o admin ver)
+            cidadeInput.value = finalCidade;
+            estadoInput.value = finalEstado;
+
+            const eventData = {
+                nome,
+                descricao,
+                genero,
+                endereco,
+                cidade: finalCidade,
+                estado: finalEstado,
+                data: Timestamp.fromDate(data),
+                localizacao: new GeoPoint(lat, lng)
+            };
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'eventos', id), eventData);
+                    showToast('Evento atualizado com sucesso!', 'success');
+                } else {
+                    await addDoc(collection(db, 'eventos'), eventData);
+                    showToast('Evento criado com sucesso!', 'success');
+                }
+                closeModal();
+            } catch (err) {
+                showToast('Erro ao salvar: ' + err.message, 'error');
+            }
+        }
+
+        // ---------- EXCLUIR EVENTO ----------
+        async function deleteEvent(id) {
+            if (!confirm('Tem certeza que deseja excluir este evento?')) return;
+            try {
+                await deleteDoc(doc(db, 'eventos', id));
+                showToast('Evento excluído!', 'success');
+            } catch (err) {
+                showToast('Erro ao excluir: ' + err.message, 'error');
+            }
+        }
+
+        // ---------- LOGIN / LOGOUT ----------
+        async function loginAdmin(email, pass) {
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                loginError.style.display = 'none';
+            } catch (err) {
+                loginError.textContent = '❌ ' + err.message;
+                loginError.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            signOut(auth);
+        }
+
+        // ---------- VERIFICAR ROTA ----------
+        function checkRoute() {
+            const path = window.location.pathname;
+            if (path === '/admin') {
+                if (!currentUser) {
+                    loginScreen.style.display = 'flex';
+                } else {
+                    loginScreen.style.display = 'none';
+                    isAdmin = true;
+                    updateUIForAdmin();
+                }
+            } else {
+                loginScreen.style.display = 'none';
+                isAdmin = false;
+                updateUIForAdmin();
+            }
+        }
+
+        // ---------- ATUALIZAR UI (ADMIN) ----------
+        function updateUIForAdmin() {
+            if (isAdmin && currentUser) {
+                adminBadge.style.display = 'inline';
+                btnLogout.style.display = 'inline-block';
+                btnLogin.style.display = 'none';
+                adminPanel.style.display = 'block';
+                fabAdd.style.display = 'flex';
+                renderEvents();
+            } else {
+                adminBadge.style.display = 'none';
+                btnLogout.style.display = 'none';
+                btnLogin.style.display = currentUser ? 'none' : 'inline-block';
+                adminPanel.style.display = 'none';
+                fabAdd.style.display = 'none';
+                renderEvents();
+            }
+        }
+
+        // ---------- REGISTRAR SW ----------
+        function registerSW() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ Service Worker registrado'))
+                    .catch(() => console.log('⚠️ SW não registrado'));
+            }
+        }
+
+        // ---------- INICIALIZAÇÃO ----------
+        function initApp() {
+            registerSW();
+
+            // Auth observer
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    isAdmin = (user.email === 'admin@oquevairolar.com');
+                    checkRoute();
+                    updateUIForAdmin();
+                    if (window.location.pathname === '/admin') {
+                        loginScreen.style.display = 'none';
+                    }
+                } else {
+                    isAdmin = false;
+                    checkRoute();
+                    updateUIForAdmin();
+                }
+            });
+
+            // Geolocalização
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userPosition = pos;
+                        // Tenta obter cidade atual via Nominatim reverso
+                        fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=10`)
+                            .then(r => r.json())
+                            .then(data => {
+                                const addr = data.address || {};
+                                const city = addr.city || addr.town || addr.village || addr.municipality || '';
+                                if (city) {
+                                    userCity = city;
+                                    // Atualiza o filtro de cidade se a cidade existir nos eventos
+                                    const cities = new Set(allEvents.map(e => e.cidade).filter(c => c));
+                                    if (cities.has(city)) {
+                                        cityFilter.value = city;
+                                        selectedCity = city;
+                                        renderEvents();
+                                    }
+                                }
+                            })
+                            .catch(() => {});
+                        renderEvents();
+                    },
+                    () => {
+                        userPosition = null;
+                        // Fallback para cidade padrão
+                        userCity = DEFAULT_CITY;
+                        const cities = new Set(allEvents.map(e => e.cidade).filter(c => c));
+                        if (cities.has(DEFAULT_CITY)) {
+                            cityFilter.value = DEFAULT_CITY;
+                            selectedCity = DEFAULT_CITY;
+                            renderEvents();
+                        }
+                        renderEvents();
+                    }
+                );
+            } else {
+                userPosition = null;
+                userCity = DEFAULT_CITY;
+                const cities = new Set(allEvents.map(e => e.cidade).filter(c => c));
+                if (cities.has(DEFAULT_CITY)) {
+                    cityFilter.value = DEFAULT_CITY;
+                    selectedCity = DEFAULT_CITY;
+                }
+                renderEvents();
+            }
+
+            // Carrega eventos
+            loadEvents();
+
+            // Constrói carrossel
+            buildDateCarousel();
+
+            // Event listeners dos filtros
+            genreFilter.addEventListener('change', (e) => {
+                selectedGenre = e.target.value;
+                renderEvents();
+            });
+
+            cityFilter.addEventListener('change', (e) => {
+                selectedCity = e.target.value;
+                renderEvents();
+            });
+
+            // Login
+            btnLogin.addEventListener('click', () => {
+                loginScreen.style.display = 'flex';
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                loginAdmin(loginEmail.value, loginPass.value);
+            });
+
+            btnLogout.addEventListener('click', logout);
+
+            // Modal
+            btnAddEvent.addEventListener('click', () => openModal(null));
+            fabAdd.addEventListener('click', () => openModal(null));
+            btnCloseModal.addEventListener('click', closeModal);
+            window.addEventListener('click', (e) => {
+                if (e.target === eventModal) closeModal();
+            });
+            eventForm.addEventListener('submit', saveEvent);
+
+            // Verifica rota inicial
+            checkRoute();
+        }
+
+        // Inicia
+        initApp();
+    </script>
+</body>
+</html>
