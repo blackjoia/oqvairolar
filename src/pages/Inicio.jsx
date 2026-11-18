@@ -6,6 +6,7 @@ import Logo from '../components/Logo'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
+import { filtro } from '../lib/visitas'
 import { SlidersHorizontal, X, CalendarX2, ChevronDown } from 'lucide-react'
 
 const DIAS = [
@@ -28,7 +29,7 @@ export default function Inicio() {
 
   const setFiltro = (k, v) => {
     const p = new URLSearchParams(params)
-    if (!v || v === 'todos') p.delete(k); else p.set(k, v)
+    if (!v || v === 'todos') p.delete(k); else { p.set(k, v); filtro(k, v) }
     setParams(p, { replace: true })
   }
 

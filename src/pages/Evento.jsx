@@ -10,6 +10,7 @@ import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
 import { useAuth } from '../lib/auth'
 import MapaVer from '../components/MapaVer'
 import { gerarStory } from '../lib/story'
+import { clique } from '../lib/visitas'
 import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft } from 'lucide-react'
 
 export default function Evento() {
@@ -42,9 +43,10 @@ export default function Evento() {
   const url = `${location.origin}/evento/${e.id}`
   const cat = categoria(e.categoria)
   const compartilhar = async () => {
-    const dados = { title: e.titulo, text: `${e.titulo}\n${rotuloDia(e.inicio)} às ${hora(e.inicio)} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url }
+    clique('compartilhar', e.id)
+    const dados = { title: e.titulo, text: `${e.titulo}\n${rotuloDia(e.inicio)} às ${hora(e.inicio)} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url: url + '?o=compartilhado' }
     if (navigator.share) { try { await navigator.share(dados) } catch {} return }
-    await navigator.clipboard.writeText(url); setCopiado(true); setTimeout(() => setCopiado(false), 2000)
+    await navigator.clipboard.writeText(url + '?o=compartilhado'); setCopiado(true); setTimeout(() => setCopiado(false), 2000)
   }
   const temMapa = e.lat && e.lng
 
@@ -81,25 +83,25 @@ export default function Evento() {
               {e.instagram && (
                 <div className="flex gap-3"><dt aria-label="Instagram"><Instagram className="size-5 text-brand" /></dt>
                   <dd><a className="font-semibold text-brand" target="_blank" rel="noreferrer"
-                    href={`https://instagram.com/${e.instagram.replace(/^@/, '')}`}>@{e.instagram.replace(/^@/, '')}</a></dd></div>
+                    onClick={() => clique('instagram', e.id)} href={`https://instagram.com/${e.instagram.replace(/^@/, '')}`}>@{e.instagram.replace(/^@/, '')}</a></dd></div>
               )}
             </dl>
 
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               {e.ingressoUrl && (
-                <a href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent sm:col-span-2 py-3 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
+                <a onClick={() => clique('ingresso', e.id)} href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent sm:col-span-2 py-3 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
               )}
               <div className="relative">
                 <button onClick={() => setAgendaAberta((v) => !v)} className="btn-brand w-full"><CalendarPlus className="size-5" /> Adicionar à agenda</button>
                 {agendaAberta && (
                   <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
-                    <a className="block px-4 py-3 hover:bg-surface-2" target="_blank" rel="noreferrer" href={linkGoogleAgenda(e, url)}>Google Agenda (Android)</a>
-                    <button className="block w-full px-4 py-3 text-left hover:bg-surface-2" onClick={() => { baixarIcs(e, url); setAgendaAberta(false) }}>iPhone / outro app (.ics)</button>
+                    <a onClick={() => clique('agenda', e.id)} className="block px-4 py-3 hover:bg-surface-2" target="_blank" rel="noreferrer" href={linkGoogleAgenda(e, url)}>Google Agenda (Android)</a>
+                    <button className="block w-full px-4 py-3 text-left hover:bg-surface-2" onClick={() => { clique('agenda', e.id); baixarIcs(e, url); setAgendaAberta(false) }}>iPhone / outro app (.ics)</button>
                   </div>
                 )}
               </div>
               <button onClick={compartilhar} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand" /> Link copiado</> : <><Share2 className="size-5" /> Compartilhar</>}</button>
-              <button onClick={async () => { setStory('Gerando…'); const r = await gerarStory(e); setStory(r === 'baixado' ? 'Arte salva! Poste no seu Story.' : '') }}
+              <button onClick={async () => { clique('story', e.id); setStory('Gerando…'); const r = await gerarStory(e); setStory(r === 'baixado' ? 'Arte salva! Poste no seu Story.' : '') }}
                 className="btn-ghost sm:col-span-2"><ImageDown className="size-5" /> {story || 'Arte para o Story'}</button>
             </div>
 
@@ -114,7 +116,7 @@ export default function Evento() {
           ) : (
             <p className="rounded-2xl border border-dashed border-line p-4 text-muted">Mapa indisponível para este endereço.</p>
           )}
-          <a href={linkComoChegar(e)} target="_blank" rel="noreferrer" className="btn-ghost mt-3"><Navigation className="size-5" /> Abrir rota no Google Maps</a>
+          <a onClick={() => clique('rota', e.id)} href={linkComoChegar(e)} target="_blank" rel="noreferrer" className="btn-ghost mt-3"><Navigation className="size-5" /> Abrir rota no Google Maps</a>
         </section>
       </main>
       <Rodape />

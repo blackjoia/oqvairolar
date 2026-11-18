@@ -1,3 +1,4 @@
+import { clique } from '../lib/visitas'
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CheckCircle2, ChevronDown, Send } from 'lucide-react'
@@ -50,7 +51,7 @@ export default function Divulgar() {
         enviadoPor: { nome: e.quemNome.trim().slice(0, 80), contato: e.quemContato.trim().slice(0, 120) },
       })
       try { localStorage.setItem('ultimoEnvio', String(Date.now())) } catch {}
-      setOk(true); window.scrollTo(0, 0)
+      setOk(true); window.scrollTo(0, 0); clique('divulgar-enviado')
     } catch (err) { console.error(err); setMsg('Não deu para enviar agora. Confira os campos e tente de novo.') }
     setEnviando(false)
   }

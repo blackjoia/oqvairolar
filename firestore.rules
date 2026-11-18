@@ -46,6 +46,27 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Contador de visitas: qualquer um registra (só cria, campos fixos); só o admin lê.
+    function opcional(d, campo, max) {
+      return d[campo] == null || (d[campo] is string && d[campo].size() <= max);
+    }
+    match /visitas/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['tipo', 'visitante', 'sessao', 'nova', 'origem', 'disp',
+            'pagina', 'eventoId', 'acao', 'valor', 'em'])
+        && request.resource.data.tipo in ['pagina', 'clique', 'filtro']
+        && request.resource.data.em == request.time
+        && request.resource.data.visitante is string && request.resource.data.visitante.size() <= 20
+        && request.resource.data.sessao is string && request.resource.data.sessao.size() <= 20
+        && request.resource.data.nova is bool
+        && request.resource.data.origem is string && request.resource.data.origem.size() <= 40
+        && request.resource.data.disp in ['celular', 'computador', 'tablet']
+        && request.resource.data.pagina is string && request.resource.data.pagina.size() <= 200
+        && opcional(request.resource.data, 'eventoId', 120)
+        && opcional(request.resource.data, 'acao', 30)
+        && opcional(request.resource.data, 'valor', 60);
+      allow read, delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
