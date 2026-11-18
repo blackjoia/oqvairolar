@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>O que vai rolar?</title>
 
     <!-- Metadados PWA -->
@@ -737,6 +737,7 @@
         <!-- PAINEL ADMIN -->
         <div id="adminPanel">
             <button id="btnAddEvent"><i class="fas fa-plus-circle"></i> Adicionar evento</button>
+            <button id="btnBackup" style="background:#4b5563;margin-left:8px"><i class="fas fa-download"></i> Baixar backup</button>
         </div>
 
         <!-- LOADING -->
@@ -764,7 +765,8 @@
             where,
             Timestamp,
             GeoPoint,
-            enableIndexedDbPersistence
+            enableIndexedDbPersistence,
+            getDocs
         } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         import {
             getAuth,
@@ -802,6 +804,8 @@
         let userCity = null;
         let unsubscribeEvents = null;
 
+        // UID da conta admin no Firebase (Authentication > Users > User UID). Mesmo valor de firestore.rules.
+        const ADMIN_UIDS = ['COLE_AQUI_O_UID_DO_ADMIN'];
         const DEFAULT_CITY = 'Francisco Beltrão';
         const DEFAULT_STATE = 'PR';
         const DAYS_AHEAD = 10;
@@ -836,13 +840,20 @@
         const dataEventoInput = document.getElementById('dataEvento');
         const btnCloseModal = document.getElementById('btnCloseModal');
 
+        // ---------- SEGURANÇA: escapa texto antes de colocar no HTML ----------
+        function esc(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
         // ---------- TOAST ----------
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             const iconMap = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-triangle-exclamation', info: 'fa-info-circle' };
-            toast.innerHTML = `<i class="fas ${iconMap[type] || iconMap.info}"></i> ${message}`;
+            toast.innerHTML = `<i class="fas ${iconMap[type] || iconMap.info}"></i> ${esc(message)}`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.classList.add('hide');
@@ -939,7 +950,7 @@
                 eventsList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
-                        <p>Nenhum evento em <strong>${cityName}</strong> para este dia.</p>
+                        <p>Nenhum evento em <strong>${esc(cityName)}</strong> para este dia.</p>
                         <p style="font-size:14px;margin-top:8px;color:#9ca3af;">Que tal ver os eventos de outras cidades?</p>
                     </div>
                 `;
@@ -955,7 +966,7 @@
                     distStr = dist < 1000 ? `📍 ${Math.round(dist)}m` : `📍 ${(dist/1000).toFixed(1)}km`;
                 }
                 const dateStr = new Date(ev.data).toLocaleDateString('pt-BR');
-                const icon = ev.genero ? ev.genero.charAt(0).toUpperCase() : '📌';
+                const icon = ev.genero ? esc(ev.genero.charAt(0).toUpperCase()) : '📌';
                 const cityDisplay = ev.cidade ? `${ev.cidade}${ev.estado ? ` - ${ev.estado}` : ''}` : '';
 
                 html += `
@@ -963,24 +974,24 @@
                         <div class="event-header">
                             <div class="event-icon">${icon}</div>
                             <div>
-                                <h3>${ev.nome}</h3>
+                                <h3>${esc(ev.nome)}</h3>
                                 <div class="event-meta">
-                                    <span class="genre-tag">${ev.genero || 'Geral'}</span>
-                                    ${cityDisplay ? `<span class="city-tag"><i class="fas fa-city"></i> ${cityDisplay}</span>` : ''}
+                                    <span class="genre-tag">${esc(ev.genero || 'Geral')}</span>
+                                    ${cityDisplay ? `<span class="city-tag"><i class="fas fa-city"></i> ${esc(cityDisplay)}</span>` : ''}
                                 </div>
                             </div>
                         </div>
-                        <p class="event-desc">${ev.descricao}</p>
+                        <p class="event-desc">${esc(ev.descricao)}</p>
                         <div class="event-footer">
-                            <span><i class="fas fa-map-pin"></i> ${ev.endereco || 'Não informado'}</span>
+                            <span><i class="fas fa-map-pin"></i> ${esc(ev.endereco || 'Não informado')}</span>
                             <span><i class="fas fa-calendar-day"></i> ${dateStr}</span>
                             ${distStr ? `<span class="distance-badge">${distStr}</span>` : ''}
                         </div>
                         <div class="event-actions">
-                            <button class="btn-share" data-id="${ev.id}"><i class="fas fa-share-alt"></i> Compartilhar</button>
+                            <button class="btn-share" data-id="${esc(ev.id)}"><i class="fas fa-share-alt"></i> Compartilhar</button>
                             ${isAdmin ? `
-                                <button class="btn-edit" data-id="${ev.id}"><i class="fas fa-edit"></i> Editar</button>
-                                <button class="btn-delete" data-id="${ev.id}"><i class="fas fa-trash"></i> Excluir</button>
+                                <button class="btn-edit" data-id="${esc(ev.id)}"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn-delete" data-id="${esc(ev.id)}"><i class="fas fa-trash"></i> Excluir</button>
                             ` : ''}
                         </div>
                     </div>
@@ -1197,10 +1208,10 @@
                 if (coords.cidade) finalCidade = coords.cidade;
                 if (coords.estado) finalEstado = coords.estado;
             } else {
-                // Fallback
-                lat = -23.5505;
-                lng = -46.6333;
-                showToast('Endereço não encontrado. Usando coordenada padrão.', 'warning');
+                // Sem coordenada: o evento aparece normalmente, só sem a distância
+                lat = 0;
+                lng = 0;
+                showToast('Endereço não encontrado no mapa. O evento será salvo sem distância.', 'warning');
             }
 
             // Atualiza os campos do formulário com os valores extraídos (para o admin ver)
@@ -1243,6 +1254,32 @@
             }
         }
 
+        // ---------- BACKUP (baixa todos os eventos em JSON) ----------
+        async function downloadBackup() {
+            try {
+                const snap = await getDocs(collection(db, 'eventos'));
+                const rows = [];
+                snap.forEach(d => {
+                    const x = d.data();
+                    rows.push({
+                        id: d.id,
+                        ...x,
+                        data: x.data?.toDate ? x.data.toDate().toISOString() : x.data ?? null,
+                        localizacao: x.localizacao ? { lat: x.localizacao.latitude, lng: x.localizacao.longitude } : null
+                    });
+                });
+                const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `backup-eventos-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast(`Backup com ${rows.length} eventos baixado.`, 'success');
+            } catch (err) {
+                showToast('Erro ao gerar backup: ' + err.message, 'error');
+            }
+        }
+
         // ---------- LOGIN / LOGOUT ----------
         async function loginAdmin(email, pass) {
             try {
@@ -1266,7 +1303,7 @@
                     loginScreen.style.display = 'flex';
                 } else {
                     loginScreen.style.display = 'none';
-                    isAdmin = true;
+                    isAdmin = ADMIN_UIDS.includes(currentUser.uid);
                     updateUIForAdmin();
                 }
             } else {
@@ -1312,7 +1349,7 @@
             onAuthStateChanged(auth, (user) => {
                 currentUser = user;
                 if (user) {
-                    isAdmin = (user.email === 'admin@oquevairolar.com');
+                    isAdmin = ADMIN_UIDS.includes(user.uid);
                     checkRoute();
                     updateUIForAdmin();
                     if (window.location.pathname === '/admin') {
@@ -1406,6 +1443,7 @@
 
             // Modal
             btnAddEvent.addEventListener('click', () => openModal(null));
+            document.getElementById('btnBackup').addEventListener('click', downloadBackup);
             fabAdd.addEventListener('click', () => openModal(null));
             btnCloseModal.addEventListener('click', closeModal);
             window.addEventListener('click', (e) => {
@@ -1421,4 +1459,4 @@
         initApp();
     </script>
 </body>
-</html>
+</html>
