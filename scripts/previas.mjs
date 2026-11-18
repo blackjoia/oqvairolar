@@ -39,7 +39,7 @@ function quebrar(texto, larguraMax, tam, maxLinhas) {
 async function cartazEmbutido(url) {
   if (!url) return null
   try {
-    const u = url.includes('res.cloudinary.com') ? url.replace('/upload/', '/upload/f_jpg,w_600/') : url
+    const u = url.includes('res.cloudinary.com') ? url.replace(/\/upload\/(f_auto,q_auto,w_\d+\/)?/, '/upload/f_jpg,q_auto,w_600/') : url
     const r = await fetch(u, { signal: AbortSignal.timeout(8000) })
     const tipo = r.headers.get('content-type') || ''
     if (!r.ok || !/image\/(jpeg|png)/.test(tipo)) return null
