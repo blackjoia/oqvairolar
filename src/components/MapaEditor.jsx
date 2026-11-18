@@ -37,13 +37,13 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
 
   // Cria o mapa uma vez
   useEffect(() => {
-    const m = L.map(div.current, { scrollWheelZoom: true, tap: true }).setView(temPonto ? [lat, lng] : CENTRO_PADRAO, temPonto ? 17 : 13)
+    const m = L.map(div.current, { scrollWheelZoom: true }).setView(temPonto ? [lat, lng] : CENTRO_PADRAO, temPonto ? 17 : 13)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19, attribution: '&copy; OpenStreetMap',
     }).addTo(m)
     m.on('click', (e) => onChange({ lat: e.latlng.lat, lng: e.latlng.lng }))
     mapa.current = m
-    return () => m.remove()
+    return () => { m.remove(); mapa.current = null; marcador.current = null }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -53,7 +53,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
     if (!m) return
     if (!temPonto) { marcador.current?.remove(); marcador.current = null; return }
     const pos = [Number(lat), Number(lng)]
-    if (!marcador.current) {
+    if (!marcador.current || !m.hasLayer(marcador.current)) {
       marcador.current = L.marker(pos, { draggable: true, icon: pino }).addTo(m)
       marcador.current.on('dragend', (e) => { const p = e.target.getLatLng(); onChange({ lat: p.lat, lng: p.lng }) })
     } else {
