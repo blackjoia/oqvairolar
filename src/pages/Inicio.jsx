@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
+import Logo from '../components/Logo'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
@@ -161,7 +162,7 @@ function Grupo({ titulo, opcoes, valor, onChange }) {
 export function Rodape() {
   return (
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
-      <p className="font-display text-lg uppercase text-ink">O que vai rolar<span className="text-brand">?</span></p>
+      <Logo className="mx-auto mb-2 h-10 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
     </footer>
   )
