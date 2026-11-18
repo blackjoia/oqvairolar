@@ -2,11 +2,9 @@ import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// Mapas no estilo do site: claro no tema claro, escuro no tema escuro (CARTO, grátis).
-export const urlTiles = () => document.documentElement.classList.contains('dark')
-  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-  : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-export const ATRIB = '&copy; OpenStreetMap &copy; CARTO'
+// Mapa do OpenStreetMap (grátis, sem chave). No tema escuro, as cores do mapa são invertidas por CSS (.mapa-escuro).
+export const URL_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+export const ATRIB = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>'
 
 export const pinoIcone = () => L.divIcon({
   className: '',
@@ -17,8 +15,10 @@ export const pinoIcone = () => L.divIcon({
 
 // Troca as imagens do mapa quando o tema muda.
 export function seguirTema(mapa) {
-  const camada = L.tileLayer(urlTiles(), { maxZoom: 20, attribution: ATRIB, subdomains: 'abcd' }).addTo(mapa)
-  const trocar = () => camada.setUrl(urlTiles())
+  L.tileLayer(URL_TILES, { maxZoom: 19, attribution: ATRIB }).addTo(mapa)
+  const el = mapa.getContainer()
+  const trocar = () => el.classList.toggle('mapa-escuro', document.documentElement.classList.contains('dark'))
+  trocar()
   window.addEventListener('tema', trocar)
   return () => window.removeEventListener('tema', trocar)
 }
