@@ -5,8 +5,10 @@ service cloud.firestore {
     function isAdmin() {
       // UID da conta admin (Firebase > Authentication > Users > User UID).
       // Mesmo valor de ADMIN_UIDS em src/lib/firebase.js.
+      // Também vale a conta Google luisfmrtns@gmail.com (e-mail verificado). Mesmo valor de ADMIN_EMAILS.
       return request.auth != null
-        && request.auth.uid in ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2'];
+        && (request.auth.uid in ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2']
+          || (request.auth.token.email == 'luisfmrtns@gmail.com' && request.auth.token.email_verified == true));
     }
 
     function texto(campo, max) {

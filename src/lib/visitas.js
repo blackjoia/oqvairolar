@@ -1,7 +1,7 @@
 // Contador de visitas próprio (grava no Firestore, coleção "visitas").
 // Não guarda nome, IP nem nada pessoal: só um código aleatório do aparelho.
 import { addDoc, collection, serverTimestamp, query, where, orderBy, limit, getDocs, startAfter, Timestamp } from 'firebase/firestore'
-import { db, auth, ADMIN_UIDS } from './firebase'
+import { db, auth, ehAdmin } from './firebase'
 
 const aleatorio = () => Math.random().toString(36).slice(2, 12)
 function guardado(store, chave) {
@@ -12,7 +12,7 @@ function desligado() {
   if (import.meta.env.DEV || navigator.webdriver) return true
   if (/bot|crawl|spider|preview|facebookexternalhit|whatsapp/i.test(navigator.userAgent)) return true
   const u = auth.currentUser
-  if (u && ADMIN_UIDS.includes(u.uid)) return true // não conta o próprio admin
+  if (ehAdmin(u)) return true // não conta o próprio admin
   try { if (localStorage.getItem('naoContar') === '1') return true } catch {}
   return false
 }

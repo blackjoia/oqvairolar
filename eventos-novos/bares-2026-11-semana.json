@@ -1,46 +1,93 @@
 {
-  "comum": { "cidade": "Francisco Beltrão", "status": "publicado", "origem": "importado", "categoria": "musica" },
+  "comum": {
+    "cidade": "Francisco Beltrão",
+    "status": "publicado",
+    "origem": "importado",
+    "categoria": "musica"
+  },
   "eventos": [
     {
       "id": "angelo-douglas-e-fran-formosa-pub-2026-11-19",
       "titulo": "Ângelo, Douglas e Fran no Formosa Pub",
-      "generos": ["Rock"], "atracoes": ["Ângelo, Douglas e Fran"],
+      "generos": [
+        "Rock"
+      ],
+      "atracoes": [
+        "Ângelo, Douglas e Fran"
+      ],
       "inicio": "2026-11-19T20:30:00-03:00",
-      "localNome": "Formosa Pub", "endereco": "Rua Ponta Grossa, 2080, Centro", "lat": -26.0758613, "lng": -53.053133,
-      "instagram": "formosapub", "preco": "Couvert R$ 10",
-      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106272/cartazes/xuwfic9rpw9mgvdlggoq.jpg",
+      "localNome": "Formosa Pub",
+      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "lat": -26.0758613,
+      "lng": -53.053133,
+      "instagram": "formosapub",
+      "preco": "Couvert R$ 10",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/crsfqgrb6tgnedktavxk.jpg",
       "descricao": "Véspera de feriado com rock and roll ao vivo a partir das 20h30.\nReservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/"
+      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
+      "rev": 2
     },
     {
       "id": "vivi-e-douglas-formosa-pub-2026-11-20",
       "titulo": "Vivi e Douglas no Formosa Pub",
-      "generos": ["Pop", "Rock"], "atracoes": ["Vivi e Douglas"],
+      "generos": [
+        "Pop",
+        "Rock"
+      ],
+      "atracoes": [
+        "Vivi e Douglas"
+      ],
       "inicio": "2026-11-20T20:30:00-03:00",
-      "localNome": "Formosa Pub", "endereco": "Rua Ponta Grossa, 2080, Centro", "lat": -26.0758613, "lng": -53.053133,
+      "localNome": "Formosa Pub",
+      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "lat": -26.0758613,
+      "lng": -53.053133,
       "instagram": "formosapub",
-      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106272/cartazes/xuwfic9rpw9mgvdlggoq.jpg",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/nkjigxrrcjrbwghmoviz.jpg",
       "descricao": "Pop rock nacional e internacional às 20h30. Desconto para retirada ou entrega de chope Formosa na garrafa PET.\nReservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/"
+      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
+      "rev": 2,
+      "preco": "Couvert R$ 7"
     },
     {
       "id": "castellani-duo-formosa-pub-2026-11-21",
       "titulo": "Castellani Duo no Formosa Pub",
-      "generos": ["Rock", "Acústico"], "atracoes": ["Castellani Duo"],
+      "generos": [
+        "Rock",
+        "Acústico"
+      ],
+      "atracoes": [
+        "Castellani Duo"
+      ],
       "inicio": "2026-11-21T20:30:00-03:00",
-      "localNome": "Formosa Pub", "endereco": "Rua Ponta Grossa, 2080, Centro", "lat": -26.0758613, "lng": -53.053133,
+      "localNome": "Formosa Pub",
+      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "lat": -26.0758613,
+      "lng": -53.053133,
       "instagram": "formosapub",
-      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106272/cartazes/xuwfic9rpw9mgvdlggoq.jpg",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/zjgwdzqdrkn1hobyufis.jpg",
       "descricao": "Rock and roll acústico às 20h30. Happy hour das 17h30 às 20h: chope Formosa de 450 ml pelo valor de 300 ml.\nReservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/"
+      "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
+      "rev": 2,
+      "preco": "Couvert R$ 5"
     },
     {
       "id": "acustico-rock-marco-fagundes-e-dionire-plets-2026-11-19",
       "titulo": "Acústico Rock com Marco Fagundes e Dionire",
-      "generos": ["Rock", "Acústico"], "atracoes": ["Marco Fagundes", "Dionire"],
+      "generos": [
+        "Rock",
+        "Acústico"
+      ],
+      "atracoes": [
+        "Marco Fagundes",
+        "Dionire"
+      ],
       "inicio": "2026-11-19T21:00:00-03:00",
-      "localNome": "Bar do Plets", "endereco": "Rua Florianópolis, 155",
-      "instagram": "bardoplets", "gratuito": true, "preco": "Couvert free",
+      "localNome": "Bar do Plets",
+      "endereco": "Rua Florianópolis, 155",
+      "instagram": "bardoplets",
+      "gratuito": true,
+      "preco": "Couvert free",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106256/cartazes/xxuqkucpbucmko5wpfl6.jpg",
       "descricao": "Rolê pré-feriado com rock acústico ao vivo. O bar não informou o horário do show (o site mostra 21h como referência).",
       "fonte": "https://www.instagram.com/p/Df4yBELhK--/"
@@ -48,10 +95,21 @@
     {
       "id": "red-friday-taberna-do-albeergue-2026-11-20",
       "titulo": "Red Friday: Dopesick e Tormentor",
-      "generos": ["Metal", "Cover"], "atracoes": ["@dopesickmetal", "@tormentorslayertributo"],
+      "generos": [
+        "Metal",
+        "Cover"
+      ],
+      "atracoes": [
+        "@dopesickmetal",
+        "@tormentorslayertributo"
+      ],
       "inicio": "2026-11-20T20:00:00-03:00",
-      "localNome": "Taberna do Albeergue", "endereco": "Rua Santa Luzia, 616, Cristo Rei", "lat": -26.0671562, "lng": -53.0675573,
-      "instagram": "albeerguecervejaria", "preco": "R$ 20 antecipado (com 1 chopp) · R$ 25 na portaria",
+      "localNome": "Taberna do Albeergue",
+      "endereco": "Rua Santa Luzia, 616, Cristo Rei",
+      "lat": -26.0671562,
+      "lng": -53.0675573,
+      "instagram": "albeerguecervejaria",
+      "preco": "R$ 20 antecipado (com 1 chopp) · R$ 25 na portaria",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106343/cartazes/i2itwcvex5z61rchag4l.webp",
       "descricao": "Noite de rock e metal com Dopesick (System of a Down, Linkin Park, Slipknot, Korn, Deftones e mais) e Tormentor, tributo ao Slayer. Início às 20h.\nIngresso antecipado pelo WhatsApp (46) 99905-2138.",
       "fonte": "https://www.instagram.com/p/Dfzrm7Hpebf/"
