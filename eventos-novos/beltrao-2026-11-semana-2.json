@@ -22,7 +22,9 @@
       "descricao": "Véspera de feriado: comprando 3 Heineken, a 4ª é por conta da casa.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0935863,
+      "lng": -53.0310943
     },
     {
       "id": "sexta-deck-nilton-e-tiago-kroko-fb-2026-11-20",
@@ -40,7 +42,9 @@
       "descricao": "Gin tônica e tropical a R$ 19,90 para elas a noite toda.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0935863,
+      "lng": -53.0310943
     },
     {
       "id": "roda-de-samba-dose-certa-kroko-fb-2026-11-21",
@@ -59,7 +63,9 @@
       "descricao": "Caipirinha 50% off até 19h30.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0935863,
+      "lng": -53.0310943
     },
     {
       "id": "tardezinha-sunset-kaique-e-felipe-kroko-fb-2026-12-05",
@@ -77,7 +83,9 @@
       "descricao": "Ingressos pelo Cheers.",
       "fonte": "https://www.instagram.com/krokodeckfb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0935863,
+      "lng": -53.0310943
     },
     {
       "id": "dr-vinil-patio-barley-2026-11-21",
@@ -94,7 +102,9 @@
       "descricao": "Data divulgada pela Agenda Rock Beltrão.",
       "fonte": "https://www.instagram.com/p/DfnT3nWPBha/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0916709,
+      "lng": -53.0374324
     },
     {
       "id": "ao-cubo-acustico-brahzan-burger-2026-11-21",
@@ -113,7 +123,9 @@
       "descricao": "Clássicos do rock, rock nacional e pop rock. Data divulgada pela Agenda Rock Beltrão.",
       "fonte": "https://www.instagram.com/p/DfnT3nWPBha/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0795434,
+      "lng": -53.0458615
     },
     {
       "id": "missao-1-nobar-fb-2026-11-20",
@@ -129,7 +141,9 @@
       "descricao": "Sexta vira território de missão: cadastre-se no link da bio do bar, guarde o código e vá ao bar na sexta.",
       "fonte": "https://www.instagram.com/nobarunifb/reel/Df4xPNuBRQ9/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.0855578,
+      "lng": -53.0443721
     }
   ]
 }
