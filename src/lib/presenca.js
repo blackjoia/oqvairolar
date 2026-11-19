@@ -24,7 +24,7 @@ export async function contarPresencas(eventoId) {
 }
 
 // tipo: 'vou' | 'interesse' | null (desmarcar). publico: a pessoa aparece em "quem vai".
-export async function marcarPresenca(eventoId, tipo, publico = false) {
+export async function marcarPresenca(eventoId, tipo, publico = true) {
   const r = ref(eventoId); if (!r) return
   if (!tipo) return deleteDoc(r)
   clique(tipo === 'vou' ? 'eu-vou' : 'interesse', eventoId)

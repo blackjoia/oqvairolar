@@ -162,6 +162,37 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
+    // "Tô aqui": um por pessoa e evento, só na hora do rolê (30 min antes até o fim; sem fim, 8h depois).
+    function checkinValido(eventoId, uid) {
+      let ev = get(/databases/$(database)/documents/eventos/$(eventoId)).data;
+      return request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['eventoId', 'uid', 'em'])
+        && request.resource.data.eventoId == eventoId && request.resource.data.uid == uid
+        && request.resource.data.em == request.time
+        && ev.status == 'publicado'
+        && request.time >= ev.inicio - duration.value(30, 'm')
+        && request.time <= ('fim' in ev && ev.fim is timestamp ? ev.fim : ev.inicio + duration.value(8, 'h'));
+    }
+    match /checkins/{id} {
+      allow create: if id == request.resource.data.eventoId + '_' + request.resource.data.uid
+        && checkinValido(request.resource.data.eventoId, request.resource.data.uid);
+      allow read, delete: if (request.auth != null && resource.data.uid == request.auth.uid) || isAdmin();
+    }
+    // Ranking do mês, montado pelo robô. Todo mundo lê, ninguém escreve pelo site.
+    match /ranking/{mes} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Aparelhos do admin que recebem aviso de evento ou pedido novo (app do painel).
+    match /avisosAdmin/{uid} {
+      allow read: if isAdmin() && request.auth.uid == uid;
+      allow create, update: if isAdmin() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['tokens', 'em'])
+        && request.resource.data.tokens is list && request.resource.data.tokens.size() <= 10;
+      allow delete: if isAdmin() && request.auth.uid == uid;
+    }
+
     // Endereços de notificação dos aparelhos de cada conta. Só o robô (servidor) lê.
     match /aparelhos/{uid} {
       allow read: if false;

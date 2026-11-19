@@ -22,6 +22,17 @@ function fechadoRecente() {
 // Abre o convite na hora (usado pelo link "Instalar o app" do rodapé)
 export function abrirInstalar() { window.dispatchEvent(new Event('abrir-instalar')) }
 
+// Instalação direta (usada pelo painel admin, que vira um app separado). Devolve false se o navegador não oferece.
+export const podeInstalarDireto = () => !!promptGuardado
+export async function instalarDireto() {
+  if (!promptGuardado) return false
+  promptGuardado.prompt()
+  const r = await promptGuardado.userChoice.catch(() => null)
+  promptGuardado = null
+  return r?.outcome === 'accepted'
+}
+export { instalado as appInstalado, ehIOS as aparelhoIOS }
+
 export default function InstalarApp() {
   const { pathname } = useLocation()
   const [aberto, setAberto] = useState(false)

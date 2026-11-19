@@ -1,21 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import Cartaz from '../components/Cartaz'
 import { Rodape } from './Inicio'
 import { buscarEvento, slugify } from '../lib/eventos'
-import { rotuloDia, hora } from '../lib/datas'
+import { rotuloDia, hora, situacao } from '../lib/datas'
 import { categoria } from '../lib/constantes'
 import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
 import { useAuth } from '../lib/auth'
-import MapaVer from '../components/MapaVer'
+// O mapa (Leaflet) só carrega quando a página precisa dele.
+const MapaVer = lazy(() => import('../components/MapaVer'))
 import { gerarStory } from '../lib/story'
+import { janelaCheckin, jaFiz, fazerCheckin } from '../lib/ranking'
 import { clique } from '../lib/visitas'
 import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
 import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
-import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle } from 'lucide-react'
+import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
@@ -40,6 +42,14 @@ export default function Evento() {
   const [story, setStory] = useState('')
   const [minha, setMinha] = useState(null)
   const [contagem, setContagem] = useState({ vou: 0, interesse: 0 })
+  const [checkin, setCheckin] = useState({ feito: false, carregando: false, erro: '' })
+  useEffect(() => { if (user && !id.endsWith('-demo')) jaFiz(id).then((f) => setCheckin((c) => ({ ...c, feito: f }))) }, [id, user?.uid])
+  const toAqui = async () => {
+    setCheckin({ feito: false, carregando: true, erro: '' })
+    const erro = await fazerCheckin(e)
+    setCheckin({ feito: !erro, carregando: false, erro: erro || '' })
+    if (!erro && minha !== 'vou') presenca('vou')
+  }
   useEffect(() => {
     if (id.endsWith('-demo')) return
     minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
@@ -121,7 +131,8 @@ export default function Evento() {
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
               <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
-                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}</dd></div>
+                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}
+                  {(() => { const s = situacao(e); return s && <div className={`mt-1 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-bold ${s.tipo === 'passou' ? 'bg-surface-2 text-muted' : 'bg-accent text-on-accent'}`}>{s.tipo === 'agora' && <span className="ao-vivo size-2 rounded-full bg-on-accent" aria-hidden />}{s.texto}</div> })()}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
                   <div className="text-sm text-muted">{[e.endereco, e.cidade].filter(Boolean).join(' · ')}</div>
@@ -148,6 +159,25 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
+            {janelaCheckin(e) && (
+              <div className="mt-2 rounded-2xl border-2 border-brand bg-brand/10 p-3">
+                {checkin.feito ? (
+                  <p className="flex flex-wrap items-center gap-x-2 font-semibold"><MapPinCheck className="size-5 text-brand-ink" aria-hidden /> Você está no rolê! Contou no ranking do mês.
+                    <Link to="/ranking" className="font-bold text-brand-ink underline underline-offset-2">Ver ranking</Link></p>
+                ) : (<>
+                  <button onClick={toAqui} disabled={checkin.carregando} className="btn-brand w-full py-3"><MapPinCheck className="size-5" aria-hidden /> {checkin.carregando ? 'Conferindo onde você está…' : 'Tô aqui'}</button>
+                  <p className="mt-1.5 text-xs text-muted">Toque quando chegar no local. Cada rolê vale 1 ponto no <Link to="/ranking" className="font-semibold text-brand-ink underline underline-offset-2">ranking do mês</Link>.</p>
+                  {checkin.erro && <p role="alert" className="mt-1 text-sm font-semibold text-danger">{checkin.erro}{!user && <> <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setCheckin((c) => ({ ...c, erro: x.message })))} className="underline underline-offset-2">Entrar</button></>}</p>}
+                </>)}
+              </div>
+            )}
+            {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
+              <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
+                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} às ${hora(e.inicio)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
+                className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
+                <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
+              </a>
+            )}
             {aviso && (
               <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
                 <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
@@ -175,9 +205,6 @@ export default function Evento() {
                 {lembrete.erro && <p className="mt-1 text-xs text-danger">{lembrete.erro}</p>}
               </>
             )}
-            {(contagem.vou + contagem.interesse) >= 3 && (
-              <p className="mt-2 text-sm font-semibold text-brand-ink">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
-            )}
 
             {e.ingressoUrl && (
               <a onClick={() => clique('ingresso', e.id)} href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent mt-4 w-full py-3.5 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
@@ -204,7 +231,7 @@ export default function Evento() {
         <section className="mt-8">
           <h2 className="mb-3 font-display text-2xl uppercase">Como chegar</h2>
           {temMapa ? (
-            <MapaVer lat={e.lat} lng={e.lng} className="h-72 w-full" />
+            <Suspense fallback={<div className="h-72 w-full animate-pulse rounded-2xl bg-surface-2" />}><MapaVer lat={e.lat} lng={e.lng} className="h-72 w-full" /></Suspense>
           ) : (
             <p className="rounded-2xl border border-dashed border-line p-4 text-muted">Mapa indisponível para este endereço.</p>
           )}

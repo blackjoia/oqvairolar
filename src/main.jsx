@@ -18,6 +18,7 @@ const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
 const MeusRoles = lazy(() => import('./pages/MeusRoles'))
 const Usuario = lazy(() => import('./pages/Usuario'))
 const Semana = lazy(() => import('./pages/Semana'))
+const Ranking = lazy(() => import('./pages/Ranking'))
 const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
 // Service worker: permite instalar como app (substitui o do site antigo).
@@ -73,6 +74,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/meus-roles" element={<MeusRoles />} />
           <Route path="/u/:uid" element={<Usuario />} />
           <Route path="/semana" element={<Semana />} />
+          <Route path="/ranking" element={<Ranking />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Estatisticas />} />
             <Route path="eventos" element={<Lista />} />

@@ -102,7 +102,66 @@ for (const d of novos.docs) {
   await d.ref.update({ avisoSeguidores: true })
 }
 
+// Aviso no app do painel admin: evento novo pelo formulário e pedido de página de bar/banda. Avisa uma vez cada.
+let avisosAdmin = 0
+const pendentes = (await db.collection('eventos').where('status', '==', 'pendente').get()).docs.filter((d) => !d.data().avisoAdmin)
+const pedidosNovos = (await db.collection('pedidos').where('status', '==', 'pendente').get()).docs.filter((d) => !d.data().avisoAdmin)
+if (pendentes.length || pedidosNovos.length) {
+  const partes = []
+  if (pendentes.length) partes.push(pendentes.length === 1 ? `Evento novo: ${pendentes[0].data().titulo || 'sem título'}` : `${pendentes.length} eventos novos para aprovar`)
+  if (pedidosNovos.length) partes.push(pedidosNovos.length === 1 ? `Pedido de página: ${pedidosNovos[0].data().nome}` : `${pedidosNovos.length} pedidos de página`)
+  const url = pendentes.length ? '/admin/eventos?aba=pendente&o=aviso-admin' : '/admin/pedidos?o=aviso-admin'
+  const aps = await db.collection('avisosAdmin').get()
+  for (const ap of aps.docs) {
+    const vencidos = []
+    for (const token of ap.data().tokens || []) {
+      try {
+        await fcm.send({ token, webpush: {
+          headers: { TTL: '86400', Urgency: 'high' },
+          data: { titulo: partes[0], corpo: partes.slice(1).join(' · ') || 'Toque para revisar no painel.', url, tag: 'admin-pendentes' },
+          fcmOptions: { link: SITE + url },
+        } })
+        avisosAdmin++
+      } catch (err) {
+        if (['messaging/registration-token-not-registered', 'messaging/invalid-argument'].includes(err.code)) vencidos.push(token)
+        else console.warn('aviso admin falhou', ap.id, err.code || err.message)
+      }
+    }
+    if (vencidos.length) await ap.ref.update({ tokens: FieldValue.arrayRemove(...vencidos) })
+  }
+  await Promise.all([...pendentes, ...pedidosNovos].map((d) => d.ref.update({ avisoAdmin: true })))
+}
+
+// Quantas pessoas vão em cada evento das próximas 2 semanas: o número aparece no card da agenda.
+let contados = 0
+const proximos = await db.collection('eventos')
+  .where('inicio', '>=', Timestamp.fromDate(new Date(agora.getTime() - 6 * 3600000)))
+  .where('inicio', '<=', Timestamp.fromDate(new Date(agora.getTime() + 14 * 86400000))).get()
+for (const d of proximos.docs) {
+  if (d.data().status !== 'publicado') continue
+  const n = (await db.collection('presencas').where('eventoId', '==', d.id).where('tipo', '==', 'vou').count().get()).data().count
+  if ((d.data().vao || 0) !== n) { await d.ref.update({ vao: n }); contados++ }
+}
+
+// Ranking do mês: só conta "Tô aqui" (feito no local e no horário). Pessoas = rolês; bares = check-ins feitos neles.
+const mes = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).format(agora).slice(0, 7)
+const inicioMes = new Date(`${mes}-01T03:00:00Z`)
+const fimMes = new Date(inicioMes); fimMes.setUTCMonth(fimMes.getUTCMonth() + 1)
+const evMes = await db.collection('eventos').where('inicio', '>=', Timestamp.fromDate(inicioMes)).where('inicio', '<', Timestamp.fromDate(fimMes)).get()
+const local = new Map(evMes.docs.filter((d) => d.data().status === 'publicado' && d.data().localNome).map((d) => [d.id, { slug: slug(d.data().localNome), nome: d.data().localNome }]))
+const porPessoa = new Map(), porBar = new Map()
+const somaBar = (eventoId, pts) => { const l = local.get(eventoId); if (!l) return; const b = porBar.get(l.slug) || { slug: l.slug, nome: l.nome, n: 0 }; b.n += pts; porBar.set(l.slug, b) }
+const chk = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(inicioMes)).get()
+chk.docs.forEach((d) => { const c = d.data(); porPessoa.set(c.uid, (porPessoa.get(c.uid) || 0) + 1); somaBar(c.eventoId, 1) })
+const pessoas = []
+for (const [uid, n] of [...porPessoa].sort((a, b) => b[1] - a[1]).slice(0, 60)) {
+  const u = await db.doc(`usuarios/${uid}`).get()
+  if (u.exists && u.data().publico) pessoas.push({ uid, nome: (u.data().nome || '').split(' ')[0], foto: u.data().foto || '', n })
+  if (pessoas.length >= 30) break
+}
+await db.doc(`ranking/${mes}`).set({ pessoas, bares: [...porBar.values()].filter((b) => b.n > 0).sort((a, b) => b.n - a.n).slice(0, 20), atualizadoEm: FieldValue.serverTimestamp() })
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
-console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}.`)
+console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}. Contagens atualizadas: ${contados}.`)

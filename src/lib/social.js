@@ -11,7 +11,7 @@ export async function garantirUsuario(user) {
   const ref = doc(db, 'usuarios', user.uid)
   const s = await getDoc(ref)
   if (s.exists()) return { uid: user.uid, ...s.data() }
-  const novo = { nome: (user.displayName || 'Sem nome').slice(0, 60), foto: (user.photoURL || '').slice(0, 500), publico: false, criadoEm: serverTimestamp() }
+  const novo = { nome: (user.displayName || 'Sem nome').slice(0, 60), foto: (user.photoURL || '').slice(0, 500), publico: true, criadoEm: serverTimestamp() }
   await setDoc(ref, novo)
   return { uid: user.uid, ...novo }
 }
