@@ -102,7 +102,37 @@ for (const d of novos.docs) {
   await d.ref.update({ avisoSeguidores: true })
 }
 
+// Aviso no app do painel admin: evento novo pelo formulário e pedido de página de bar/banda. Avisa uma vez cada.
+let avisosAdmin = 0
+const pendentes = (await db.collection('eventos').where('status', '==', 'pendente').get()).docs.filter((d) => !d.data().avisoAdmin)
+const pedidosNovos = (await db.collection('pedidos').where('status', '==', 'pendente').get()).docs.filter((d) => !d.data().avisoAdmin)
+if (pendentes.length || pedidosNovos.length) {
+  const partes = []
+  if (pendentes.length) partes.push(pendentes.length === 1 ? `Evento novo: ${pendentes[0].data().titulo || 'sem título'}` : `${pendentes.length} eventos novos para aprovar`)
+  if (pedidosNovos.length) partes.push(pedidosNovos.length === 1 ? `Pedido de página: ${pedidosNovos[0].data().nome}` : `${pedidosNovos.length} pedidos de página`)
+  const url = pendentes.length ? '/admin/eventos?aba=pendente&o=aviso-admin' : '/admin/pedidos?o=aviso-admin'
+  const aps = await db.collection('avisosAdmin').get()
+  for (const ap of aps.docs) {
+    const vencidos = []
+    for (const token of ap.data().tokens || []) {
+      try {
+        await fcm.send({ token, webpush: {
+          headers: { TTL: '86400', Urgency: 'high' },
+          data: { titulo: partes[0], corpo: partes.slice(1).join(' · ') || 'Toque para revisar no painel.', url, tag: 'admin-pendentes' },
+          fcmOptions: { link: SITE + url },
+        } })
+        avisosAdmin++
+      } catch (err) {
+        if (['messaging/registration-token-not-registered', 'messaging/invalid-argument'].includes(err.code)) vencidos.push(token)
+        else console.warn('aviso admin falhou', ap.id, err.code || err.message)
+      }
+    }
+    if (vencidos.length) await ap.ref.update({ tokens: FieldValue.arrayRemove(...vencidos) })
+  }
+  await Promise.all([...pendentes, ...pedidosNovos].map((d) => d.ref.update({ avisoAdmin: true })))
+}
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
-console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}.`)
+console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}.`)

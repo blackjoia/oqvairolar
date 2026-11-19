@@ -1,0 +1,49 @@
+# Versão de teste: cada branch "teste/..." vira um site separado (canal "teste" do Firebase Hosting),
+# para conferir antes de publicar. O site oficial não muda. O link sai como comentário no commit.
+name: Versão de teste
+
+on:
+  push:
+    branches: ['teste/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: previa
+  cancel-in-progress: true
+
+jobs:
+  previa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Chave do Firebase
+        env:
+          CHAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$CHAVE" > "$RUNNER_TEMP/chave.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
+      - run: npm run previas
+      - name: Publicar a versão de teste
+        id: canal
+        run: |
+          npx -y firebase-tools@14 hosting:channel:deploy teste --expires 14d --project oquevairolar-b0129 --non-interactive --json > saida.json
+          URL=$(node -e "const r=require('./saida.json').result;console.log(Object.values(r)[0].url)")
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "Versão de teste: $URL" >> "$GITHUB_STEP_SUMMARY"
+      - name: Avisar o link no commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments -f body="Versão de teste: ${{ steps.canal.outputs.url }}"
+      - name: Apagar a chave
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave.json"

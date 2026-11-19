@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
-import MapaVer from '../components/MapaVer'
+// O mapa (Leaflet) só carrega quando a página precisa dele.
+const MapaVer = lazy(() => import('../components/MapaVer'))
 import { Rodape } from './Inicio'
 import PaginaOficial from '../components/PaginaOficial'
 import { listarPublicados, slugify } from '../lib/eventos'
@@ -25,7 +26,7 @@ export default function Local() {
     const agora = new Date()
     const proximos = todos.filter((e) => (e.fim || new Date(e.inicio.getTime() + 6 * 3600000)) > agora)
     const ref = comoLocal[0]
-    const nome = ref?.localNome || comoAtracao[0]?.atracoes?.find((a) => slugify(a) === slug) || (comoAtracao[0] && '@' + comoAtracao[0].instagram) || slug
+    const nome = ref?.localNome || comoAtracao[0]?.atracoes?.find((a) => slugify(a) === slug) || (comoAtracao[0] && '@' + comoAtracao[0].instagram) || slug.replace(/-/g, ' ')
     const insta = (nome.startsWith('@') ? nome.slice(1) : null) || (ref && comoLocal.find((e) => e.instagram && slugify(e.instagram) === slug)?.instagram)
     const comMapa = comoLocal.find((e) => e.lat && e.lng)
     return { nome, ehLocal: comoLocal.length > 0, ref, proximos, insta, comMapa }
@@ -71,9 +72,9 @@ export default function Local() {
               <Link to="/divulgar" className="btn-accent mt-4">Divulgar um evento</Link>
             </div>
           ) : (
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{dados.proximos.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
+            <div className="mt-4 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{dados.proximos.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
           )}
-          {dados.comMapa && <MapaVer lat={dados.comMapa.lat} lng={dados.comMapa.lng} className="mt-8 h-64" />}
+          {dados.comMapa && <Suspense fallback={<div className="mt-8 h-64 animate-pulse rounded-2xl bg-surface-2" />}><MapaVer lat={dados.comMapa.lat} lng={dados.comMapa.lng} className="mt-8 h-64" /></Suspense>}
         </>)}
       </main>
       <Rodape />

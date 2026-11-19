@@ -37,7 +37,7 @@ export default function Usuario() {
           </section>
           <h2 className="mt-8 font-display text-2xl uppercase">Vai em</h2>
           {!eventos ? <div className="esqueleto mt-3 h-32 rounded-2xl" />
-            : eventos.length ? <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{eventos.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
+            : eventos.length ? <div className="mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{eventos.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
             : <p className="mt-2 text-muted">Nenhum evento marcado por enquanto.</p>}
         </>)}
       </main><Rodape /></>

@@ -162,6 +162,15 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
+    // Aparelhos do admin que recebem aviso de evento ou pedido novo (app do painel).
+    match /avisosAdmin/{uid} {
+      allow read: if isAdmin() && request.auth.uid == uid;
+      allow create, update: if isAdmin() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['tokens', 'em'])
+        && request.resource.data.tokens is list && request.resource.data.tokens.size() <= 10;
+      allow delete: if isAdmin() && request.auth.uid == uid;
+    }
+
     // Endereços de notificação dos aparelhos de cada conta. Só o robô (servidor) lê.
     match /aparelhos/{uid} {
       allow read: if false;

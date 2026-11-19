@@ -50,3 +50,14 @@ export function paraInputLocal(d) {
   const p = (n) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`
 }
+
+// "Rolando agora", "Começa em 2h" ou "Já rolou". Sem hora de fim, conta 4 horas de evento.
+export function situacao(e, agora = new Date()) {
+  const ini = e.inicio, fim = e.fim || new Date(ini.getTime() + 4 * 3600000)
+  if (agora >= fim) return { tipo: 'passou', texto: 'Já rolou' }
+  if (agora >= ini) return { tipo: 'agora', texto: 'Rolando agora' }
+  const min = Math.round((ini - agora) / 60000)
+  if (min <= 60) return { tipo: 'logo', texto: `Começa em ${min} min` }
+  if (min < 12 * 60) { const h = Math.floor(min / 60), m = min % 60; return { tipo: 'logo', texto: `Começa em ${h}h${m >= 5 ? String(m).padStart(2, '0') : ''}` } }
+  return null
+}

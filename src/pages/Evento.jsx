@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import Cartaz from '../components/Cartaz'
 import { Rodape } from './Inicio'
 import { buscarEvento, slugify } from '../lib/eventos'
-import { rotuloDia, hora } from '../lib/datas'
+import { rotuloDia, hora, situacao } from '../lib/datas'
 import { categoria } from '../lib/constantes'
 import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
 import { useAuth } from '../lib/auth'
-import MapaVer from '../components/MapaVer'
+// O mapa (Leaflet) só carrega quando a página precisa dele.
+const MapaVer = lazy(() => import('../components/MapaVer'))
 import { gerarStory } from '../lib/story'
 import { clique } from '../lib/visitas'
 import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
@@ -121,7 +122,8 @@ export default function Evento() {
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
               <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
-                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}</dd></div>
+                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}
+                  {(() => { const s = situacao(e); return s && <div className={`mt-1 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-bold ${s.tipo === 'passou' ? 'bg-surface-2 text-muted' : 'bg-accent text-on-accent'}`}>{s.tipo === 'agora' && <span className="ao-vivo size-2 rounded-full bg-on-accent" aria-hidden />}{s.texto}</div> })()}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
                   <div className="text-sm text-muted">{[e.endereco, e.cidade].filter(Boolean).join(' · ')}</div>
@@ -204,7 +206,7 @@ export default function Evento() {
         <section className="mt-8">
           <h2 className="mb-3 font-display text-2xl uppercase">Como chegar</h2>
           {temMapa ? (
-            <MapaVer lat={e.lat} lng={e.lng} className="h-72 w-full" />
+            <Suspense fallback={<div className="h-72 w-full animate-pulse rounded-2xl bg-surface-2" />}><MapaVer lat={e.lat} lng={e.lng} className="h-72 w-full" /></Suspense>
           ) : (
             <p className="rounded-2xl border border-dashed border-line p-4 text-muted">Mapa indisponível para este endereço.</p>
           )}

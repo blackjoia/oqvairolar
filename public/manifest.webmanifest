@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "O Que Vai Rolar?",
   "short_name": "Oq vai rolar?",
   "description": "Agenda de eventos de Francisco Beltrão e região",
@@ -26,5 +27,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "scope": "/"
 }

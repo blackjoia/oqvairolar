@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import Topo from '../../components/Topo'
 import { useAuth, entrar, sair, recuperarSenha } from '../../lib/auth'
+import AvisosAdmin, { useAppAdmin } from '../../components/AvisosAdmin'
 
 // Protege todas as páginas /admin
 export default function Admin() {
   const { user, isAdmin, carregando } = useAuth()
+  useAppAdmin()
   if (carregando) return <Topo />
   if (!user) return <Login />
   if (!isAdmin) return (
@@ -24,6 +26,7 @@ export default function Admin() {
         <button onClick={sair} className="btn-ghost py-2 text-sm">Sair</button>
       </Topo>
       <MenuAdmin />
+      <AvisosAdmin uid={user.uid} />
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-4"><Outlet /></main>
     </>
   )

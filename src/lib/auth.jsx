@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   const carregarConta = useCallback(async (user) => {
     if (!user || user.isAnonymous || !user.providerData.some((p) => p.providerId === 'google.com')) return { usuario: null, perfis: [] }
     // Mesmo se o banco falhar, a pessoa continua entrada com os dados da conta Google.
-    const basico = { uid: user.uid, nome: user.displayName || 'Sem nome', foto: user.photoURL || '', publico: false }
+    const basico = { uid: user.uid, nome: user.displayName || 'Sem nome', foto: user.photoURL || '', publico: true }
     try {
       const { garantirUsuario, meusPerfis, trazerMarcacoesDoAparelho } = await import('./social')
       const usuario = await garantirUsuario(user).catch((e) => { console.warn('usuario', e); return basico })

@@ -33,6 +33,7 @@ export default function MeusRoles() {
   const [sigo, setSigo] = useState([])
   const [avisos, setAvisos] = useState({ estado: '', erro: '' })
   const [salvando, setSalvando] = useState(false)
+  const [erroPublico, setErroPublico] = useState('')
 
   useEffect(() => {
     if (!usuario) return
@@ -45,8 +46,9 @@ export default function MeusRoles() {
   }, [usuario?.uid]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const alternarPublico = async () => {
-    setSalvando(true)
-    try { await salvarUsuario(usuario.uid, { publico: !usuario.publico }); await atualizarVisibilidade(usuario.uid, !usuario.publico); await recarregar() } catch {}
+    setSalvando(true); setErroPublico('')
+    try { await salvarUsuario(usuario.uid, { publico: !usuario.publico }); await atualizarVisibilidade(usuario.uid, !usuario.publico); await recarregar() }
+    catch (e) { console.warn(e); setErroPublico('Não deu para salvar agora. Tente de novo em instantes.') }
     setSalvando(false)
   }
   const ligarAvisos = async () => {
@@ -60,7 +62,7 @@ export default function MeusRoles() {
     <><Topo />
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-20 pt-10">
         <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Sua conta</p>
-        <h1 className="mt-3 font-display text-[clamp(3rem,10vw,5.5rem)] uppercase leading-[.9]">Seus rolês<br />num lugar <span className="rounded-lg bg-accent px-2 text-on-accent">só</span></h1>
+        <h1 className="mt-3 font-display text-[clamp(2.8rem,9vw,4.75rem)] uppercase leading-[.9]">Seus rolês<br />num lugar <span className="rounded-lg bg-accent px-2 text-on-accent">só</span></h1>
         <p className="mt-4 max-w-lg text-muted">Entre com a sua conta do Google, de graça e sem senha nova. O que você já marcou neste aparelho vem junto.</p>
         <ul className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
           {[[CalendarHeart, 'Os eventos que você marcou', 'Eu vou e Interesse aparecem em qualquer aparelho.'],
@@ -90,7 +92,7 @@ export default function MeusRoles() {
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface p-4">
             <input type="checkbox" checked={!!usuario.publico} onChange={alternarPublico} disabled={salvando} className="mt-1 size-5" />
-            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span></span>
+            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span>{erroPublico && <span className="mt-1 block text-sm font-semibold text-danger" role="alert">{erroPublico}</span>}</span>
           </label>
           <div className="rounded-2xl border border-line bg-surface p-4">
             <b className="text-sm">Avisos no celular</b>
@@ -118,13 +120,13 @@ export default function MeusRoles() {
         <section className="mt-8">
           <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><PartyPopper className="size-5 text-brand-ink" aria-hidden /> Eu vou</h2>
           {!eventos ? <div className="esqueleto mt-3 h-32 rounded-2xl" />
-            : vou.length ? <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{vou.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
+            : vou.length ? <div className="mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{vou.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
             : <p className="mt-2 text-muted">Nenhum ainda. <Link to="/" className="font-semibold text-brand-ink">Achar um rolê</Link></p>}
         </section>
         {interesse.length > 0 && (
           <section className="mt-8">
             <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><Star className="size-5 text-brand-ink" aria-hidden /> Tenho interesse</h2>
-            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{interesse.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
+            <div className="mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{interesse.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
           </section>
         )}
         <section className="mt-8">
