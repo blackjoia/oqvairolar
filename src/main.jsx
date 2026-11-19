@@ -14,6 +14,8 @@ const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
 import InstalarApp from './components/InstalarApp'
 import AbrirNoNavegador from './components/AbrirNoNavegador'
+import PedirAvisos from './components/PedirAvisos'
+const Avisos = lazy(() => import('./pages/admin/Avisos'))
 const Artes = lazy(() => import('./pages/admin/Artes'))
 const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
 const MeusRoles = lazy(() => import('./pages/MeusRoles'))
@@ -86,6 +88,7 @@ createRoot(document.getElementById('root')).render(
         <ContarVisitas />
         <AbrirNoNavegador />
         <InstalarApp />
+        <PedirAvisos />
         <Conquistas />
         <Suspense fallback={null}>
         <Routes>
@@ -102,6 +105,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="eventos" element={<Lista />} />
             <Route path="artes" element={<Artes />} />
             <Route path="pedidos" element={<Pedidos />} />
+            <Route path="avisos" element={<Avisos />} />
             <Route path="estatisticas" element={<Navigate to="/admin" replace />} />
             <Route path="evento/:id" element={<FormEvento />} />
           </Route>

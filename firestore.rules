@@ -195,6 +195,24 @@ service cloud.firestore {
       allow delete: if isAdmin() && request.auth.uid == uid;
     }
 
+    // Avisos gerais no celular: qualquer aparelho que ativou guarda só o endereço de entrega. Só o admin conta.
+    match /inscritos/{vid} {
+      allow read: if isAdmin();
+      allow create, update: if vid.size() <= 20
+        && request.resource.data.keys().hasOnly(['token', 'em'])
+        && request.resource.data.token is string && request.resource.data.token.size() <= 4096
+        && request.resource.data.em == request.time;
+    }
+    // Fila de avisos que o admin manda; o robô envia e marca enviado.
+    match /avisosGerais/{id} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['titulo', 'corpo', 'url', 'criadoEm', 'enviado'])
+        && request.resource.data.titulo is string && request.resource.data.titulo.size() <= 80
+        && request.resource.data.corpo is string && request.resource.data.corpo.size() <= 200
+        && request.resource.data.url is string && request.resource.data.url.size() <= 200
+        && request.resource.data.enviado == false;
+    }
     // Endereços de notificação dos aparelhos de cada conta. Só o robô (servidor) lê.
     match /aparelhos/{uid} {
       allow read: if false;

@@ -132,6 +132,35 @@ if (pendentes.length || pedidosNovos.length) {
   await Promise.all([...pendentes, ...pedidosNovos].map((d) => d.ref.update({ avisoAdmin: true })))
 }
 
+// Avisos gerais (o admin escreve em /admin/avisos): manda para todos os aparelhos inscritos.
+let avisosGerais = 0
+const filaGeral = (await db.collection('avisosGerais').where('enviado', '==', false).get()).docs
+if (filaGeral.length) {
+  const inscritos = (await db.collection('inscritos').get()).docs
+  for (const a of filaGeral) {
+    const { titulo, corpo = '', url = '/' } = a.data()
+    const caminho = url.startsWith('/') ? url : '/'
+    const link = `${caminho}${caminho.includes('?') ? '&' : '?'}o=aviso`
+    await a.ref.update({ enviado: true, enviadoEm: FieldValue.serverTimestamp() }) // marca antes, para nunca mandar duas vezes
+    let entregues = 0
+    for (const i of inscritos) {
+      try {
+        await fcm.send({ token: i.data().token, webpush: {
+          headers: { TTL: '86400', Urgency: 'normal' },
+          data: { titulo, corpo, url: link, tag: `aviso-${a.id}` },
+          fcmOptions: { link: SITE + link },
+        } })
+        entregues++
+      } catch (err) {
+        if (['messaging/registration-token-not-registered', 'messaging/invalid-argument'].includes(err.code)) await i.ref.delete().catch(() => {})
+        else console.warn('aviso geral falhou', i.id, err.code || err.message)
+      }
+    }
+    await a.ref.update({ entregues })
+    avisosGerais += entregues
+  }
+}
+
 // Quantas pessoas vão em cada evento das próximas 2 semanas: o número aparece no card da agenda.
 let contados = 0
 const proximos = await db.collection('eventos')
@@ -193,4 +222,4 @@ if (Number(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', day
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
-console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}. Contagens atualizadas: ${contados}.`)
+console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}. Avisos gerais: ${avisosGerais}. Contagens atualizadas: ${contados}.`)
