@@ -56,7 +56,7 @@ export default function InstalarApp() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm" role="dialog" aria-label="Instalar o app">
       <div className="flex gap-3 rounded-2xl border border-line bg-surface p-4 shadow-2xl">
-        <img src="/icons/icon-192.png" alt="" className="size-12 shrink-0 rounded-xl" />
+        <img src="/icons/icon-192-v2.png" alt="" className="size-12 shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1 text-sm">
           <p className="font-display text-lg uppercase leading-tight">Tenha o app no celular</p>
           <p className="text-muted">Abra a agenda direto da tela inicial, sem procurar o site.</p>

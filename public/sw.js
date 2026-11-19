@@ -1,6 +1,6 @@
 // Service worker do O Que Vai Rolar: permite instalar o site como app no celular.
 // Não guarda páginas em cache (o site está sempre atualizado); só mostra uma tela simples sem internet.
-const CACHE = 'oqvr-offline-v1'
+const CACHE = 'oqvr-offline-v2'
 const OFFLINE = '/offline.html'
 
 self.addEventListener('install', (event) => {
@@ -19,7 +19,8 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.mode !== 'navigate') return
-  event.respondWith(fetch(event.request).catch(() => caches.match(OFFLINE)))
+  // Sempre pede a página nova ao servidor (o app instalado não fica preso numa versão antiga).
+  event.respondWith(fetch(event.request.url, { cache: 'no-cache', credentials: 'same-origin' }).catch(() => caches.match(OFFLINE)))
 })
 
 // Lembretes de evento (push). A mensagem chega com { data: { titulo, corpo, url, imagem } }.
@@ -30,8 +31,8 @@ self.addEventListener('push', (event) => {
   const titulo = d.titulo || d.title || 'O Que Vai Rolar'
   event.waitUntil(self.registration.showNotification(titulo, {
     body: d.corpo || d.body || '',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    icon: '/icons/icon-192-v2.png',
+    badge: '/icons/icon-192-v2.png',
     image: d.imagem || undefined,
     tag: d.tag || undefined,
     data: { url: d.url || '/' },
