@@ -54,9 +54,9 @@ export const DEMO = {
   bares: [['Formosa Pub', 'formosa-pub', 38], ['Bar do Plets', 'plets', 33], ['Boteco Choppbel', 'boteco-choppbel', 21], ['Hangar 80', 'hangar-80', 16], ['Alles', 'alles', 9], ["Neco's Boteco", 'necos-boteco', 4]].map(([nome, slug, n]) => ({ nome, slug, n })),
 }
 
-// Ranking de um bar: quem mais fez "Tô aqui" nele nos últimos 60 dias (o 1º é o "dono da mesa").
+// Ranking de um bar: quem mais fez "Tô aqui" nele no mês atual (o 1º é o "dono da mesa").
 export async function rankingDoLocal(slug) {
   if (new URLSearchParams(location.search).has('demo')) return DEMO.pessoas.slice(0, 6).map((p, i) => ({ ...p, n: [7, 5, 4, 3, 2, 1][i] }))
   const s = await getDoc(doc(db, 'ranking', 'locais')).catch(() => null)
-  return (s?.exists() && s.data().porLocal?.[slug]) || []
+  return (s?.exists() && s.data().mes !== undefined && s.data().mes !== mesAtual() ? [] : s?.exists() && s.data().porLocal?.[slug]) || []
 }

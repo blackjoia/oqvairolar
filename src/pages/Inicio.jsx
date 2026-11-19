@@ -94,8 +94,6 @@ export default function Inicio() {
   const filtrados = useMemo(() => {
     const [ini, fim] = faixaDia(dia)
     return futuros.filter((e) => {
-      // Shows de uma festa ficam dentro do evento geral; aparecem soltos só na busca ou no filtro de gênero.
-      if (e.pai && !termos.length && !genero) return false
       if (dia !== 'todos') {
         const fimEv = e.fim || e.inicio
         if (fimEv < ini || (fim && e.inicio >= fim)) return false
@@ -117,7 +115,7 @@ export default function Inicio() {
     const [ini, fim] = faixaDia(d); const fimEv = e.fim || e.inicio
     return !(fimEv < ini || (fim && e.inicio >= fim))
   }
-  const contaDias = useMemo(() => Object.fromEntries(DIAS.map((d) => [d.id, futuros.filter((e) => !e.pai && noDia(e, d.id)).length])), [futuros]) // eslint-disable-line react-hooks/exhaustive-deps
+  const contaDias = useMemo(() => Object.fromEntries(DIAS.map((d) => [d.id, futuros.filter((e) => noDia(e, d.id)).length])), [futuros]) // eslint-disable-line react-hooks/exhaustive-deps
   const contaCat = useMemo(() => {
     const m = {}; futuros.forEach((e) => { if (noDia(e, dia)) m[e.categoria] = (m[e.categoria] || 0) + 1 }); return m
   }, [futuros, dia]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -147,7 +145,7 @@ export default function Inicio() {
           </h1>
           <p className="mt-4 hidden max-w-xl text-muted md:block">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
             <Link to="/semana" className="link-toque -my-2 whitespace-nowrap font-semibold text-brand-ink underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
-          <Destaques semana={eventos ? eventos.filter((e) => !e.pai && e.inicio - Date.now() < 7 * 86400000).length : 0} />
+          <Destaques semana={eventos ? eventos.filter((e) => e.inicio - Date.now() < 7 * 86400000).length : 0} />
           <label className="relative mt-4 block max-w-xl md:mt-5">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />

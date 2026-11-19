@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Crown, MapPinCheck } from 'lucide-react'
 import { useAuth } from '../lib/auth'
-import { rankingDoLocal } from '../lib/ranking'
+import { rankingDoLocal, mesAtual, nomeMes } from '../lib/ranking'
 
-// "Dono da mesa": quem mais fez "Tô aqui" neste bar nos últimos 60 dias, como o prefeito do Foursquare.
+// "Dono da mesa": quem mais fez "Tô aqui" neste bar no mês (zera todo dia 1º), como o prefeito do Foursquare.
 const CORES = ['#c2255c', '#c2410c', '#0f766e', '#3b5bdb', '#7e22ce', '#047857']
 const corDe = (t = '') => CORES[[...t].reduce((a, c) => a + c.charCodeAt(0), 0) % CORES.length]
 const Rosto = ({ p, cls }) => p.foto
@@ -25,7 +25,7 @@ export default function RankingLocal({ slug, nome }) {
     <section aria-labelledby="titulo-dono" className="mt-8 overflow-hidden rounded-3xl bg-[#1a1630] text-white ring-2 ring-inset ring-accent/50">
       <div className="relative p-5 sm:p-6">
         <Crown className="absolute -right-4 -top-4 size-32 rotate-12 text-accent opacity-15" aria-hidden />
-        <p className="text-xs font-extrabold uppercase tracking-widest text-accent">Dono da mesa · últimos 60 dias</p>
+        <p className="text-xs font-extrabold uppercase tracking-widest text-accent">Dono da mesa · {nomeMes(mesAtual())}</p>
         {dono ? (
           <div className="mt-3 flex items-center gap-4">
             <div className="relative shrink-0">

@@ -144,48 +144,51 @@ for (const d of proximos.docs) {
 }
 
 // Ranking do mês: só conta "Tô aqui" (feito no local e no horário). Pessoas = rolês; bares = check-ins feitos neles.
-const mes = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).format(agora).slice(0, 7)
-const inicioMes = new Date(`${mes}-01T03:00:00Z`)
-const fimMes = new Date(inicioMes); fimMes.setUTCMonth(fimMes.getUTCMonth() + 1)
-const evMes = await db.collection('eventos').where('inicio', '>=', Timestamp.fromDate(inicioMes)).where('inicio', '<', Timestamp.fromDate(fimMes)).get()
-const local = new Map(evMes.docs.filter((d) => d.data().status === 'publicado' && d.data().localNome).map((d) => [d.id, { slug: slug(d.data().localNome), nome: d.data().localNome }]))
-const porPessoa = new Map(), porBar = new Map()
-const somaBar = (eventoId, pts) => { const l = local.get(eventoId); if (!l) return; const b = porBar.get(l.slug) || { slug: l.slug, nome: l.nome, n: 0 }; b.n += pts; porBar.set(l.slug, b) }
-const chk = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(inicioMes)).get()
-chk.docs.forEach((d) => { const c = d.data(); porPessoa.set(c.uid, (porPessoa.get(c.uid) || 0) + 1); somaBar(c.eventoId, 1) })
-const pessoas = []
-for (const [uid, n] of [...porPessoa].sort((a, b) => b[1] - a[1]).slice(0, 60)) {
-  const u = await db.doc(`usuarios/${uid}`).get()
-  if (u.exists && u.data().publico) pessoas.push({ uid, nome: (u.data().nome || '').split(' ')[0], foto: u.data().foto || '', n })
-  if (pessoas.length >= 30) break
-}
-await db.doc(`ranking/${mes}`).set({ pessoas, bares: [...porBar.values()].filter((b) => b.n > 0).sort((a, b) => b.n - a.n).slice(0, 20), atualizadoEm: FieldValue.serverTimestamp() })
-
-// Ranking de cada bar (estilo prefeito do Foursquare): quem mais fez "Tô aqui" no lugar nos últimos 60 dias.
-// Fica em ranking/locais, que todo mundo lê: { porLocal: { slug: [{ uid, nome, foto, n }] } }.
-const desde60 = new Date(agora.getTime() - 60 * 86400000)
-const chk60 = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(desde60)).get()
-const evLocal = new Map()
-const porLocal = {}
-for (const d of chk60.docs) {
-  const c = d.data()
-  if (!evLocal.has(c.eventoId)) { const ev = await db.doc(`eventos/${c.eventoId}`).get(); evLocal.set(c.eventoId, ev.exists && ev.data().localNome ? slug(ev.data().localNome) : null) }
-  const l = evLocal.get(c.eventoId); if (!l) continue
-  porLocal[l] = porLocal[l] || {}; porLocal[l][c.uid] = (porLocal[l][c.uid] || 0) + 1
-}
-const perfis = new Map()
-const final = {}
-for (const [l, contas] of Object.entries(porLocal)) {
-  const lista = []
-  for (const [uid, n] of Object.entries(contas).sort((a, b) => b[1] - a[1])) {
-    if (!perfis.has(uid)) { const u = await db.doc(`usuarios/${uid}`).get(); perfis.set(uid, u.exists && u.data().publico ? u.data() : null) }
-    const u = perfis.get(uid); if (!u) continue
-    lista.push({ uid, nome: (u.nome || '').split(' ')[0], foto: u.foto || '', n })
-    if (lista.length >= 10) break
+// Cada bar também tem o seu ranking do mês (o 1º é o "Dono da mesa", como o prefeito do Foursquare).
+// Fica tudo em ranking/{AAAA-MM}; ranking/locais guarda o ranking dos bares do mês atual.
+// Nos 2 primeiros dias do mês o mês anterior é recalculado e marcado como fechado (resultado final).
+const mesDe = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).format(d).slice(0, 7)
+const evLocal = new Map(), perfis = new Map()
+const perfil = async (uid) => { if (!perfis.has(uid)) { const u = await db.doc(`usuarios/${uid}`).get(); perfis.set(uid, u.exists && u.data().publico ? u.data() : null) } return perfis.get(uid) }
+const pessoa = (uid, u, n) => ({ uid, nome: (u.nome || '').split(' ')[0], foto: u.foto || '', n })
+async function rankingDoMes(mes) {
+  const inicioMes = new Date(`${mes}-01T03:00:00Z`)
+  const fimMes = new Date(inicioMes); fimMes.setUTCMonth(fimMes.getUTCMonth() + 1)
+  const chk = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(inicioMes)).where('em', '<', Timestamp.fromDate(fimMes)).get()
+  const porPessoa = new Map(), porBar = new Map(), porLocal = {}
+  for (const d of chk.docs) {
+    const c = d.data()
+    porPessoa.set(c.uid, (porPessoa.get(c.uid) || 0) + 1)
+    if (!evLocal.has(c.eventoId)) { const ev = await db.doc(`eventos/${c.eventoId}`).get(); evLocal.set(c.eventoId, ev.exists && ev.data().localNome ? { slug: slug(ev.data().localNome), nome: ev.data().localNome } : null) }
+    const l = evLocal.get(c.eventoId); if (!l) continue
+    const b = porBar.get(l.slug) || { slug: l.slug, nome: l.nome, n: 0 }; b.n++; porBar.set(l.slug, b)
+    porLocal[l.slug] = porLocal[l.slug] || {}; porLocal[l.slug][c.uid] = (porLocal[l.slug][c.uid] || 0) + 1
   }
-  if (lista.length) final[l] = lista
+  const pessoas = []
+  for (const [uid, n] of [...porPessoa].sort((a, b) => b[1] - a[1]).slice(0, 60)) {
+    const u = await perfil(uid); if (u) pessoas.push(pessoa(uid, u, n))
+    if (pessoas.length >= 30) break
+  }
+  const locais = {}
+  for (const [l, contas] of Object.entries(porLocal)) {
+    const lista = []
+    for (const [uid, n] of Object.entries(contas).sort((a, b) => b[1] - a[1])) {
+      const u = await perfil(uid); if (u) lista.push(pessoa(uid, u, n))
+      if (lista.length >= 10) break
+    }
+    if (lista.length) locais[l] = lista
+  }
+  const bares = [...porBar.values()].sort((a, b) => b.n - a.n).slice(0, 20)
+  return { pessoas, bares, porLocal: locais }
 }
-await db.doc('ranking/locais').set({ porLocal: final, atualizadoEm: FieldValue.serverTimestamp() })
+const mes = mesDe(agora)
+const atual = await rankingDoMes(mes)
+await db.doc(`ranking/${mes}`).set({ ...atual, atualizadoEm: FieldValue.serverTimestamp() })
+await db.doc('ranking/locais').set({ mes, porLocal: atual.porLocal, atualizadoEm: FieldValue.serverTimestamp() })
+if (Number(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', day: '2-digit' }).format(agora)) <= 2) {
+  const anterior = mesDe(new Date(new Date(`${mes}-01T03:00:00Z`).getTime() - 86400000))
+  await db.doc(`ranking/${anterior}`).set({ ...(await rankingDoMes(anterior)), fechado: true, atualizadoEm: FieldValue.serverTimestamp() })
+}
 
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()

@@ -18,14 +18,105 @@
       "inicio": "2026-11-20T11:00:00-03:00",
       "fim": "2026-11-22T23:00:00-03:00",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795105383/cartazes/qtkbyrskydcia95vlbsz.jpg",
-      "atracoes": ["Sudobanda", "Etcheverry", "Laura e Fagundes", "Marrecas River Blues", "Keila Lima e Rafael", "Diretoria do Pagode"],
+      "atracoes": [
+        "Sudobanda",
+        "Etcheverry",
+        "Laura e Fagundes",
+        "Marrecas River Blues",
+        "Keila Lima e Rafael",
+        "Diretoria do Pagode"
+      ],
       "descricao": "5ª edição da Festa na Vila, da Vila Gastronômica, com o tema \"Comida com História: Memórias de Natal\". Três dias de gastronomia, shows, dança, Oficina dos Pequenos Confeiteiros, desfile de trajes retrô, concurso pet e bingo.\n\nSexta, 20/11\n11h Abertura dos portões\n12h Festival Via Soft Pay\n16h Abertura oficial\n17h Show Sudobanda\n19h Espetáculo de dança \"Natal\": NIA\n20h30 Show Etcheverry\n0h Encerramento\n\nSábado, 21/11\n11h Abertura\n14h Espetáculo de dança \"Natal\": NIA\n14h30 Oficina dos Pequenos Confeiteiros\n17h30 Laura e Fagundes\n20h Desfile de traje retrô\n20h30 Show Marrecas River Blues\n0h Encerramento\n\nDomingo, 22/11\n11h Abertura\n14h Bingo da Vila\n16h Keila Lima e Rafael\n18h Desfile de pets em traje retrô ou natalino\n19h Show Diretoria do Pagode\n23h Encerramento"
     },
-    { "id": "sudobanda-festa-na-vila-2026-11-20", "pai": "festa-na-vila-2026-11-20", "titulo": "Show Sudobanda na Festa na Vila", "categoria": "musica", "atracoes": ["Sudobanda"], "inicio": "2026-11-20T17:00:00-03:00", "fim": "2026-11-20T19:00:00-03:00", "descricao": "Show da Sudobanda na sexta da Festa na Vila: Memórias de Natal." },
-    { "id": "etcheverry-festa-na-vila-2026-11-20", "pai": "festa-na-vila-2026-11-20", "titulo": "Show Etcheverry na Festa na Vila", "categoria": "musica", "atracoes": ["Etcheverry"], "inicio": "2026-11-20T20:30:00-03:00", "fim": "2026-11-21T00:00:00-03:00", "descricao": "Show do Etcheverry fechando a sexta da Festa na Vila: Memórias de Natal." },
-    { "id": "laura-e-fagundes-festa-na-vila-2026-11-21", "pai": "festa-na-vila-2026-11-20", "titulo": "Laura e Fagundes na Festa na Vila", "categoria": "musica", "atracoes": ["Laura e Fagundes"], "inicio": "2026-11-21T17:30:00-03:00", "fim": "2026-11-21T20:00:00-03:00", "descricao": "Laura e Fagundes no sábado da Festa na Vila: Memórias de Natal." },
-    { "id": "marrecas-river-blues-festa-na-vila-2026-11-21", "pai": "festa-na-vila-2026-11-20", "titulo": "Show Marrecas River Blues na Festa na Vila", "categoria": "musica", "generos": ["Blues"], "atracoes": ["Marrecas River Blues"], "inicio": "2026-11-21T20:30:00-03:00", "fim": "2026-11-22T00:00:00-03:00", "descricao": "Marrecas River Blues fechando o sábado da Festa na Vila: Memórias de Natal." },
-    { "id": "keila-lima-e-rafael-festa-na-vila-2026-11-22", "pai": "festa-na-vila-2026-11-20", "titulo": "Keila Lima e Rafael na Festa na Vila", "categoria": "musica", "atracoes": ["Keila Lima e Rafael"], "inicio": "2026-11-22T16:00:00-03:00", "fim": "2026-11-22T18:00:00-03:00", "descricao": "Keila Lima e Rafael no domingo da Festa na Vila: Memórias de Natal." },
-    { "id": "diretoria-do-pagode-festa-na-vila-2026-11-22", "pai": "festa-na-vila-2026-11-20", "titulo": "Show Diretoria do Pagode na Festa na Vila", "categoria": "musica", "generos": ["Pagode"], "atracoes": ["Diretoria do Pagode"], "inicio": "2026-11-22T19:00:00-03:00", "fim": "2026-11-22T23:00:00-03:00", "descricao": "Diretoria do Pagode fechando a Festa na Vila: Memórias de Natal." }
+    {
+      "id": "sudobanda-festa-na-vila-2026-11-20",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Show Sudobanda na Festa na Vila",
+      "categoria": "musica",
+      "atracoes": [
+        "Sudobanda"
+      ],
+      "inicio": "2026-11-20T17:00:00-03:00",
+      "fim": "2026-11-20T19:00:00-03:00",
+      "descricao": "Show da Sudobanda na sexta da Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106091/cartazes/frka0qdatv9iluma0imh.jpg",
+      "rev": 2
+    },
+    {
+      "id": "etcheverry-festa-na-vila-2026-11-20",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Show Etcheverry na Festa na Vila",
+      "categoria": "musica",
+      "atracoes": [
+        "Etcheverry"
+      ],
+      "inicio": "2026-11-20T20:30:00-03:00",
+      "fim": "2026-11-21T00:00:00-03:00",
+      "descricao": "Show do Etcheverry fechando a sexta da Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106146/cartazes/xk3qdkxjzohs3kkfx8lt.jpg",
+      "rev": 2
+    },
+    {
+      "id": "laura-e-fagundes-festa-na-vila-2026-11-21",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Laura e Fagundes na Festa na Vila",
+      "categoria": "musica",
+      "atracoes": [
+        "Laura e Fagundes"
+      ],
+      "inicio": "2026-11-21T17:30:00-03:00",
+      "fim": "2026-11-21T20:00:00-03:00",
+      "descricao": "Laura e Fagundes no sábado da Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106103/cartazes/akk7t1ayosm5tsldcuit.jpg",
+      "rev": 2
+    },
+    {
+      "id": "marrecas-river-blues-festa-na-vila-2026-11-21",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Show Marrecas River Blues na Festa na Vila",
+      "categoria": "musica",
+      "generos": [
+        "Blues"
+      ],
+      "atracoes": [
+        "Marrecas River Blues"
+      ],
+      "inicio": "2026-11-21T20:30:00-03:00",
+      "fim": "2026-11-22T00:00:00-03:00",
+      "descricao": "Marrecas River Blues fechando o sábado da Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106141/cartazes/qaxnuevfy3xsb24b86yk.jpg",
+      "rev": 2
+    },
+    {
+      "id": "keila-lima-e-rafael-festa-na-vila-2026-11-22",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Keila Lima e Rafael na Festa na Vila",
+      "categoria": "musica",
+      "atracoes": [
+        "Keila Lima e Rafael"
+      ],
+      "inicio": "2026-11-22T16:00:00-03:00",
+      "fim": "2026-11-22T18:00:00-03:00",
+      "descricao": "Keila Lima e Rafael no domingo da Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106135/cartazes/sebvnqwibt3gf8sc3pqr.jpg",
+      "rev": 2
+    },
+    {
+      "id": "diretoria-do-pagode-festa-na-vila-2026-11-22",
+      "pai": "festa-na-vila-2026-11-20",
+      "titulo": "Show Diretoria do Pagode na Festa na Vila",
+      "categoria": "musica",
+      "generos": [
+        "Pagode"
+      ],
+      "atracoes": [
+        "Diretoria do Pagode"
+      ],
+      "inicio": "2026-11-22T19:00:00-03:00",
+      "fim": "2026-11-22T23:00:00-03:00",
+      "descricao": "Diretoria do Pagode fechando a Festa na Vila: Memórias de Natal.",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106129/cartazes/numjijwpdgaequsvcq4o.jpg",
+      "rev": 2
+    }
   ]
 }

@@ -1,10 +1,10 @@
 import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom'
 import { registrar } from './lib/visitas'
 import './index.css'
-import { AuthProvider } from './lib/auth'
+import { AuthProvider, useAuth } from './lib/auth'
 import Inicio from './pages/Inicio'
 import Evento from './pages/Evento'
 const Local = lazy(() => import('./pages/Local'))
@@ -49,6 +49,25 @@ function ContarVisitas() {
   return null
 }
 
+// Comemoração do ranking: confere uma vez quando a pessoa abre o app (só quem entrou com o Google).
+const Conquista = lazy(() => import('./components/Conquista'))
+function Conquistas() {
+  const { user } = useAuth()
+  const { pathname } = useLocation()
+  const [c, setC] = useState(null)
+  const visto = useRef(false)
+  useEffect(() => {
+    if (pathname.startsWith('/admin') || visto.current) return
+    const demo = new URLSearchParams(location.search).get('conquista')
+    if (import.meta.env.DEV && demo) { visto.current = true; import('./lib/conquistas').then((m) => setC(m.conquistaDemo(demo))); return }
+    if (!user) return
+    visto.current = true
+    const t = setTimeout(() => import('./lib/conquistas').then((m) => m.verConquista(user.uid)).then(setC).catch(() => {}), 1500)
+    return () => clearTimeout(t)
+  }, [user, pathname])
+  return c ? <Suspense fallback={null}><Conquista c={c} fechar={() => setC(null)} /></Suspense> : null
+}
+
 function NaoEncontrado() {
   return (
     <main className="mx-auto max-w-md px-4 py-20 text-center">
@@ -65,6 +84,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <ContarVisitas />
         <InstalarApp />
+        <Conquistas />
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Inicio />} />
