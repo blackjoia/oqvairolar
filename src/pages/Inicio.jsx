@@ -283,6 +283,7 @@ export function Rodape() {
       <nav className="mt-3 flex flex-wrap justify-center gap-x-3 font-semibold text-brand-ink">
         <Link to="/semana" className="link-toque px-1 hover:underline">Esta semana</Link>
         <Link to="/meus-roles" className="link-toque px-1 hover:underline">Meus rolês</Link>
+        <Link to="/ranking" className="link-toque px-1 hover:underline">Ranking</Link>
         <Link to="/divulgar" className="link-toque px-1 hover:underline">Divulgar evento</Link>
         <button onClick={abrirInstalar} className="link-toque px-1 hover:underline">Instalar o app no celular</button>
       </nav>

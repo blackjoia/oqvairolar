@@ -11,12 +11,13 @@ import { useAuth } from '../lib/auth'
 // O mapa (Leaflet) só carrega quando a página precisa dele.
 const MapaVer = lazy(() => import('../components/MapaVer'))
 import { gerarStory } from '../lib/story'
+import { janelaCheckin, jaFiz, fazerCheckin } from '../lib/ranking'
 import { clique } from '../lib/visitas'
 import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
 import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
-import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle } from 'lucide-react'
+import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
@@ -41,6 +42,14 @@ export default function Evento() {
   const [story, setStory] = useState('')
   const [minha, setMinha] = useState(null)
   const [contagem, setContagem] = useState({ vou: 0, interesse: 0 })
+  const [checkin, setCheckin] = useState({ feito: false, carregando: false, erro: '' })
+  useEffect(() => { if (user && !id.endsWith('-demo')) jaFiz(id).then((f) => setCheckin((c) => ({ ...c, feito: f }))) }, [id, user?.uid])
+  const toAqui = async () => {
+    setCheckin({ feito: false, carregando: true, erro: '' })
+    const erro = await fazerCheckin(e)
+    setCheckin({ feito: !erro, carregando: false, erro: erro || '' })
+    if (!erro && minha !== 'vou') presenca('vou')
+  }
   useEffect(() => {
     if (id.endsWith('-demo')) return
     minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
@@ -150,6 +159,18 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
+            {janelaCheckin(e) && (
+              <div className="mt-2 rounded-2xl border-2 border-brand bg-brand/10 p-3">
+                {checkin.feito ? (
+                  <p className="flex flex-wrap items-center gap-x-2 font-semibold"><MapPinCheck className="size-5 text-brand-ink" aria-hidden /> Você está no rolê! Contou no ranking do mês.
+                    <Link to="/ranking" className="font-bold text-brand-ink underline underline-offset-2">Ver ranking</Link></p>
+                ) : (<>
+                  <button onClick={toAqui} disabled={checkin.carregando} className="btn-brand w-full py-3"><MapPinCheck className="size-5" aria-hidden /> {checkin.carregando ? 'Conferindo onde você está…' : 'Tô aqui'}</button>
+                  <p className="mt-1.5 text-xs text-muted">Toque quando chegar no local. Cada rolê vale 1 ponto no <Link to="/ranking" className="font-semibold text-brand-ink underline underline-offset-2">ranking do mês</Link>.</p>
+                  {checkin.erro && <p role="alert" className="mt-1 text-sm font-semibold text-danger">{checkin.erro}{!user && <> <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setCheckin((c) => ({ ...c, erro: x.message })))} className="underline underline-offset-2">Entrar</button></>}</p>}
+                </>)}
+              </div>
+            )}
             {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
               <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
                 href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} às ${hora(e.inicio)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}

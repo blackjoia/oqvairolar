@@ -143,6 +143,24 @@ for (const d of proximos.docs) {
   if ((d.data().vao || 0) !== n) { await d.ref.update({ vao: n }); contados++ }
 }
 
+// Ranking do mês: só conta "Tô aqui" (feito no local e no horário). Pessoas = rolês; bares = check-ins feitos neles.
+const mes = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).format(agora).slice(0, 7)
+const inicioMes = new Date(`${mes}-01T03:00:00Z`)
+const fimMes = new Date(inicioMes); fimMes.setUTCMonth(fimMes.getUTCMonth() + 1)
+const evMes = await db.collection('eventos').where('inicio', '>=', Timestamp.fromDate(inicioMes)).where('inicio', '<', Timestamp.fromDate(fimMes)).get()
+const local = new Map(evMes.docs.filter((d) => d.data().status === 'publicado' && d.data().localNome).map((d) => [d.id, { slug: slug(d.data().localNome), nome: d.data().localNome }]))
+const porPessoa = new Map(), porBar = new Map()
+const somaBar = (eventoId, pts) => { const l = local.get(eventoId); if (!l) return; const b = porBar.get(l.slug) || { slug: l.slug, nome: l.nome, n: 0 }; b.n += pts; porBar.set(l.slug, b) }
+const chk = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(inicioMes)).get()
+chk.docs.forEach((d) => { const c = d.data(); porPessoa.set(c.uid, (porPessoa.get(c.uid) || 0) + 1); somaBar(c.eventoId, 1) })
+const pessoas = []
+for (const [uid, n] of [...porPessoa].sort((a, b) => b[1] - a[1]).slice(0, 60)) {
+  const u = await db.doc(`usuarios/${uid}`).get()
+  if (u.exists && u.data().publico) pessoas.push({ uid, nome: (u.data().nome || '').split(' ')[0], foto: u.data().foto || '', n })
+  if (pessoas.length >= 30) break
+}
+await db.doc(`ranking/${mes}`).set({ pessoas, bares: [...porBar.values()].filter((b) => b.n > 0).sort((a, b) => b.n - a.n).slice(0, 20), atualizadoEm: FieldValue.serverTimestamp() })
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
