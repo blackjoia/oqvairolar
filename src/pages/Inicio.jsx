@@ -253,7 +253,7 @@ export default function Inicio() {
               <span className="num ml-auto font-sans text-sm font-semibold normal-case text-muted">{g.itens.length} {g.itens.length === 1 ? 'evento' : 'eventos'}</span>
             </h3>
             <div className="cascata mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">
-              {g.itens.map((e, j) => <CardEvento key={e.id} evento={e} soHora grande={gi === 0 && j === 0 && dia === 'todos' && !busca} style={{ '--i': i++ }} />)}
+              {g.itens.map((e, j) => <CardEvento key={e.id} evento={e} soHora grande={dia === 'todos' && !busca && (g.titulo === 'Hoje' || (gi === 0 && j === 0))} style={{ '--i': i++ }} />)}
             </div>
           </section>
         )) })()}
