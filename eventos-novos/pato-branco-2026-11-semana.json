@@ -1,0 +1,172 @@
+{
+  "comum": {
+    "cidade": "Pato Branco",
+    "status": "publicado",
+    "origem": "importado",
+    "categoria": "musica"
+  },
+  "eventos": [
+    {
+      "id": "evandro-piva-avenida-bombar-2026-11-19",
+      "titulo": "Evandro Piva no Avenida Bombar",
+      "generos": [
+        "Acústico",
+        "Pop"
+      ],
+      "atracoes": [
+        "Evandro Piva"
+      ],
+      "inicio": "2026-11-19T21:00:00-03:00",
+      "localNome": "Avenida Bombar",
+      "endereco": "Av. Tupi, 1529",
+      "instagram": "avenidabombar",
+      "descricao": "Voz e violão na véspera de feriado. O bar não informou o horário (o site mostra 21h como referência).",
+      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+    },
+    {
+      "id": "acoustivibe-avenida-bombar-2026-11-20",
+      "titulo": "Acoustivibe no Avenida Bombar",
+      "generos": [
+        "Pop",
+        "Rock",
+        "Acústico"
+      ],
+      "atracoes": [
+        "Acoustivibe"
+      ],
+      "inicio": "2026-11-20T21:00:00-03:00",
+      "localNome": "Avenida Bombar",
+      "endereco": "Av. Tupi, 1529",
+      "instagram": "avenidabombar",
+      "descricao": "O melhor do pop rock nacional e internacional. O bar não informou o horário (o site mostra 21h como referência).",
+      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+    },
+    {
+      "id": "veto-e-zico-rubas-avenida-bombar-2026-11-21",
+      "titulo": "Veto & Zico Rubas no Avenida Bombar",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "Veto",
+        "Zico Rubas"
+      ],
+      "inicio": "2026-11-21T23:00:00-03:00",
+      "localNome": "Avenida Bombar",
+      "endereco": "Av. Tupi, 1529",
+      "instagram": "avenidabombar",
+      "descricao": "A partir das 23h.",
+      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+    },
+    {
+      "id": "enterra-marc-t11-nobar-pb-2026-11-19",
+      "titulo": "Enterra Marc T11 no noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica",
+        "Funk"
+      ],
+      "atracoes": [
+        "Medbox",
+        "WP",
+        "Deh Casagrande",
+        "Max Recuero"
+      ],
+      "inicio": "2026-11-19T20:00:00-03:00",
+      "fim": "2026-11-20T04:00:00-03:00",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571",
+      "instagram": "nobarunipb",
+      "preco": "Uni R$ 5 · Clube R$ 30",
+      "descricao": "Véspera de feriado com a T11 de Medicina. Medbox 20h–23h30, WP 23h30–0h30, Deh 0h30–2h e Max Recuero 2h–4h.",
+      "fonte": "https://www.instagram.com/stories/nobarunipb/"
+    },
+    {
+      "id": "boiler-dj-limma-nobar-pb-2026-11-20",
+      "titulo": "Primeiro Boiler do Limma no noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "DJ Limma"
+      ],
+      "inicio": "2026-11-20T22:00:00-03:00",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571",
+      "instagram": "nobarunipb",
+      "preco": "Uni grátis · Clube R$ 30",
+      "descricao": "DJ no meio do público, estilo Boiler Room. O bar abre às 18h; horário do DJ não informado (o site mostra 22h como referência).",
+      "fonte": "https://www.instagram.com/nobarunipb/"
+    },
+    {
+      "id": "aloha-nobar-pb-2026-11-21",
+      "titulo": "Aloha noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica",
+        "Funk"
+      ],
+      "atracoes": [
+        "DJ Harry",
+        "DJ Simi"
+      ],
+      "inicio": "2026-11-21T22:00:00-03:00",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571",
+      "instagram": "nobarunipb",
+      "descricao": "Festa Aloha com DJ Harry e DJ Simi. O bar abre às 18h; horário não informado (o site mostra 22h como referência).",
+      "fonte": "https://www.instagram.com/nobarunipb/"
+    },
+    {
+      "id": "murilo-e-santini-nobar-pb-2026-11-22",
+      "titulo": "Murilo e Santini no noBar!",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Murilo e Santini"
+      ],
+      "inicio": "2026-11-22T19:00:00-03:00",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571",
+      "instagram": "nobarunipb",
+      "gratuito": true,
+      "preco": "Entrada grátis",
+      "descricao": "Domingo com entrada grátis. Horário não informado (o site mostra 19h como referência).",
+      "fonte": "https://www.instagram.com/nobarunipb/"
+    },
+    {
+      "id": "no-postinho-do-deck-joao-gustavo-e-murilo-2026-11-28",
+      "titulo": "No Postinho do Deck com João Gustavo & Murilo",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "João Gustavo & Murilo"
+      ],
+      "inicio": "2026-11-28T22:00:00-03:00",
+      "localNome": "Kroko Deck Pato Branco",
+      "endereco": "Av. Tupi, 1509 · Bairro Brasília",
+      "instagram": "krokodeckpb",
+      "descricao": "Ingressos online pelo Cheers. Horário não informado (o site mostra 22h como referência).",
+      "fonte": "https://www.instagram.com/krokodeckpb/"
+    },
+    {
+      "id": "resenha-do-deck-kaique-e-felipe-pb-2026-12-05",
+      "titulo": "Resenha do Deck com Kaique & Felipe",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Kaique & Felipe"
+      ],
+      "inicio": "2026-12-05T22:00:00-03:00",
+      "localNome": "Kroko Deck Pato Branco",
+      "endereco": "Av. Tupi, 1509 · Bairro Brasília",
+      "instagram": "krokodeckpb",
+      "descricao": "Lote promocional liberado. Ingressos pelo Cheers. Horário não informado (o site mostra 22h como referência).",
+      "fonte": "https://www.instagram.com/krokodeckpb/"
+    }
+  ]
+}
