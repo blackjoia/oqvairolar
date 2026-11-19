@@ -18,3 +18,6 @@ export const db = getFirestore(app)
 
 // UID da conta admin (Firebase > Authentication > Users). Mesmo valor de firestore.rules.
 export const ADMIN_UIDS = ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2']
+// Contas Google que também são admin (e-mail verificado). Mesmo valor de firestore.rules.
+export const ADMIN_EMAILS = ['luisfmrtns@gmail.com']
+export const ehAdmin = (u) => !!u && (ADMIN_UIDS.includes(u.uid) || (u.emailVerified && ADMIN_EMAILS.includes((u.email || '').toLowerCase())))

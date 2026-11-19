@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { auth, ADMIN_UIDS } from './firebase'
+import { auth, ehAdmin } from './firebase'
 
 const Ctx = createContext({ user: null, isAdmin: false, carregando: true, usuario: null, perfis: [], recarregar: () => {} })
 
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
     } catch (e) { console.warn('conta', e); return { usuario: basico, perfis: [] } }
   }, [])
   useEffect(() => onAuthStateChanged(auth, async (user) => {
-    const base = { user, isAdmin: !!user && ADMIN_UIDS.includes(user.uid) }
+    const base = { user, isAdmin: ehAdmin(user) }
     setEstado((s) => ({ ...s, ...base, carregando: !!user }))
     const conta = await carregarConta(user)
     setEstado({ ...base, ...conta, carregando: false })
