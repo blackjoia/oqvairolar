@@ -9,6 +9,9 @@ const ler = (k) => { try { return localStorage.getItem(k) } catch { return null 
 const gravar = (k, v) => { try { localStorage.setItem(k, v) } catch {} }
 
 // O painel admin vira um app separado no celular (ícone "Admin OQVR") e avisa quando chega evento ou pedido novo.
+const PAINEL_HOST = 'oquevairolar-b0129.web.app'
+export const PAINEL_URL = `https://${PAINEL_HOST}/admin?o=instalar`
+
 export function useAppAdmin() {
   useEffect(() => {
     const trocar = (sel, attr, valor) => {
@@ -51,10 +54,12 @@ export default function AvisosAdmin({ uid }) {
   // Aberto dentro do app da agenda, mostra como instalar o painel separado.
   try { if (location.search.includes('o=app-admin')) sessionStorage.setItem('appAdmin', '1') } catch {}
   const noAdmin = (() => { try { return sessionStorage.getItem('appAdmin') === '1' } catch { return false } })()
-  const noAppAgenda = appInstalado() && !noAdmin
   const app = appInstalado() && noAdmin
+  // O painel instalável fica no endereço próprio do Firebase (outro "site" para o celular),
+  // porque em oquevairolar.com.br o app da agenda já ocupa o endereço todo.
+  const noEnderecoPainel = location.hostname === PAINEL_HOST
   if (ligado && (app || fechado)) return null
-  if (fechado && !podeInstalar) return null
+  if (fechado && !podeInstalar && (app || noEnderecoPainel)) return null
   return (
     <div className="mx-auto max-w-5xl px-4 pt-4">
       <div className="relative flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4 sm:flex-row sm:items-center">
@@ -62,7 +67,7 @@ export default function AvisosAdmin({ uid }) {
         <div className="min-w-0 flex-1 pr-8 text-sm">
           <p className="font-bold">Painel no celular, com aviso de envio novo</p>
           <p className="text-muted">
-            {noAppAgenda ? <>Você está no app da agenda. Para ter o painel separado, abra <b>oquevairolar.com.br/admin</b> no {ios ? 'Safari' : 'Chrome'} e toque em <b>Instalar painel</b>{ios ? ' (ou Compartilhar e Adicionar à Tela de Início)' : ' (ou no menu ⋮, Instalar app)'}.</>
+            {!app && !noEnderecoPainel ? <>O celular trata este endereço como o app da agenda e diz que já está instalado. Para ter o painel separado, abra o <b>endereço do painel</b> no {ios ? 'Safari' : 'Chrome'}, entre e toque em <b>Instalar painel</b>{ios ? ' (ou Compartilhar e Adicionar à Tela de Início)' : ' (ou no menu ⋮, Instalar app)'}.</>
               : app ? 'Ative os avisos para saber quando chegar evento pelo formulário ou pedido de página.'
               : ios ? <>Instale o painel como app: toque em <Share className="inline size-4" aria-label="Compartilhar" /> <b>Compartilhar</b> e em <b>Adicionar à Tela de Início</b>. No iPhone, os avisos só funcionam pelo app instalado.</>
               : 'Instale o painel como um app separado (ícone "Admin OQVR") e ative os avisos para saber quando chegar evento ou pedido.'}
@@ -70,7 +75,8 @@ export default function AvisosAdmin({ uid }) {
           {estado && estado !== 'ativando' && <p role="alert" className="mt-1 font-semibold text-danger">{estado}</p>}
         </div>
         <div className="flex flex-wrap gap-2">
-          {!app && podeInstalar && <button onClick={async () => setPodeInstalar(!(await instalarDireto()) && podeInstalarDireto())} className="btn-ghost h-11 text-sm"><Download className="size-4" aria-hidden /> Instalar painel</button>}
+          {!app && !noEnderecoPainel && <a href={PAINEL_URL} target="_blank" rel="noopener" className="btn-brand h-11 text-sm"><Download className="size-4" aria-hidden /> Abrir endereço do painel</a>}
+          {!app && noEnderecoPainel && podeInstalar && <button onClick={async () => setPodeInstalar(!(await instalarDireto()) && podeInstalarDireto())} className="btn-ghost h-11 text-sm"><Download className="size-4" aria-hidden /> Instalar painel</button>}
           {!ligado && (!ios || app) && <button onClick={ativar} disabled={estado === 'ativando'} className="btn-brand h-11 text-sm"><BellRing className="size-4" aria-hidden /> {estado === 'ativando' ? 'Ativando…' : 'Ativar avisos'}</button>}
           {ligado && <span className="inline-flex h-11 items-center gap-1 text-sm font-semibold text-brand-ink"><Check className="size-4" aria-hidden /> Avisos ligados</span>}
         </div>
