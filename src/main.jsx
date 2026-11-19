@@ -14,6 +14,10 @@ const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
 import InstalarApp from './components/InstalarApp'
 const Artes = lazy(() => import('./pages/admin/Artes'))
+const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
+const MeusRoles = lazy(() => import('./pages/MeusRoles'))
+const Usuario = lazy(() => import('./pages/Usuario'))
+const Semana = lazy(() => import('./pages/Semana'))
 const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
 // Service worker: permite instalar como app (substitui o do site antigo).
@@ -54,10 +58,14 @@ createRoot(document.getElementById('root')).render(
           <Route path="/evento/:id" element={<Evento />} />
           <Route path="/divulgar" element={<Divulgar />} />
           <Route path="/local/:slug" element={<Local />} />
+          <Route path="/meus-roles" element={<MeusRoles />} />
+          <Route path="/u/:uid" element={<Usuario />} />
+          <Route path="/semana" element={<Semana />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Estatisticas />} />
             <Route path="eventos" element={<Lista />} />
             <Route path="artes" element={<Artes />} />
+            <Route path="pedidos" element={<Pedidos />} />
             <Route path="estatisticas" element={<Navigate to="/admin" replace />} />
             <Route path="evento/:id" element={<FormEvento />} />
           </Route>

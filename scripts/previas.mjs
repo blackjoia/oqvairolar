@@ -146,9 +146,26 @@ for (const [k, l] of locais) {
     .replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${SITE}/local/${k}"`)
   writeFileSync(new URL(`local/${k}.html`, DIST), h)
 }
+// Página "Esta semana": prévia no WhatsApp com quantos eventos vêm nos próximos 7 dias.
+{
+  const semana = futuros.filter((e) => e.inicio.getTime() < agora + 7 * 86400000)
+  const t = 'Esta semana em Francisco Beltrão e região · O Que Vai Rolar?'
+  const desc = semana.length
+    ? `${semana.length} ${semana.length === 1 ? 'evento' : 'eventos'} nos próximos 7 dias: ${semana.slice(0, 3).map((e) => e.titulo).join(', ')}${semana.length > 3 ? ' e mais' : ''}.`
+    : 'A agenda dos próximos 7 dias em Francisco Beltrão e região.'
+  const base = readFileSync(new URL('index.html', DIST), 'utf8')
+  const h = base
+    .replace(/<title>[^<]*<\/title>/, `<title>${esc(t)}</title>`)
+    .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${esc(desc)}"`)
+    .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${esc(t)}"`)
+    .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${esc(desc)}"`)
+    .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${SITE}/semana"`)
+  writeFileSync(new URL('semana.html', DIST), h)
+}
 writeFileSync(new URL('sitemap.xml', DIST), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${SITE}/</loc><changefreq>hourly</changefreq></url>
+  <url><loc>${SITE}/semana</loc><changefreq>daily</changefreq></url>
   <url><loc>${SITE}/divulgar</loc></url>
 ${futuros.map((e) => `  <url><loc>${SITE}/evento/${e.id}</loc></url>`).join('\n')}
 ${[...locais.keys()].map((k) => `  <url><loc>${SITE}/local/${k}</loc></url>`).join('\n')}

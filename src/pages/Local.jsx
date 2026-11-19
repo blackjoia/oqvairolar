@@ -4,6 +4,7 @@ import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
 import MapaVer from '../components/MapaVer'
 import { Rodape } from './Inicio'
+import PaginaOficial from '../components/PaginaOficial'
 import { listarPublicados, slugify } from '../lib/eventos'
 import { linkComoChegar } from '../lib/agenda'
 import { ArrowLeft, MapPin, Instagram, Share2, Check, CalendarX2, Navigation, Mic2 } from 'lucide-react'
@@ -57,8 +58,9 @@ export default function Local() {
             <div className="mt-4 flex flex-wrap gap-2">
               {dados.insta && <a href={`https://instagram.com/${dados.insta.replace(/^@/, '')}`} target="_blank" rel="noreferrer" className="btn-ghost"><Instagram className="size-5" /> @{dados.insta.replace(/^@/, '')}</a>}
               {dados.comMapa && <a href={linkComoChegar(dados.comMapa)} target="_blank" rel="noreferrer" className="btn-ghost"><Navigation className="size-5" /> Como chegar</a>}
-              <button onClick={compartilhar} className="btn-brand">{copiado ? <><Check className="size-5" /> Link copiado</> : <><Share2 className="size-5" /> Compartilhar agenda</>}</button>
+              <button onClick={compartilhar} className="btn-ghost">{copiado ? <><Check className="size-5" /> Link copiado</> : <><Share2 className="size-5" /> Compartilhar agenda</>}</button>
             </div>
+            <PaginaOficial slug={slug} nome={dados.nome} tipo={dados.ehLocal ? 'local' : 'atracao'} />
           </section>
 
           <h2 className="mt-8 font-display text-3xl uppercase">Próximos eventos <span className="text-muted">{dados.proximos.length}</span></h2>

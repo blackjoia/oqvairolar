@@ -1,7 +1,7 @@
 // Envia os lembretes no celular de quem pediu. Roda junto com a publicação (a cada 10 minutos).
 // Hora do lembrete: 3 horas antes do evento. Se cair de madrugada (antes das 8h), vai às 20h da véspera.
 import { initializeApp, applicationDefault } from 'firebase-admin/app'
-import { getFirestore, Timestamp } from 'firebase-admin/firestore'
+import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore'
 import { getMessaging } from 'firebase-admin/messaging'
 
 initializeApp({ credential: applicationDefault(), projectId: 'oquevairolar-b0129' })
@@ -56,7 +56,53 @@ for (const d of snap.docs) {
   }
 }
 
+// Evento novo de quem a pessoa segue (bar, banda, produtora): avisa uma vez só.
+const slug = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)
+let avisos = 0
+const novos = await db.collection('eventos')
+  .where('criadoEm', '>=', Timestamp.fromDate(new Date(agora.getTime() - 3 * 86400000))).get()
+for (const d of novos.docs) {
+  const e = { id: d.id, ...d.data() }
+  if (e.status !== 'publicado' || e.avisoSeguidores || !e.inicio || e.inicio.toDate() < agora) continue
+  e.inicio = e.inicio.toDate()
+  const slugs = [...new Set([e.perfil, slug(e.localNome), ...(e.atracoes || []).map(slug), slug(e.instagram)].filter(Boolean))]
+  const nomes = new Map(), uids = new Set()
+  for (const s of slugs) {
+    const seg = await db.collection('seguidores').where('slug', '==', s).get()
+    seg.docs.forEach((x) => { const v = x.data(); uids.add(v.uid); if (!nomes.has(v.uid)) nomes.set(v.uid, v.nome) })
+  }
+  for (const uid of uids) {
+    const ap = await db.doc(`aparelhos/${uid}`).get()
+    const tokens = ap.exists ? ap.data().tokens || [] : []
+    const vencidos = []
+    for (const token of tokens) {
+      try {
+        await fcm.send({
+          token,
+          webpush: {
+            headers: { TTL: '86400' },
+            data: {
+              titulo: `Novo evento: ${e.titulo}`,
+              corpo: `${nomes.get(uid) || e.localNome || 'Quem você segue'} · ${new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Sao_Paulo' }).format(e.inicio)} às ${hhmm(e.inicio)}`,
+              url: `/evento/${e.id}?o=seguindo`,
+              imagem: miniatura(e.cartazUrl) || '',
+              tag: `novo-${e.id}`,
+            },
+            fcmOptions: { link: `${SITE}/evento/${e.id}?o=seguindo` },
+          },
+        })
+        avisos++
+      } catch (err) {
+        if (['messaging/registration-token-not-registered', 'messaging/invalid-argument'].includes(err.code)) vencidos.push(token)
+        else console.warn('aviso falhou', uid, err.code || err.message)
+      }
+    }
+    if (vencidos.length) await ap.ref.update({ tokens: FieldValue.arrayRemove(...vencidos) })
+  }
+  await d.ref.update({ avisoSeguidores: true })
+}
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
-console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados.`)
+console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}.`)

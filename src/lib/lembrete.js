@@ -24,7 +24,9 @@ export async function podeLembrar() {
 
 export function temLembrete(id) { try { return localStorage.getItem(chave(id)) === '1' } catch { return false } }
 
-export async function ligarLembrete(id) {
+// Pede permissão e devolve o endereço de notificação deste aparelho.
+export async function obterToken() {
+  if ((await podeLembrar()) !== 'ok') throw new Error(ehIOS() ? 'No iPhone, instale o app na tela de início para receber avisos.' : 'Este navegador não recebe notificações.')
   const perm = await Notification.requestPermission()
   if (perm !== 'granted') throw new Error('As notificações estão bloqueadas. Libere nas permissões do navegador para receber o lembrete.')
   const { getMessaging, getToken } = await import('firebase/messaging')
@@ -36,6 +38,11 @@ export async function ligarLembrete(id) {
     throw new Error(/permission/i.test(x?.code || x?.message || '') ? 'As notificações estão bloqueadas. Libere nas permissões do navegador para receber o lembrete.' : 'Não deu para ativar o lembrete agora. Tenta de novo daqui a pouco.')
   }
   if (!token) throw new Error('Não deu para ativar o lembrete agora.')
+  return token
+}
+
+export async function ligarLembrete(id) {
+  const token = await obterToken()
   const v = visitante()
   await setDoc(doc(db, 'lembretes', `${id}_${v}`), { eventoId: id, visitante: v, token, em: serverTimestamp() })
   try { localStorage.setItem(chave(id), '1') } catch {}
