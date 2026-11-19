@@ -46,17 +46,17 @@ export default function Semana() {
   const total = dias?.reduce((n, d) => n + d.itens.length, 0) || 0
   return (
     <><Topo />
-      <main className="mx-auto max-w-3xl px-4 pb-20 pt-8">
-        <p className="text-sm font-bold uppercase tracking-widest text-brand">{diaMes(hoje)} {mesCurto(hoje)} a {diaMes(addDias(hoje, 6))} {mesCurto(addDias(hoje, 6))}</p>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-3xl px-4 pb-20 pt-8">
+        <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">{diaMes(hoje)} {mesCurto(hoje)} a {diaMes(addDias(hoje, 6))} {mesCurto(addDias(hoje, 6))}</p>
         <h1 className="mt-3 font-display text-[clamp(3.4rem,12vw,6.5rem)] uppercase leading-[.88]">Esta <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">semana</span></h1>
         <p className="mt-3 text-muted">{dias ? `${total} ${total === 1 ? 'evento' : 'eventos'} nos próximos 7 dias em Francisco Beltrão e região.` : 'Carregando…'}</p>
         <div className="mt-5 flex flex-wrap gap-2">
           <button onClick={whatsapp} disabled={!total} className="btn bg-[#25D366] text-[#073b1c] hover:brightness-95"><Share2 className="size-5" aria-hidden /> Mandar no WhatsApp</button>
-          <button onClick={compartilhar} disabled={!total} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand" /> Copiado</> : <><Copy className="size-5" aria-hidden /> Copiar lista</>}</button>
+          <button onClick={compartilhar} disabled={!total} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand-ink" /> Copiado</> : <><Copy className="size-5" aria-hidden /> Copiar lista</>}</button>
         </div>
 
         {!dias && <div className="mt-8 space-y-3">{[1, 2, 3].map((i) => <div key={i} className="esqueleto h-16 rounded-xl" />)}</div>}
-        {dias && !dias.length && <p className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Nada na agenda para esta semana ainda. <Link className="font-semibold text-brand" to="/divulgar">Divulgar um evento</Link></p>}
+        {dias && !dias.length && <p className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center text-muted">Nada na agenda para esta semana ainda. <Link className="font-semibold text-brand-ink" to="/divulgar">Divulgar um evento</Link></p>}
 
         <div className="mt-8 space-y-8">
           {dias?.map((d) => (
@@ -73,10 +73,10 @@ export default function Semana() {
                         <span className="w-12 shrink-0 font-display text-xl tabular-nums">{hora(e.inicio)}</span>
                         <span className="h-9 w-1 shrink-0 rounded-full" style={{ background: c.cor }} aria-hidden />
                         <span className="min-w-0 flex-1">
-                          <b className="block truncate group-hover:text-brand">{e.titulo}</b>
+                          <b className="block truncate group-hover:text-brand-ink">{e.titulo}</b>
                           <span className="block truncate text-sm text-muted">{[e.localNome, e.cidade].filter(Boolean).join(' · ')}{e.gratuito ? ' · Grátis' : e.preco ? ` · ${e.preco}` : ''}</span>
                         </span>
-                        <ArrowRight className="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-brand" aria-hidden />
+                        <ArrowRight className="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-brand-ink" aria-hidden />
                       </Link>
                     </li>
                   )

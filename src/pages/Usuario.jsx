@@ -25,14 +25,14 @@ export default function Usuario() {
   }, [uid])
   return (
     <><Topo />
-      <main className="mx-auto max-w-5xl px-4 pb-20 pt-4">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm font-semibold text-brand"><ArrowLeft className="size-4" /> Agenda</Link>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-20 pt-4">
+        <Link to="/" className="link-toque -my-2 gap-1 text-sm font-semibold text-brand-ink"><ArrowLeft className="size-4" aria-hidden /> Agenda</Link>
         {u === undefined && <div className="esqueleto mt-6 h-32 rounded-2xl" />}
         {u === null && <p className="mt-10 text-center text-muted">Esse perfil não é público.</p>}
         {u && (<>
           <section className="mt-5 flex items-center gap-4">
             {u.foto ? <img src={u.foto} alt="" referrerPolicy="no-referrer" className="size-20 rounded-3xl object-cover" /> : <span className="grid size-20 place-items-center rounded-3xl bg-surface-2 font-display text-4xl">{u.nome?.[0]}</span>}
-            <div><p className="text-sm font-bold uppercase tracking-widest text-brand">Vai rolar com</p>
+            <div><p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Vai rolar com</p>
               <h1 className="font-display text-5xl uppercase leading-none">{u.nome.split(' ')[0]}</h1></div>
           </section>
           <h2 className="mt-8 font-display text-2xl uppercase">Vai em</h2>

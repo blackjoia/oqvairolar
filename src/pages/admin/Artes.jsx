@@ -74,7 +74,7 @@ export default function Artes() {
 
       <div className="mt-3 flex flex-wrap gap-2">
         <button onClick={compartilhar} disabled={gerando || !imagens.length} className="btn-brand"><Share2 className="size-5" /> Compartilhar / postar</button>
-        <button onClick={copiar} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand" /> Legenda copiada</> : <><Copy className="size-5" /> Copiar legenda</>}</button>
+        <button onClick={copiar} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand-ink" /> Legenda copiada</> : <><Copy className="size-5" /> Copiar legenda</>}</button>
       </div>
 
       {gerando && <p className="mt-4 flex items-center gap-2 text-muted"><RefreshCw className="size-4 animate-spin" /> Gerando…</p>}

@@ -13,7 +13,7 @@ import { CATEGORIAS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
 import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
-import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle, ArrowRight } from 'lucide-react'
+import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle, ArrowRight, WifiOff } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -28,6 +28,7 @@ const RAIO_MAX = 250
 export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
+  const [semRede, setSemRede] = useState(false)
   const [gaveta, setGaveta] = useState(false)
   const pos = useMinhaPosicao()
   const [buscandoLocal, setBuscandoLocal] = useState(false)
@@ -63,7 +64,19 @@ export default function Inicio() {
   }
 
   useEffect(() => {
-    listarPublicados().then(setEventos).catch((e) => { console.error(e); setErro('Não deu para carregar a agenda agora. Tente de novo em instantes.') })
+    listarPublicados().then((lista) => {
+      setEventos(lista); setSemRede(false)
+      try { localStorage.setItem('agenda-cache', JSON.stringify(lista)) } catch {}
+    }).catch((e) => {
+      console.error(e)
+      // Sem internet: mostra a última agenda carregada neste aparelho.
+      let cache = null
+      try { cache = JSON.parse(localStorage.getItem('agenda-cache') || 'null') } catch {}
+      if (cache?.length) {
+        setEventos(cache.map((x) => ({ ...x, inicio: new Date(x.inicio), fim: x.fim ? new Date(x.fim) : null })))
+        setSemRede(true)
+      } else setErro(navigator.onLine === false ? 'Sem internet agora. Assim que voltar, a agenda aparece aqui.' : 'Não deu para carregar a agenda agora. Tente de novo em instantes.')
+    })
   }, [])
 
   const agora = new Date()
@@ -110,7 +123,7 @@ export default function Inicio() {
     const m = new Map()
     filtrados.forEach((e) => {
       const k = chaveDia(e.inicio)
-      if (!m.has(k)) m.set(k, { titulo: rotuloDia(e.inicio), itens: [] })
+      if (!m.has(k)) m.set(k, { k, titulo: rotuloDia(e.inicio), data: e.inicio, itens: [] })
       m.get(k).itens.push(e)
     })
     return [...m.values()]
@@ -123,14 +136,14 @@ export default function Inicio() {
   return (
     <>
       <Topo />
-      <main className="mx-auto max-w-5xl px-4 pb-24">
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
         <section className="pb-4 pt-8 sm:pt-12">
-          <p className="text-sm font-bold uppercase tracking-widest text-brand">Francisco Beltrão e região</p>
+          <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Francisco Beltrão e região</p>
           <h1 className="mt-3 font-display text-[clamp(3.6rem,13vw,7.5rem)] uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
           <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
-            <Link to="/semana" className="whitespace-nowrap font-semibold text-brand underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
+            <Link to="/semana" className="link-toque -my-2 whitespace-nowrap font-semibold text-brand-ink underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
           <label className="relative mt-5 block max-w-xl">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
@@ -180,9 +193,9 @@ export default function Inicio() {
           {pos && (
             <div className="mt-2 w-full rounded-xl border border-line bg-surface px-3 pb-1.5 pt-2 sm:max-w-sm">
               <div className="flex items-center gap-2">
-                <Navigation className="size-4 shrink-0 text-brand" aria-hidden />
-                <span className="flex-1 text-sm font-bold text-brand tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
-                <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand underline underline-offset-2">Desligar</button>
+                <Navigation className="size-4 shrink-0 text-brand-ink" aria-hidden />
+                <span className="flex-1 text-sm font-bold text-brand-ink tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
+                <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand-ink underline underline-offset-2">Desligar</button>
               </div>
               <input type="range" min="5" max={RAIO_MAX} step="5" value={raioTela} aria-label="Distância máxima"
                 onChange={(x) => setRaioTela(Number(x.target.value))}
@@ -204,7 +217,8 @@ export default function Inicio() {
           )}
         </div>
 
-        {erro && <p className="mt-8 rounded-xl bg-danger/10 p-4 text-danger">{erro}</p>}
+        {erro && <p className="mt-8 rounded-xl bg-danger/10 p-4 text-danger" role="alert">{erro}</p>}
+        {semRede && <p className="mt-5 flex items-center gap-2 rounded-xl border border-line bg-surface p-3 text-sm" role="status"><WifiOff className="size-4 shrink-0 text-brand-ink" aria-hidden /> Sem internet. Mostrando a última agenda carregada neste aparelho.</p>}
         {!eventos && !erro && (
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" aria-label="Carregando eventos">
             {[1, 2, 3, 4].map((i) => (
@@ -218,7 +232,7 @@ export default function Inicio() {
 
         {eventos && grupos.length === 0 && (
           <div className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center">
-            <CalendarX2 className="mx-auto mb-2 size-10 text-brand" aria-hidden />
+            <CalendarX2 className="mx-auto mb-2 size-10 text-brand-ink" aria-hidden />
             <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : 'por enquanto'}</p>
             <p className="mt-1 text-muted">{temFiltro ? 'Tenta outro dia, outra categoria ou uma distância maior.' : 'Volta logo que a agenda enche.'}</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -228,9 +242,19 @@ export default function Inicio() {
           </div>
         )}
 
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {filtrados.map((e) => <CardEvento key={e.id} evento={e} />)}
-        </div>
+        <h2 className="sr-only">Eventos</h2>
+        {(() => { let i = 0; return grupos.map((g, gi) => (
+          <section key={g.k} aria-labelledby={`dia-${g.k}`} className="mt-7 first-of-type:mt-5">
+            <h3 id={`dia-${g.k}`} className="flex items-baseline gap-2 border-b border-line pb-2 font-display text-3xl uppercase leading-none sm:text-4xl">
+              {g.titulo}
+              {!/\d/.test(g.titulo) && <span className="num font-sans text-sm font-semibold normal-case text-muted">{g.data.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '')}</span>}
+              <span className="num ml-auto font-sans text-sm font-semibold normal-case text-muted">{g.itens.length} {g.itens.length === 1 ? 'evento' : 'eventos'}</span>
+            </h3>
+            <div className="cascata mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {g.itens.map((e, j) => <CardEvento key={e.id} evento={e} soHora grande={gi === 0 && j === 0 && dia === 'todos' && !busca} style={{ '--i': i++ }} />)}
+            </div>
+          </section>
+        )) })()}
       </main>
       <Rodape />
     </>
@@ -256,11 +280,11 @@ export function Rodape() {
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
       <Logo className="mx-auto mb-2 h-12 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
-      <nav className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
-        <Link to="/semana" className="hover:underline">Esta semana</Link>
-        <Link to="/meus-roles" className="hover:underline">Meus rolês</Link>
-        <Link to="/divulgar" className="hover:underline">Divulgar evento</Link>
-        <button onClick={abrirInstalar} className="hover:underline">Instalar o app no celular</button>
+      <nav className="mt-3 flex flex-wrap justify-center gap-x-3 font-semibold text-brand-ink">
+        <Link to="/semana" className="link-toque px-1 hover:underline">Esta semana</Link>
+        <Link to="/meus-roles" className="link-toque px-1 hover:underline">Meus rolês</Link>
+        <Link to="/divulgar" className="link-toque px-1 hover:underline">Divulgar evento</Link>
+        <button onClick={abrirInstalar} className="link-toque px-1 hover:underline">Instalar o app no celular</button>
       </nav>
     </footer>
   )

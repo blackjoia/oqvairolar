@@ -23,14 +23,14 @@ export default function Deslizar({ children, className = '' }) {
       </div>
       {lados.esq && (
         <button type="button" onClick={() => ir(-1)} aria-label="Ver opções anteriores" tabIndex={-1}
-          className="absolute left-0 inset-y-0 my-auto grid size-7 place-items-center rounded-full border border-line bg-surface text-ink shadow">
-          <ChevronLeft className="size-4" aria-hidden />
+          className="absolute -left-2 inset-y-0 my-auto grid size-11 place-items-center">
+          <span className="grid size-8 place-items-center rounded-full border border-line bg-surface text-ink shadow"><ChevronLeft className="size-4" aria-hidden /></span>
         </button>
       )}
       {lados.dir && (
         <button type="button" onClick={() => ir(1)} aria-label="Ver mais opções" tabIndex={-1}
-          className="absolute right-0 inset-y-0 my-auto grid size-7 place-items-center rounded-full border border-line bg-surface text-ink shadow animate-[cutucar_1.6s_ease-in-out_2]">
-          <ChevronRight className="size-4" aria-hidden />
+          className="absolute -right-2 inset-y-0 my-auto grid size-11 place-items-center animate-[cutucar_1.6s_ease-in-out_2]">
+          <span className="grid size-8 place-items-center rounded-full border border-line bg-surface text-ink shadow"><ChevronRight className="size-4" aria-hidden /></span>
         </button>
       )}
     </div>

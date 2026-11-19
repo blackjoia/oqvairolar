@@ -54,12 +54,12 @@ export default function MeusRoles() {
     try { await registrarAparelho(usuario.uid); setAvisos({ estado: 'ok', erro: '' }) } catch (x) { setAvisos({ estado: '', erro: x.message }) }
   }
 
-  if (carregando) return (<><Topo /><main className="mx-auto max-w-5xl px-4 py-16"><div className="esqueleto h-40 rounded-2xl" /></main></>)
+  if (carregando) return (<><Topo /><main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 py-16"><div className="esqueleto h-40 rounded-2xl" /></main></>)
 
   if (!usuario) return (
     <><Topo />
-      <main className="mx-auto max-w-5xl px-4 pb-20 pt-10">
-        <p className="text-sm font-bold uppercase tracking-widest text-brand">Sua conta</p>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-20 pt-10">
+        <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Sua conta</p>
         <h1 className="mt-3 font-display text-[clamp(3rem,10vw,5.5rem)] uppercase leading-[.9]">Seus rolês<br />num lugar <span className="rounded-lg bg-accent px-2 text-on-accent">só</span></h1>
         <p className="mt-4 max-w-lg text-muted">Entre com a sua conta do Google, de graça e sem senha nova. O que você já marcou neste aparelho vem junto.</p>
         <ul className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
@@ -67,7 +67,7 @@ export default function MeusRoles() {
             [Users, 'Veja quem vai', 'Se quiser, sua foto aparece em “quem vai” e você vê os amigos.'],
             [Bell, 'Siga bares e bandas', 'Receba um aviso no celular quando sair evento novo.'],
             [Store, 'É dono de bar ou banda?', 'Assuma a página e publique seus eventos direto.']].map(([I, t, d]) => (
-            <li key={t} className="flex gap-3 rounded-2xl border border-line bg-surface p-4"><I className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden /><div><b className="text-sm">{t}</b><p className="text-sm text-muted">{d}</p></div></li>
+            <li key={t} className="flex gap-3 rounded-2xl border border-line bg-surface p-4"><I className="mt-0.5 size-5 shrink-0 text-brand-ink" aria-hidden /><div><b className="text-sm">{t}</b><p className="text-sm text-muted">{d}</p></div></li>
           ))}
         </ul>
         <BotaoGoogle className="mt-6" />
@@ -77,11 +77,11 @@ export default function MeusRoles() {
   const vou = (eventos || []).filter((e) => e.minha === 'vou'), interesse = (eventos || []).filter((e) => e.minha === 'interesse')
   return (
     <><Topo />
-      <main className="mx-auto max-w-5xl px-4 pb-20 pt-8">
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-20 pt-8">
         <section className="flex flex-wrap items-center gap-4">
           {usuario.foto ? <img src={usuario.foto} alt="" referrerPolicy="no-referrer" className="size-16 rounded-2xl object-cover" /> : <span className="grid size-16 place-items-center rounded-2xl bg-surface-2 font-display text-3xl">{usuario.nome?.[0]}</span>}
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold uppercase tracking-widest text-brand">Meus rolês</p>
+            <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Meus rolês</p>
             <h1 className="truncate font-display text-4xl uppercase leading-none sm:text-5xl">{usuario.nome}</h1>
           </div>
           <button onClick={sair} className="btn-ghost text-sm"><LogOut className="size-4" aria-hidden /> Sair</button>
@@ -90,12 +90,12 @@ export default function MeusRoles() {
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface p-4">
             <input type="checkbox" checked={!!usuario.publico} onChange={alternarPublico} disabled={salvando} className="mt-1 size-5" />
-            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou{usuario.publico && <> · <Link className="font-semibold text-brand" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span></span>
+            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span></span>
           </label>
           <div className="rounded-2xl border border-line bg-surface p-4">
             <b className="text-sm">Avisos no celular</b>
             <p className="text-sm text-muted">Quando um bar ou banda que você segue postar evento novo.</p>
-            {avisos.estado === 'ok' ? <p className="mt-2 text-sm font-semibold text-brand">Avisos ligados neste aparelho.</p>
+            {avisos.estado === 'ok' ? <p className="mt-2 text-sm font-semibold text-brand-ink">Avisos ligados neste aparelho.</p>
               : <button onClick={ligarAvisos} disabled={avisos.estado === 'indo'} className="btn-ghost mt-2 text-sm"><Bell className="size-4" aria-hidden /> Ligar avisos</button>}
             {avisos.erro && <p className="mt-1 text-xs text-danger">{avisos.erro}</p>}
           </div>
@@ -107,7 +107,7 @@ export default function MeusRoles() {
             <div className="mt-3 flex flex-wrap gap-2">
               {perfis.map((p) => (
                 <div key={p.slug} className="flex items-center gap-2 rounded-2xl border border-line bg-surface py-2 pl-3 pr-2">
-                  <BadgeCheck className="size-5 text-brand" aria-hidden /><Link to={`/local/${p.slug}`} className="font-semibold hover:text-brand">{p.nome}</Link>
+                  <BadgeCheck className="size-5 text-brand-ink" aria-hidden /><Link to={`/local/${p.slug}`} className="font-semibold hover:text-brand-ink">{p.nome}</Link>
                   <Link to={`/divulgar?perfil=${p.slug}`} className="btn-brand ml-2 px-3 py-1.5 text-sm">Publicar evento</Link>
                 </div>
               ))}
@@ -116,14 +116,14 @@ export default function MeusRoles() {
         )}
 
         <section className="mt-8">
-          <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><PartyPopper className="size-5 text-brand" aria-hidden /> Eu vou</h2>
+          <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><PartyPopper className="size-5 text-brand-ink" aria-hidden /> Eu vou</h2>
           {!eventos ? <div className="esqueleto mt-3 h-32 rounded-2xl" />
             : vou.length ? <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{vou.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
-            : <p className="mt-2 text-muted">Nenhum ainda. <Link to="/" className="font-semibold text-brand">Achar um rolê</Link></p>}
+            : <p className="mt-2 text-muted">Nenhum ainda. <Link to="/" className="font-semibold text-brand-ink">Achar um rolê</Link></p>}
         </section>
         {interesse.length > 0 && (
           <section className="mt-8">
-            <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><Star className="size-5 text-brand" aria-hidden /> Tenho interesse</h2>
+            <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><Star className="size-5 text-brand-ink" aria-hidden /> Tenho interesse</h2>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{interesse.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
           </section>
         )}
