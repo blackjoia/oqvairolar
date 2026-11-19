@@ -35,7 +35,7 @@ export default function Local() {
 
   useEffect(() => {
     if (dados?.nome) document.title = `${dados.nome} · O Que Vai Rolar?`
-    return () => { document.title = 'O Que Vai Rolar? · Agenda de Francisco Beltrão e região' }
+    return () => { document.title = 'O Que Vai Rolar? · Agenda do Sudoeste do Paraná' }
   }, [dados])
 
   const compartilhar = async () => {

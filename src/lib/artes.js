@@ -99,7 +99,7 @@ export async function desenharArte({ eventos, formato = 'feed', titulo = 'Agenda
     ctx.font = '46px Anton'; ctx.fillStyle = BRANCO
     ctx.fillText(cortar(ctx, (e.titulo || '').toUpperCase(), W - M - xT), xT, y + 46)
     const cat = categoria(e.categoria)
-    const info = [e.localNome, e.cidade !== 'Francisco Beltrão' ? e.cidade : '', e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
+    const info = [e.localNome, e.cidade, e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
     ctx.fillStyle = cat.cor === V ? L : cat.cor; ctx.beginPath(); ctx.arc(xT + 9, y + 74, 8, 0, Math.PI * 2); ctx.fill()
     ctx.font = '400 30px Inter'; ctx.fillStyle = 'rgba(255,255,255,.85)'
     ctx.fillText(cortar(ctx, info, W - M - xT - 28), xT + 28, y + 84)
@@ -125,6 +125,6 @@ export function legenda(eventos, titulo, periodo) {
     if (d !== dia) { if (dia) linhas.push(''); linhas.push('📅 ' + d.charAt(0).toUpperCase() + d.slice(1)); dia = d }
     linhas.push(`• ${f(e.inicio, { hour: '2-digit', minute: '2-digit' })} ${e.titulo}${e.localNome ? ' @ ' + e.localNome : ''}${e.instagram ? ' (@' + e.instagram.replace(/^@/, '') + ')' : ''}`)
   }
-  linhas.push('', 'Agenda completa: oquevairolar.com.br', 'Vai ter rolê? Divulgue grátis no site.', '', '#franciscobeltrao #oquevairolar #agendafb #sudoestedoparana')
+  linhas.push('', 'Agenda completa: oquevairolar.com.br', 'Vai ter rolê? Divulgue grátis no site.', '', '#sudoestedoparana #oquevairolar #franciscobeltrao #patobranco #doisvizinhos')
   return linhas.join('\n')
 }

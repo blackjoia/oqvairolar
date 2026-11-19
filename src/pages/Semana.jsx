@@ -13,7 +13,7 @@ export default function Semana() {
   const [eventos, setEventos] = useState(null)
   const [copiado, setCopiado] = useState(false)
   useEffect(() => { listarPublicados().then(setEventos).catch(() => setEventos([])) }, [])
-  useEffect(() => { document.title = 'Esta semana · O Que Vai Rolar?'; return () => { document.title = 'O Que Vai Rolar? · Agenda de Francisco Beltrão e região' } }, [])
+  useEffect(() => { document.title = 'Esta semana · O Que Vai Rolar?'; return () => { document.title = 'O Que Vai Rolar? · Agenda do Sudoeste do Paraná' } }, [])
 
   const hoje = inicioDoDia(), fim = addDias(hoje, 7)
   const dias = useMemo(() => {
@@ -49,7 +49,7 @@ export default function Semana() {
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-3xl px-4 pb-20 pt-8">
         <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">{diaMes(hoje)} {mesCurto(hoje)} a {diaMes(addDias(hoje, 6))} {mesCurto(addDias(hoje, 6))}</p>
         <h1 className="mt-3 font-display text-[clamp(3.2rem,10.5vw,5.5rem)] uppercase leading-[.88]">Esta <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">semana</span></h1>
-        <p className="mt-3 text-muted">{dias ? `${total} ${total === 1 ? 'evento' : 'eventos'} nos próximos 7 dias em Francisco Beltrão e região.` : 'Carregando…'}</p>
+        <p className="mt-3 text-muted">{dias ? `${total} ${total === 1 ? 'evento' : 'eventos'} nos próximos 7 dias no Sudoeste do Paraná.` : 'Carregando…'}</p>
         <div className="mt-5 flex flex-wrap gap-2">
           <button onClick={whatsapp} disabled={!total} className="btn bg-[#25D366] text-[#073b1c] hover:brightness-95"><Share2 className="size-5" aria-hidden /> Mandar no WhatsApp</button>
           <button onClick={compartilhar} disabled={!total} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand-ink" /> Copiado</> : <><Copy className="size-5" aria-hidden /> Copiar lista</>}</button>

@@ -66,7 +66,7 @@ export default function Ranking() {
   const faltam = frente ? frente.n - eu.n + 1 : 0
 
   const compartilhar = async () => {
-    const texto = eu ? `Tô em ${minha + 1}º no ranking de rolês de ${nomeMes(mes)}, com ${eu.n} ${unidade(eu.n)}. Duvido você me passar.` : `Quem mais sai em Beltrão? Ranking de rolês de ${nomeMes(mes)}.`
+    const texto = eu ? `Tô em ${minha + 1}º no ranking de rolês de ${nomeMes(mes)}, com ${eu.n} ${unidade(eu.n)}. Duvido você me passar.` : `Quem mais sai no Sudoeste? Ranking de rolês de ${nomeMes(mes)}.`
     const url = `${location.origin}/ranking?o=ranking`
     if (navigator.share) { try { await navigator.share({ text: texto, url }) } catch {} return }
     await navigator.clipboard.writeText(`${texto} ${url}`); setCopiado(true); setTimeout(() => setCopiado(false), 2000)

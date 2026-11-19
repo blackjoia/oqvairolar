@@ -139,7 +139,7 @@ export default function Inicio() {
       <Topo />
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
         <section className="pb-4 pt-5 sm:pt-12 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-          <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Francisco Beltrão e região</p>
+          <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Sudoeste do Paraná</p>
           <h1 className="mt-2 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
@@ -281,7 +281,7 @@ export function Rodape() {
   return (
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
       <Logo className="mx-auto mb-2 h-12 w-auto text-ink" />
-      <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
+      <p>Agenda do Sudoeste do Paraná · oquevairolar.com.br</p>
       <nav className="mt-3 flex flex-wrap justify-center gap-x-3 font-semibold text-brand-ink">
         <Link to="/semana" className="link-toque px-1 hover:underline">Esta semana</Link>
         <Link to="/meus-roles" className="link-toque px-1 hover:underline">Meus rolês</Link>
