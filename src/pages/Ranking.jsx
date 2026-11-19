@@ -4,15 +4,9 @@ import Topo from '../components/Topo'
 import Segmentado from '../components/Segmentado'
 import { Rodape } from './Inicio'
 import { useAuth } from '../lib/auth'
-import { buscarRanking, mesAtual, nomeMes } from '../lib/ranking'
+import { buscarRanking, mesAtual, nomeMes, DEMO } from '../lib/ranking'
 import { ArrowLeft, Trophy, MapPin, Share2, Check, Crown, MapPinCheck, Timer } from 'lucide-react'
 
-// Dados fictícios para mostrar como fica (abra /ranking?demo). Bares reais de Beltrão, números inventados.
-const pessoa = (nome, n, i) => ({ uid: 'demo' + i, nome, n, foto: '' })
-const DEMO = {
-  pessoas: [['Ana P.', 9], ['Rafa M.', 8], ['Luis', 7], ['Bruna K.', 6], ['Diego S.', 5], ['Carol T.', 5], ['Jean F.', 4], ['Mari L.', 3], ['Tiago R.', 2], ['Gabi C.', 1]].map(([n, x], i) => pessoa(n, x, i)),
-  bares: [['Formosa Pub', 'formosa-pub', 38], ['Bar do Plets', 'plets', 33], ['Boteco Choppbel', 'boteco-choppbel', 21], ['Hangar 80', 'hangar-80', 16], ['Alles', 'alles', 9], ["Neco's Boteco", 'necos-boteco', 4]].map(([nome, slug, n]) => ({ nome, slug, n })),
-}
 
 // Ranking do mês: quem mais foi em rolê e os bares mais movimentados. Zera todo dia 1º.
 // Regras de tela (ui-ux-pro-max): pódio só para os 3 primeiros, uma animação por tela, números tabulares,
