@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import Cartaz from './Cartaz'
-import { diaMes, mesCurto, hora, rotuloDia, situacao } from '../lib/datas'
+import { diaMes, mesCurto, hora, horaDe, rotuloDia, situacao } from '../lib/datas'
 import { km, textoDistancia, useMinhaPosicao } from '../lib/distancia'
 
 // soHora: a lista já está agrupada por dia, então o card mostra só a hora.
@@ -29,7 +29,7 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
       </div>
       <div className={`flex flex-1 flex-col ${grande ? 'p-4 sm:p-6' : 'p-3'}`}>
         {grande && !agora && <p className="text-xs font-bold uppercase tracking-widest text-muted">Próximo rolê</p>}
-        <div className={`num font-bold uppercase tracking-wide text-brand-ink ${grande ? 'text-sm' : 'text-xs'}`}>{soHora ? hora(e.inicio) : `${rotuloDia(e.inicio)} · ${hora(e.inicio)}`}</div>
+        <div className={`num font-bold uppercase tracking-wide text-brand-ink ${grande ? 'text-sm' : 'text-xs'}`}>{soHora ? horaDe(e) : `${rotuloDia(e.inicio)} · ${horaDe(e)}`}</div>
         <h3 className={`mt-0.5 font-display uppercase leading-tight tracking-wide group-hover:text-brand-ink ${grande ? 'text-2xl sm:text-4xl' : 'line-clamp-2 text-lg'} ${temImagem ? '' : 'sr-only'}`}>{e.titulo}</h3>
         <p className="mt-1 flex items-start gap-1 text-xs text-muted">
           <MapPin className="mt-px size-3.5 shrink-0 text-brand-ink" aria-hidden />

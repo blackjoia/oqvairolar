@@ -27,7 +27,7 @@ export default function Cartaz({ evento: e, className = '', comData = true, marc
           {comData && e.inicio ? (
             <span className="rounded-[2.5cqw] bg-accent px-[3cqw] py-[1.5cqw] font-display leading-none text-on-accent">
               <span className={largo ? 'text-[6cqw]' : 'text-[9cqw]'}>{diaMes(e.inicio)}</span>{' '}
-              <span className={`${largo ? 'text-[3.6cqw]' : 'text-[5.5cqw]'} uppercase`}>{mesCurto(e.inicio)} · {diaSemana(e.inicio)} {hora(e.inicio)}</span>
+              <span className={`${largo ? 'text-[3.6cqw]' : 'text-[5.5cqw]'} uppercase`}>{mesCurto(e.inicio)} · {diaSemana(e.inicio)}{e.semHora ? '' : ` ${hora(e.inicio)}`}</span>
             </span>
           ) : <span />}
           {marca ? <span className={`font-display ${largo ? 'text-[3.4cqw]' : 'text-[5cqw]'} uppercase opacity-80`}>oquevairolar</span> : <span />}

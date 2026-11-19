@@ -4,7 +4,7 @@ import Topo from '../components/Topo'
 import Cartaz from '../components/Cartaz'
 import { Rodape } from './Inicio'
 import { buscarEvento, slugify } from '../lib/eventos'
-import { rotuloDia, hora, situacao } from '../lib/datas'
+import { rotuloDia, hora, asHora, situacao } from '../lib/datas'
 import { categoria } from '../lib/constantes'
 import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
 import { useAuth } from '../lib/auth'
@@ -88,7 +88,7 @@ export default function Evento() {
   const cat = categoria(e.categoria)
   const compartilhar = async () => {
     clique('compartilhar', e.id)
-    const dados = { title: e.titulo, text: `${e.titulo}\n${rotuloDia(e.inicio)} às ${hora(e.inicio)} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url: url + '?o=compartilhado' }
+    const dados = { title: e.titulo, text: `${e.titulo}\n${rotuloDia(e.inicio)} ${asHora(e)} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url: url + '?o=compartilhado' }
     if (navigator.share) { try { await navigator.share(dados) } catch {} return }
     await navigator.clipboard.writeText(url + '?o=compartilhado'); setCopiado(true); setTimeout(() => setCopiado(false), 2000)
   }
@@ -133,7 +133,7 @@ export default function Evento() {
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
               <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
-                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${e.fim - e.inicio > 24 * 3600000 ? rotuloDia(e.fim).toLowerCase() + ', ' : ''}${hora(e.fim)}` : ''}
+                <dd><b>{rotuloDia(e.inicio)}</b>, {asHora(e).replace(/[()]/g, '')}{e.fim && !e.semHora ? ` até ${e.fim - e.inicio > 24 * 3600000 ? rotuloDia(e.fim).toLowerCase() + ', ' : ''}${hora(e.fim)}` : ''}
                   {(() => { const s = situacao(e); return s && <div className={`mt-1 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-bold ${s.tipo === 'passou' ? 'bg-surface-2 text-muted' : 'bg-accent text-on-accent'}`}>{s.tipo === 'agora' && <span className="ao-vivo size-2 rounded-full bg-on-accent" aria-hidden />}{s.texto}</div> })()}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
@@ -175,7 +175,7 @@ export default function Evento() {
             )}
             {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
               <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
-                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} às ${hora(e.inicio)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} ${asHora(e)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
                 className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
                 <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
               </a>

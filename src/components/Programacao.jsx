@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listarPublicados, buscarEvento } from '../lib/eventos'
-import { rotuloDia, hora, situacao } from '../lib/datas'
+import { rotuloDia, hora, horaDe, situacao } from '../lib/datas'
 import { ChevronRight, Music } from 'lucide-react'
 
 // Festa com vários shows: o evento geral mostra a programação, e cada show tem a página dele (campo "pai").
@@ -28,7 +28,7 @@ export function Programacao({ evento }) {
             {itens.map((s) => (
               <li key={s.id}>
                 <Link to={`/evento/${s.id}`} className="flex min-h-14 items-center gap-3 px-4 py-2 hover:bg-surface-2">
-                  <span className="w-12 font-display text-lg tabular-nums">{hora(s.inicio)}</span>
+                  <span className="w-12 font-display text-lg tabular-nums">{horaDe(s, true)}</span>
                   <Music className="size-4 shrink-0 text-muted" aria-hidden />
                   <span className="flex-1 font-semibold">{s.titulo}</span>
                   {situacao(s) === 'agora' && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-on-accent">Agora</span>}
