@@ -56,6 +56,8 @@
   --font-sans: "Inter", system-ui, sans-serif;
   --ease-saida: cubic-bezier(.2, .8, .2, 1);
   --ease-mola: cubic-bezier(.34, 1.4, .64, 1);
+  /* mola de verdade (passa um pouco e assenta), amostrada de stiffness 350 / damping 28 */
+  --mola: linear(0, .32 8%, .79 20%, 1.03 30%, 1.01 46%, 1);
 }
 
 html, body { background: var(--bg); color: var(--ink); }
@@ -83,7 +85,7 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 @utility chip-on { @apply border-brand bg-brand text-on-brand hover:border-brand hover:bg-brand-strong; }
 /* Botões redondos ao lado do seletor de dia (Perto de mim, Filtros) */
 @utility ferramenta {
-  @apply inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-sm font-semibold text-ink hover:border-ink/20 hover:bg-surface-2;
+  @apply inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full border border-line bg-surface px-4 text-sm font-semibold text-ink hover:border-ink/20 hover:bg-surface-2;
   box-shadow: var(--sombra-1);
   transition: background-color .18s var(--ease-saida), border-color .18s var(--ease-saida), color .18s var(--ease-saida), transform .12s var(--ease-saida);
   &:active { transform: scale(.96); }
@@ -111,28 +113,40 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 .tipo-evento-on .tipo-evento-icone { background: var(--cor); color: #fff; }
 
 /* Seletor de dia: destaque que desliza com leve "mola" */
-.segmento-ind { transition: transform .38s var(--ease-mola), width .3s var(--ease-saida); }
+.segmento-ind { transition: transform .45s var(--mola), width .3s var(--ease-saida); }
 .segmento { transition: color .2s var(--ease-saida); }
 .segmento:active { transform: scale(.97); }
 /* Abas de categoria */
 .aba-cat { transition: opacity .18s var(--ease-saida); }
 .aba-cat-icone { transition: background-color .2s var(--ease-saida), color .2s var(--ease-saida), box-shadow .2s var(--ease-saida), transform .2s var(--ease-mola); }
-.aba-cat:hover .aba-cat-icone { transform: translateY(-2px); }
+@media (hover: hover) and (pointer: fine) { .aba-cat:hover .aba-cat-icone { transform: translateY(-2px); } }
 .aba-cat:active .aba-cat-icone { transform: scale(.94); }
 
 /* Foco visível só para teclado */
 :where(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 12px; }
 
 /* Cards de evento */
-.card-evento { box-shadow: var(--sombra-1); transition: transform .25s var(--ease-saida), box-shadow .25s var(--ease-saida), border-color .25s var(--ease-saida); }
-.card-evento:hover { transform: translateY(-3px); box-shadow: var(--sombra-2); }
-.card-evento .card-img { transition: transform .5s var(--ease-saida); }
-.card-evento:hover .card-img { transform: scale(1.04); }
+.card-evento { box-shadow: var(--sombra-1); transition: box-shadow .25s var(--ease-saida), border-color .25s var(--ease-saida); }
+.card-evento .card-img { transition: transform .6s var(--ease-saida); }
+.card-evento:active { transform: scale(.985); transition: transform 90ms var(--ease-saida); }
+@media (hover: hover) and (pointer: fine) {
+  .card-evento:hover { box-shadow: var(--sombra-2); border-color: color-mix(in oklab, var(--brand) 40%, var(--line)); }
+  .card-evento:hover .card-img { transform: scale(1.045); }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-  .card-evento:hover, .aba-cat:hover .aba-cat-icone { transform: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+  .card-evento:hover .card-img, .aba-cat:hover .aba-cat-icone { transform: none; }
 }
+
+/* Detalhes de "produto pronto" (production-polish §6) */
+::selection { background: var(--accent); color: var(--on-accent); }
+:root { accent-color: var(--brand); caret-color: var(--brand); }
+@media (hover: hover) and (pointer: fine) { html { scrollbar-gutter: stable; } }
+a { text-underline-offset: .18em; text-decoration-thickness: from-font; }
+:is(a, button) { -webkit-tap-highlight-color: transparent; }
+@keyframes brilho { from { background-position: 150% 0 } to { background-position: -50% 0 } }
+.esqueleto { background: linear-gradient(100deg, var(--surface-2) 30%, color-mix(in oklab, var(--surface-2) 55%, var(--surface)) 50%, var(--surface-2) 70%) 0 0 / 200% 100%; animation: brilho 1.4s linear infinite; }
 
 /* Mapa no tema escuro: inverte as cores do OpenStreetMap e puxa para o roxo do site */
 .mapa-escuro .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(.95) contrast(.9) saturate(.6); }

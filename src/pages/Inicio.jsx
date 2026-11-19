@@ -126,7 +126,7 @@ export default function Inicio() {
       <main className="mx-auto max-w-5xl px-4 pb-24">
         <section className="pb-4 pt-8 sm:pt-12">
           <p className="text-sm font-bold uppercase tracking-widest text-brand">Francisco Beltrão e região</p>
-          <h1 className="mt-3 font-display text-5xl uppercase leading-[.95] sm:text-7xl">
+          <h1 className="mt-3 font-display text-[clamp(3.6rem,13vw,7.5rem)] uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
           <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.</p>
@@ -205,15 +205,25 @@ export default function Inicio() {
 
         {erro && <p className="mt-8 rounded-xl bg-danger/10 p-4 text-danger">{erro}</p>}
         {!eventos && !erro && (
-          <div className="mt-6 space-y-3">{[1, 2, 3].map((i) => <div key={i} className="h-32 animate-pulse rounded-2xl bg-surface-2" />)}</div>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" aria-label="Carregando eventos">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border border-line bg-surface">
+                <div className="esqueleto aspect-[4/5]" />
+                <div className="space-y-2 p-3"><div className="esqueleto h-3 w-1/2 rounded" /><div className="esqueleto h-3 w-4/5 rounded" /></div>
+              </div>
+            ))}
+          </div>
         )}
 
         {eventos && grupos.length === 0 && (
           <div className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center">
             <CalendarX2 className="mx-auto mb-2 size-10 text-brand" aria-hidden />
             <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : 'por enquanto'}</p>
-            <p className="mt-1 text-muted">{temFiltro ? 'Tenta tirar algum filtro.' : 'Volta logo que a agenda enche.'}</p>
-            <Link to="/divulgar" className="btn-accent mt-4">Divulgar um evento</Link>
+            <p className="mt-1 text-muted">{temFiltro ? 'Tenta outro dia, outra categoria ou uma distância maior.' : 'Volta logo que a agenda enche.'}</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {temFiltro && <button onClick={() => { setRaioTela(RAIO_MAX); setTextoBusca(''); setParams({}, { replace: true }) }} className="btn-brand">Ver tudo</button>}
+              <Link to="/divulgar" className={temFiltro ? 'btn-ghost' : 'btn-accent'}>Divulgar um evento</Link>
+            </div>
           </div>
         )}
 
