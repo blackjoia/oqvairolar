@@ -174,15 +174,20 @@ export default function Inicio() {
 
           {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
           {pos && (
-            <div className="mt-2 flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2">
-              <Navigation className="size-4 shrink-0 text-brand" aria-hidden />
-              <label className="flex min-w-0 flex-1 items-center gap-3">
-                <span className="w-32 shrink-0 text-sm font-bold text-brand tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
-                <input type="range" min="5" max={RAIO_MAX} step="5" value={raioTela} aria-label="Distância máxima"
-                  onChange={(x) => setRaioTela(Number(x.target.value))}
-                  className="min-w-0 flex-1 accent-[var(--brand)]" />
-              </label>
-              <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand underline underline-offset-2">Desligar</button>
+            <div className="mt-2 w-full rounded-xl border border-line bg-surface px-3 pb-1.5 pt-2 sm:max-w-sm">
+              <div className="flex items-center gap-2">
+                <Navigation className="size-4 shrink-0 text-brand" aria-hidden />
+                <span className="flex-1 text-sm font-bold text-brand tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
+                <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand underline underline-offset-2">Desligar</button>
+              </div>
+              <input type="range" min="5" max={RAIO_MAX} step="5" value={raioTela} aria-label="Distância máxima"
+                onChange={(x) => setRaioTela(Number(x.target.value))}
+                className="mt-1 block w-full accent-[var(--brand)]" />
+              <div className="relative mx-2 h-4 text-[10px] font-semibold text-muted tabular-nums" aria-hidden>
+                {[0, 50, 100, 150, 200, 250].map((v) => (
+                  <span key={v} className="absolute -translate-x-1/2" style={{ left: `${Math.max(0, (v - 5) / (RAIO_MAX - 5)) * 100}%` }}>{v}</span>
+                ))}
+              </div>
             </div>
           )}
 
