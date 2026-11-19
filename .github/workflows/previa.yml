@@ -43,7 +43,8 @@ jobs:
       - name: Avisar o link no commit
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments -f body="Versão de teste: ${{ steps.canal.outputs.url }}"
+        run: |
+          gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments -f body="Versão de teste: ${{ steps.canal.outputs.url }}"
       - name: Apagar a chave
         if: always()
         run: rm -f "$RUNNER_TEMP/chave.json"
