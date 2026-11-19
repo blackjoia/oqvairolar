@@ -16,6 +16,8 @@
   --on-accent: #1a1630;
   --danger: #e11d48;
   --logo-q: #6d28ff;
+  --sombra-1: 0 1px 2px rgb(26 22 48 / .06), 0 1px 1px rgb(26 22 48 / .04);
+  --sombra-2: 0 1px 2px rgb(26 22 48 / .06), 0 10px 28px -12px rgb(46 20 140 / .28);
   color-scheme: light;
 }
 .dark {
@@ -32,6 +34,8 @@
   --on-accent: #1a1630;
   --danger: #fb7185;
   --logo-q: #c6ff00;
+  --sombra-1: 0 1px 2px rgb(0 0 0 / .3);
+  --sombra-2: 0 1px 2px rgb(0 0 0 / .3), 0 12px 30px -12px rgb(0 0 0 / .6);
   color-scheme: dark;
 }
 
@@ -50,6 +54,8 @@
   --color-danger: var(--danger);
   --font-display: "Anton", Impact, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --ease-saida: cubic-bezier(.2, .8, .2, 1);
+  --ease-mola: cubic-bezier(.34, 1.4, .64, 1);
 }
 
 html, body { background: var(--bg); color: var(--ink); }
@@ -62,15 +68,71 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 }
 @utility rotulo { @apply mb-1 block text-sm font-semibold text-ink; }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold transition active:scale-[.98] disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold disabled:opacity-50 disabled:pointer-events-none;
+  transition: background-color .18s var(--ease-saida), border-color .18s var(--ease-saida), color .18s var(--ease-saida), box-shadow .18s var(--ease-saida), transform .12s var(--ease-saida);
+  &:active { transform: scale(.97); }
 }
-@utility btn-brand { @apply btn bg-brand text-on-brand hover:bg-brand-strong; }
-@utility btn-accent { @apply btn bg-accent text-on-accent hover:brightness-95; }
-@utility btn-ghost { @apply btn border border-line bg-surface text-ink hover:bg-surface-2; }
+@utility btn-brand { @apply btn bg-brand text-on-brand hover:bg-brand-strong; box-shadow: inset 0 1px 0 rgb(255 255 255 / .18), 0 8px 20px -10px var(--brand); }
+@utility btn-accent { @apply btn bg-accent text-on-accent hover:brightness-95; box-shadow: inset 0 1px 0 rgb(255 255 255 / .5), 0 8px 20px -12px rgb(120 160 0 / .7); }
+@utility btn-ghost { @apply btn border border-line bg-surface text-ink hover:border-ink/20 hover:bg-surface-2; box-shadow: var(--sombra-1); }
 @utility chip {
-  @apply shrink-0 whitespace-nowrap rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition;
+  @apply inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full border border-line bg-surface px-3.5 text-sm font-semibold text-ink hover:border-ink/20 hover:bg-surface-2;
+  transition: background-color .18s var(--ease-saida), border-color .18s var(--ease-saida), color .18s var(--ease-saida), transform .12s var(--ease-saida);
+  &:active { transform: scale(.97); }
 }
-@utility chip-on { @apply border-brand bg-brand text-on-brand; }
+@utility chip-on { @apply border-brand bg-brand text-on-brand hover:border-brand hover:bg-brand-strong; }
+/* Botões redondos ao lado do seletor de dia (Perto de mim, Filtros) */
+@utility ferramenta {
+  @apply inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-sm font-semibold text-ink hover:border-ink/20 hover:bg-surface-2;
+  box-shadow: var(--sombra-1);
+  transition: background-color .18s var(--ease-saida), border-color .18s var(--ease-saida), color .18s var(--ease-saida), transform .12s var(--ease-saida);
+  &:active { transform: scale(.96); }
+}
+@utility ferramenta-on { @apply border-brand bg-brand text-on-brand hover:border-brand hover:bg-brand-strong; }
+@utility ferramenta-marcada { @apply border-brand text-brand; }
+
+/* Ações do evento (Agenda, Compartilhar, Story): ícone em cima, nome embaixo */
+@utility acao-evento {
+  @apply flex h-[4.5rem] w-full flex-col items-center justify-center gap-1 rounded-2xl border border-line bg-surface text-xs font-semibold text-ink hover:border-ink/20 hover:bg-surface-2;
+  box-shadow: var(--sombra-1);
+  transition: background-color .18s var(--ease-saida), border-color .18s var(--ease-saida), transform .12s var(--ease-saida);
+  &:active { transform: scale(.96); }
+}
+@utility acao-evento-on { @apply border-brand bg-brand text-on-brand hover:border-brand hover:bg-brand-strong; box-shadow: 0 8px 20px -10px var(--brand); }
+
+/* Escolha do tipo no formulário */
+@utility tipo-evento {
+  @apply inline-flex items-center gap-2 rounded-xl border border-line bg-surface py-1.5 pl-1.5 pr-3 text-sm font-semibold text-ink hover:border-ink/20;
+  transition: border-color .18s var(--ease-saida), background-color .18s var(--ease-saida), transform .12s var(--ease-saida);
+  &:active { transform: scale(.97); }
+}
+@utility tipo-evento-on { border-color: var(--cor); background: color-mix(in oklab, var(--cor) 10%, var(--surface)); box-shadow: 0 0 0 1px var(--cor); }
+.tipo-evento-icone { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: var(--cor); background: color-mix(in oklab, var(--cor) 14%, transparent); transition: background-color .18s, color .18s; }
+.tipo-evento-on .tipo-evento-icone { background: var(--cor); color: #fff; }
+
+/* Seletor de dia: destaque que desliza com leve "mola" */
+.segmento-ind { transition: transform .38s var(--ease-mola), width .3s var(--ease-saida); }
+.segmento { transition: color .2s var(--ease-saida); }
+.segmento:active { transform: scale(.97); }
+/* Abas de categoria */
+.aba-cat { transition: opacity .18s var(--ease-saida); }
+.aba-cat-icone { transition: background-color .2s var(--ease-saida), color .2s var(--ease-saida), box-shadow .2s var(--ease-saida), transform .2s var(--ease-mola); }
+.aba-cat:hover .aba-cat-icone { transform: translateY(-2px); }
+.aba-cat:active .aba-cat-icone { transform: scale(.94); }
+
+/* Foco visível só para teclado */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 12px; }
+
+/* Cards de evento */
+.card-evento { box-shadow: var(--sombra-1); transition: transform .25s var(--ease-saida), box-shadow .25s var(--ease-saida), border-color .25s var(--ease-saida); }
+.card-evento:hover { transform: translateY(-3px); box-shadow: var(--sombra-2); }
+.card-evento .card-img { transition: transform .5s var(--ease-saida); }
+.card-evento:hover .card-img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .card-evento:hover, .aba-cat:hover .aba-cat-icone { transform: none; }
+}
 
 /* Mapa no tema escuro: inverte as cores do OpenStreetMap e puxa para o roxo do site */
 .mapa-escuro .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(.95) contrast(.9) saturate(.6); }
