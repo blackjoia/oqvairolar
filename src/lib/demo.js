@@ -38,7 +38,7 @@ export const DEMO_PASSADOS = [
   ['Rock na Praça', -13, 'Praça Central', 'Pato Branco', null],
   ['Sextou com Os Tralhas', -20, 'Bar do Plets', 'Francisco Beltrão', 'Couvert free'],
   ['Festival de Inverno', -41, 'Parque de Exposições', 'Dois Vizinhos', 'R$ 30'],
-  ['Os Tralhas no Kroko Deck', -55, 'Kroko Deck', 'Francisco Beltrão', 'R$ 15'],
+  ['Os Tralhas na Choperia', -55, 'Choperia Central', 'Ampére', 'R$ 15'],
   ['Noite Cover', -69, 'Avenida Bombar', 'Pato Branco', 'R$ 20'],
   ['Aniversário do Bar do Zé', -90, 'Bar do Zé', 'Francisco Beltrão', 'R$ 20'],
   ['Rock Solidário', -120, 'Clube Comercial', 'Realeza', '1 kg de alimento'],
