@@ -10,7 +10,12 @@ const db = getFirestore()
 const pasta = new URL('../eventos-novos/', import.meta.url)
 let novos = 0
 for (const arq of readdirSync(pasta).filter((f) => f.endsWith('.json'))) {
-  const { comum = {}, eventos = [] } = JSON.parse(readFileSync(new URL(arq, pasta), 'utf8'))
+  const { comum = {}, eventos = [], remover = [] } = JSON.parse(readFileSync(new URL(arq, pasta), 'utf8'))
+  // "remover": ids de eventos de teste ou errados que devem sair do site
+  for (const id of remover) {
+    const ref = db.collection('eventos').doc(id)
+    if ((await ref.get()).exists) { await ref.delete(); console.log('removido:', id) }
+  }
   for (const { id, ...e } of eventos) {
     const ref = db.collection('eventos').doc(id), marca = db.collection('importados').doc(id)
     const { rev = 1, ...resto } = e

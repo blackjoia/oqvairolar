@@ -46,7 +46,13 @@ export default function AvisosAdmin({ uid }) {
     } catch (x) { setEstado(x.message || 'Não deu para ativar agora.') }
   }
 
-  const ios = aparelhoIOS(), app = appInstalado()
+  const ios = aparelhoIOS()
+  // Só conta como "app do painel" quando abriu pelo ícone Admin OQVR (start_url com ?o=app-admin).
+  // Aberto dentro do app da agenda, mostra como instalar o painel separado.
+  try { if (location.search.includes('o=app-admin')) sessionStorage.setItem('appAdmin', '1') } catch {}
+  const noAdmin = (() => { try { return sessionStorage.getItem('appAdmin') === '1' } catch { return false } })()
+  const noAppAgenda = appInstalado() && !noAdmin
+  const app = appInstalado() && noAdmin
   if (ligado && (app || fechado)) return null
   if (fechado && !podeInstalar) return null
   return (
@@ -56,7 +62,8 @@ export default function AvisosAdmin({ uid }) {
         <div className="min-w-0 flex-1 pr-8 text-sm">
           <p className="font-bold">Painel no celular, com aviso de envio novo</p>
           <p className="text-muted">
-            {app ? 'Ative os avisos para saber quando chegar evento pelo formulário ou pedido de página.'
+            {noAppAgenda ? <>Você está no app da agenda. Para ter o painel separado, abra <b>oquevairolar.com.br/admin</b> no {ios ? 'Safari' : 'Chrome'} e toque em <b>Instalar painel</b>{ios ? ' (ou Compartilhar e Adicionar à Tela de Início)' : ' (ou no menu ⋮, Instalar app)'}.</>
+              : app ? 'Ative os avisos para saber quando chegar evento pelo formulário ou pedido de página.'
               : ios ? <>Instale o painel como app: toque em <Share className="inline size-4" aria-label="Compartilhar" /> <b>Compartilhar</b> e em <b>Adicionar à Tela de Início</b>. No iPhone, os avisos só funcionam pelo app instalado.</>
               : 'Instale o painel como um app separado (ícone "Admin OQVR") e ative os avisos para saber quando chegar evento ou pedido.'}
           </p>
