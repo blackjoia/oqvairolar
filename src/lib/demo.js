@@ -5,6 +5,10 @@ export const DEMO = [
   { id: 'samba-demo', titulo: 'Roda de Samba no Parque', categoria: 'musica', generos: ['Samba', 'Pagode'], inicio: h(1, 16), localNome: 'Parque Alvorada', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
   { id: 'corrida-demo', titulo: 'Corrida Noturna 5K', categoria: 'esporte', generos: [], inicio: h(2, 19, 30), localNome: 'Praça Central', cidade: 'Pato Branco', preco: 'R$ 60 inscrição', status: 'publicado' },
   { id: 'eletronica-demo', titulo: 'Sunset Eletrônico', categoria: 'festa', generos: ['Eletrônica'], inicio: h(3, 18), localNome: 'Espaço Verde', cidade: 'Dois Vizinhos', preco: 'R$ 40', status: 'publicado' },
+  { id: 'jazz-demo', titulo: 'Jazz no Café', categoria: 'musica', inicio: h(1, 20), localNome: 'Café Central', cidade: 'Francisco Beltrão', preco: 'R$ 15', status: 'publicado' },
+  { id: 'teatro-demo', titulo: 'Peça Infantil: O Pequeno Príncipe', categoria: 'cultura', inicio: h(2, 15), localNome: 'Teatro Municipal', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
+  { id: 'feira-demo', titulo: 'Feira Gastronômica do Sudoeste', categoria: 'gastronomia', inicio: h(3, 11), localNome: 'Parque de Exposições', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
+  { id: 'pagode-demo', titulo: 'Pagode do Domingão', categoria: 'musica', inicio: h(4, 17), localNome: 'Bar do Zé', cidade: 'Francisco Beltrão', preco: 'R$ 10', status: 'publicado' },
   { id: 'metal-demo', titulo: 'Metal Fest Sudoeste', categoria: 'musica', generos: ['Metal', 'Autoral'], inicio: h(6, 20), localNome: 'Galpão 77', cidade: 'Francisco Beltrão', preco: 'R$ 35', status: 'publicado' },
 ]
 

@@ -9,7 +9,8 @@ import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
 import { filtro } from '../lib/visitas'
-import { SlidersHorizontal, X, CalendarX2, ChevronDown } from 'lucide-react'
+import { normalizar } from '../lib/parecidos'
+import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -28,6 +29,7 @@ export default function Inicio() {
   const cidade = params.get('cidade') || ''
   const genero = params.get('genero') || ''
   const cat = params.get('categoria') || ''
+  const busca = params.get('q') || ''
 
   const setFiltro = (k, v) => {
     const p = new URLSearchParams(params)
@@ -45,6 +47,11 @@ export default function Inicio() {
   const cidades = useMemo(() => [...new Set(futuros.map((e) => e.cidade).filter(Boolean))].sort(), [futuros])
   const generos = useMemo(() => [...new Set(futuros.flatMap((e) => e.generos || []))].sort(), [futuros])
 
+  const termos = useMemo(() => normalizar(busca).split(/\s+/).filter(Boolean), [busca])
+  const [textoBusca, setTextoBusca] = useState(busca)
+  useEffect(() => { setTextoBusca((t) => (normalizar(t).trim() === normalizar(busca).trim() ? t : busca)) }, [busca])
+  useEffect(() => { const t = setTimeout(() => { if (textoBusca !== busca) { const p = new URLSearchParams(params); if (textoBusca.trim()) p.set('q', textoBusca); else p.delete('q'); setParams(p, { replace: true }); if (textoBusca.trim().length > 2) filtro('busca', textoBusca.trim()) } }, 400); return () => clearTimeout(t) }, [textoBusca]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const filtrados = useMemo(() => {
     const [ini, fim] = faixaDia(dia)
     return futuros.filter((e) => {
@@ -55,9 +62,13 @@ export default function Inicio() {
       if (cidade && e.cidade !== cidade) return false
       if (genero && !(e.generos || []).includes(genero)) return false
       if (cat && e.categoria !== cat) return false
+      if (termos.length) {
+        const texto = normalizar([e.titulo, e.localNome, e.cidade, e.descricao, e.instagram, ...(e.atracoes || []), ...(e.generos || []), ...(e.outrosNomes || [])].join(' '))
+        if (!termos.every((t) => texto.includes(t))) return false
+      }
       return true
-    })
-  }, [futuros, dia, cidade, genero, cat])
+    }).sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
+  }, [futuros, dia, cidade, genero, cat, termos])
 
   const grupos = useMemo(() => {
     const m = new Map()
@@ -71,7 +82,7 @@ export default function Inicio() {
 
   const nExtras = [cidade, genero].filter(Boolean).length
   const nFiltros = nExtras + (cat ? 1 : 0)
-  const temFiltro = dia !== 'todos' || nFiltros > 0
+  const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca
 
   return (
     <>
@@ -83,6 +94,12 @@ export default function Inicio() {
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
           <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.</p>
+          <label className="relative mt-5 block max-w-xl">
+            <span className="sr-only">Buscar</span>
+            <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
+            <input type="search" value={textoBusca} onChange={(x) => setTextoBusca(x.target.value)} placeholder="Buscar banda, bar ou evento"
+              className="campo rounded-full py-3 pl-12" enterKeyHint="search" />
+          </label>
         </section>
 
         <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">

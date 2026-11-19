@@ -127,12 +127,32 @@ for (const e of eventos) {
 }
 // Mapa do site para o Google (só eventos que ainda não passaram)
 const futuros = eventos.filter((e) => (e.fim || e.inicio).getTime() > agora - 86400000)
+// Páginas de locais e atrações (bares, bandas): prévia com o nome e quantos eventos vêm aí
+const slug = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)
+const locais = new Map()
+for (const e of futuros) {
+  const nomes = [e.localNome, ...(e.atracoes || [])].filter(Boolean)
+  for (const nome of nomes) { const k = slug(nome); if (!k) continue; const l = locais.get(k) || { nome, eventos: [] }; l.eventos.push(e); locais.set(k, l) }
+}
+mkdirSync(new URL('local/', DIST), { recursive: true })
+for (const [k, l] of locais) {
+  const ev = l.eventos.sort((a, b) => a.inicio - b.inicio)[0]
+  const fake = { ...ev, titulo: l.nome, id: ev.id }
+  let h = pagina(fake, true)
+  const desc = `${l.eventos.length} ${l.eventos.length === 1 ? 'evento' : 'eventos'} na agenda. Próximo: ${ev.titulo}, ${dataLonga(ev.inicio)}.`
+  h = h.replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${esc(desc)}"`)
+    .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${esc(desc)}"`)
+    .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${SITE}/local/${k}"`)
+    .replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${SITE}/local/${k}"`)
+  writeFileSync(new URL(`local/${k}.html`, DIST), h)
+}
 writeFileSync(new URL('sitemap.xml', DIST), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${SITE}/</loc><changefreq>hourly</changefreq></url>
   <url><loc>${SITE}/divulgar</loc></url>
 ${futuros.map((e) => `  <url><loc>${SITE}/evento/${e.id}</loc></url>`).join('\n')}
+${[...locais.keys()].map((k) => `  <url><loc>${SITE}/local/${k}</loc></url>`).join('\n')}
 </urlset>
 `)
 writeFileSync(new URL('robots.txt', DIST), `User-agent: *\nDisallow: /admin\nSitemap: ${SITE}/sitemap.xml\n`)
-console.log(`Prévias geradas: ${n} eventos (${futuros.length} no sitemap).`)
+console.log(`Prévias geradas: ${n} eventos, ${locais.size} locais/atrações (${futuros.length} eventos no sitemap).`)

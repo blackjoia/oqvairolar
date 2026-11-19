@@ -67,6 +67,19 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
+    // "Eu vou" / "Tenho interesse": um documento por aparelho e evento (id = eventoId_visitante).
+    match /presencas/{id} {
+      allow read: if true;
+      allow create, update: if request.resource.data.keys().hasOnly(['eventoId', 'visitante', 'tipo', 'em'])
+        && request.resource.data.tipo in ['vou', 'interesse']
+        && request.resource.data.eventoId is string && request.resource.data.eventoId.size() <= 120
+        && request.resource.data.visitante is string && request.resource.data.visitante.size() <= 20
+        && id == request.resource.data.eventoId + '_' + request.resource.data.visitante
+        && request.resource.data.em == request.time
+        && exists(/databases/$(database)/documents/eventos/$(request.resource.data.eventoId));
+      allow delete: if true;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

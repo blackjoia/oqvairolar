@@ -5,6 +5,7 @@ import { Download, MoreHorizontal, Plus } from 'lucide-react'
 import { listarTodos, mudarStatus, apagarEvento, criarEvento } from '../../lib/eventos'
 import { diaMes, mesCurto, hora, diaSemana } from '../../lib/datas'
 import { STATUS } from '../../lib/constantes'
+import { acharParecidos } from '../../lib/parecidos'
 
 const ABAS = [
   { id: 'proximos', nome: 'Próximos' },
@@ -98,6 +99,11 @@ export default function Lista() {
               <Link to={`/admin/evento/${e.id}`} className="block truncate font-bold hover:text-brand">{e.titulo}</Link>
               <p className="truncate text-sm text-muted">{[e.localNome, e.cidade].filter(Boolean).join(' · ')}</p>
               {e.enviadoPor && <p className="truncate text-xs text-muted">Enviado por {e.enviadoPor.nome} · {e.enviadoPor.contato}</p>}
+              {e.status === 'pendente' && acharParecidos(e, eventos).length > 0 && (
+                <Link to={`/admin/evento/${e.id}`} className="mt-0.5 inline-block rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-on-accent">Pode ser repetido · abrir para juntar</Link>
+              )}
+              {e.destaque && <span className="mt-0.5 mr-1 inline-block rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-on-brand">Destaque</span>}
+              {e.serie && <span className="mt-0.5 inline-block rounded-full border border-line px-2 py-0.5 text-xs text-muted">Repete</span>}
             </div>
             <div className="flex shrink-0 flex-col gap-1 sm:flex-row">
               {e.status !== 'publicado'
