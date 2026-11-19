@@ -43,9 +43,17 @@ function origem() {
 }
 
 let origemSessao = null
-function dadosBase() {
-  let nova = false
-  try { if (!sessionStorage.getItem('sid')) nova = true } catch {}
+// "nova" = primeiro acesso deste aparelho nas últimas 24 horas (recarregar a página não conta de novo)
+function acessoNovo() {
+  try {
+    const ult = Number(localStorage.getItem('ultimoAcesso') || 0)
+    if (Date.now() - ult < 86400000) return false
+    localStorage.setItem('ultimoAcesso', String(Date.now()))
+    return true
+  } catch { return false }
+}
+function dadosBase(tipo) {
+  const nova = tipo === 'pagina' ? acessoNovo() : false
   const sessao = guardado(sessionStorage, 'sid')
   if (!origemSessao) {
     try { origemSessao = sessionStorage.getItem('origem') } catch {}
@@ -58,7 +66,7 @@ function dadosBase() {
 export function registrar(tipo, extra = {}) {
   if (desligado()) return
   const d = {
-    tipo, ...dadosBase(),
+    tipo, ...dadosBase(tipo),
     pagina: location.pathname.slice(0, 200),
     eventoId: extra.eventoId ? String(extra.eventoId).slice(0, 120) : null,
     acao: extra.acao ? String(extra.acao).slice(0, 30) : null,
@@ -72,9 +80,11 @@ export const clique = (acao, eventoId) => registrar('clique', { acao, eventoId }
 export const filtro = (acao, valor) => registrar('filtro', { acao, valor })
 
 // Painel do admin: lê as visitas dos últimos N dias.
+// Estatísticas zeradas a pedido do Luis: só conta a partir de 19/11/2026 15h20 (Brasília).
+export const CONTAR_DESDE = new Date('2026-11-19T15:20:00-03:00')
 export async function listarVisitas(dias) {
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return (await import('./demo')).visitasDemo(dias)
-  const desde = Timestamp.fromDate(new Date(Date.now() - dias * 86400000))
+  const desde = Timestamp.fromDate(new Date(Math.max(Date.now() - dias * 86400000, CONTAR_DESDE.getTime())))
   // O Firestore entrega no máximo 10 mil por vez: busca em páginas (até 60 mil)
   const todos = []; let ultimo = null
   for (let i = 0; i < 6; i++) {

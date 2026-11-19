@@ -54,7 +54,9 @@ export default function Evento() {
   useEffect(() => {
     if (id.endsWith('-demo')) return
     minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
-    import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
+    // "Quem vai" só aparece para quem entrou com a conta
+    if (user) import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
+    else setRostos([])
   }, [id, user?.uid])
   const presenca = async (tipo) => {
     const novo = minha === tipo ? null : tipo
@@ -184,7 +186,12 @@ export default function Evento() {
               <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
                 <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
             )}
-            {rostos.length > 0 && (
+            {!user && !aviso && (
+              <p className="mt-3 text-sm text-muted">
+                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Faça login</button> para conferir quem vai no evento.
+              </p>
+            )}
+            {user && rostos.length > 0 && (
               <div className="mt-3 flex items-center gap-2">
                 <div className="flex -space-x-2">
                   {rostos.slice(0, 8).map((u) => (

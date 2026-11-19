@@ -61,7 +61,12 @@ export default function Estatisticas() {
     const visitantesSet = new Set(paginas.map((v) => v.visitante))
     const viramEvento = new Set(vistasEvento.map((v) => v.visitante))
     const agiram = new Set(cliques.filter((c) => ['ingresso', 'agenda', 'compartilhar', 'rota', 'story'].includes(c.acao)).map((c) => c.visitante))
-    const sessoes = new Map(); paginas.forEach((v) => { if (!sessoes.has(v.sessao)) sessoes.set(v.sessao, v) })
+    // Acesso = 1 por pessoa (aparelho) a cada 24 horas; recarregar ou abrir outras páginas não soma
+    const sessoes = new Map(); const ultimo = new Map()
+    paginas.forEach((v) => {
+      const t = v.em.getTime(), u = ultimo.get(v.visitante)
+      if (u == null || t - u >= 86400000) { ultimo.set(v.visitante, t); sessoes.set(`${v.visitante}-${t}`, v) }
+    })
 
     const vistasCat = contar(vistasEvento, (v) => nomeEv.get(v.eventoId)?.categoria || null)
     return {
@@ -87,7 +92,7 @@ export default function Estatisticas() {
       <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl uppercase">Estatísticas</h1>
-          <p className="text-sm text-muted">Quem visitou o site, o que viu e o que clicou. Suas visitas como admin não entram.</p>
+          <p className="text-sm text-muted">Quem visitou o site, o que viu e o que clicou. Suas visitas como admin não entram. Contando desde 19/11, 15h20.</p>
         </div>
         <div className="flex gap-1.5" role="group" aria-label="Período">
           {PERIODOS.map(([d, n]) => <button key={d} onClick={() => setDias(d)} className={`chip ${dias === d ? 'chip-on' : ''}`}>{n}</button>)}
@@ -100,7 +105,7 @@ export default function Estatisticas() {
       {r && (<>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <Numero Icone={Users} rotulo="Visitantes" valor={r.visitantes} sub={`${fmt(r.voltaram)} voltaram em outro dia`} />
-          <Numero Icone={Eye} rotulo="Páginas vistas" valor={r.paginas} sub={`${fmt(r.sessoes)} visitas`} />
+          <Numero Icone={Eye} rotulo="Páginas vistas" valor={r.paginas} sub={`${fmt(r.sessoes)} acessos (1 por pessoa a cada 24h)`} />
           <Numero Icone={MousePointerClick} rotulo="Eventos abertos" valor={r.vistasEvento} />
           <Numero Icone={Ticket} rotulo="Cliques em ingresso" valor={r.ingresso} />
           <Numero Icone={Share2} rotulo="Compartilhamentos" valor={r.compart} />
