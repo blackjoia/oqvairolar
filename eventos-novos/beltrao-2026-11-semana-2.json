@@ -1,0 +1,121 @@
+{
+  "comum": {
+    "cidade": "Francisco Beltrão",
+    "status": "publicado",
+    "origem": "importado",
+    "categoria": "musica"
+  },
+  "eventos": [
+    {
+      "id": "heineken-day-marlon-e-vacari-kroko-fb-2026-11-19",
+      "titulo": "Heineken Day com Marlon e Vacari",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Marlon e Vacari"
+      ],
+      "inicio": "2026-11-19T21:00:00-03:00",
+      "localNome": "Kroko Deck Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "instagram": "krokodeckfb",
+      "descricao": "Véspera de feriado: comprando 3 Heineken, a 4ª é por conta da casa. Horário não informado (o site mostra 21h como referência).",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+    },
+    {
+      "id": "sexta-deck-nilton-e-tiago-kroko-fb-2026-11-20",
+      "titulo": "Sexta Deck com Nilton & Tiago",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Nilton & Tiago"
+      ],
+      "inicio": "2026-11-20T21:00:00-03:00",
+      "localNome": "Kroko Deck Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "instagram": "krokodeckfb",
+      "descricao": "Gin tônica e tropical a R$ 19,90 para elas a noite toda. Horário não informado (o site mostra 21h como referência).",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+    },
+    {
+      "id": "roda-de-samba-dose-certa-kroko-fb-2026-11-21",
+      "titulo": "Roda de Samba com Dose Certa",
+      "generos": [
+        "Samba",
+        "Pagode"
+      ],
+      "atracoes": [
+        "Dose Certa"
+      ],
+      "inicio": "2026-11-21T17:00:00-03:00",
+      "localNome": "Kroko Deck Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "instagram": "krokodeckfb",
+      "descricao": "Caipirinha 50% off até 19h30. Horário de início não informado (o site mostra 17h como referência).",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+    },
+    {
+      "id": "tardezinha-sunset-kaique-e-felipe-kroko-fb-2026-12-05",
+      "titulo": "Tardezinha Sunset com Kaique & Felipe",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Kaique & Felipe"
+      ],
+      "inicio": "2026-12-05T16:00:00-03:00",
+      "localNome": "Kroko Deck Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "instagram": "krokodeckfb",
+      "descricao": "Ingressos pelo Cheers. Horário não informado (o site mostra 16h como referência).",
+      "fonte": "https://www.instagram.com/krokodeckfb/"
+    },
+    {
+      "id": "dr-vinil-patio-barley-2026-11-21",
+      "titulo": "Dr. Vinil no Pátio Barley",
+      "generos": [
+        "Rock"
+      ],
+      "atracoes": [
+        "Dr. Vinil"
+      ],
+      "inicio": "2026-11-21T21:00:00-03:00",
+      "localNome": "Pátio Barley",
+      "instagram": "patiobarley",
+      "descricao": "Data divulgada pela Agenda Rock Beltrão. Horário não informado (o site mostra 21h como referência).",
+      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/"
+    },
+    {
+      "id": "ao-cubo-acustico-brahzan-burger-2026-11-21",
+      "titulo": "Ao Cubo acústico no Brahzan Burger",
+      "generos": [
+        "Rock",
+        "Acústico"
+      ],
+      "atracoes": [
+        "Ao Cubo"
+      ],
+      "inicio": "2026-11-21T20:00:00-03:00",
+      "localNome": "Brahzan Burger",
+      "endereco": "Rua Londrina, 1080 · Vila Nova",
+      "instagram": "brahzanburger",
+      "descricao": "Clássicos do rock, rock nacional e pop rock. Data divulgada pela Agenda Rock Beltrão. Horário não informado (o site mostra 20h como referência).",
+      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/"
+    },
+    {
+      "id": "missao-1-nobar-fb-2026-11-20",
+      "titulo": "Missão 1 no noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "inicio": "2026-11-20T22:00:00-03:00",
+      "localNome": "noBar! Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro",
+      "instagram": "nobarunifb",
+      "descricao": "Sexta vira território de missão: cadastre-se no link da bio do bar, guarde o código e vá ao bar na sexta. Horário não informado (o site mostra 22h como referência).",
+      "fonte": "https://www.instagram.com/nobarunifb/reel/Df4xPNuBRQ9/"
+    }
+  ]
+}
