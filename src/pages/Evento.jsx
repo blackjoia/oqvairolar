@@ -11,9 +11,11 @@ import { useAuth } from '../lib/auth'
 import MapaVer from '../components/MapaVer'
 import { gerarStory } from '../lib/story'
 import { clique } from '../lib/visitas'
+import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
+import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
-import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star } from 'lucide-react'
+import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
@@ -21,6 +23,16 @@ export default function Evento() {
   const [e, setE] = useState(undefined)
   const pos = useMinhaPosicao()
   const [erroLocal, setErroLocal] = useState('')
+  const [lembrete, setLembrete] = useState({ suporte: null, ligado: false, carregando: false, erro: '' })
+  useEffect(() => { podeLembrar().then((suporte) => setLembrete((l) => ({ ...l, suporte, ligado: temLembrete(id) }))).catch(() => {}) }, [id])
+  async function alternarLembrete() {
+    if (lembrete.suporte === 'ios-instalar') { abrirInstalar(); return }
+    setLembrete((l) => ({ ...l, carregando: true, erro: '' }))
+    try {
+      if (lembrete.ligado) { await desligarLembrete(id); setLembrete((l) => ({ ...l, ligado: false, carregando: false })) }
+      else { await ligarLembrete(id); setLembrete((l) => ({ ...l, ligado: true, carregando: false })) }
+    } catch (x) { setLembrete((l) => ({ ...l, carregando: false, erro: x.message || 'Não deu para ativar o lembrete agora.' })) }
+  }
   const [copiado, setCopiado] = useState(false)
   const [agendaAberta, setAgendaAberta] = useState(false)
   const [story, setStory] = useState('')
@@ -125,6 +137,17 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> Tenho interesse{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
+            {lembrete.suporte && lembrete.suporte !== 'nao-suporta' && e.inicio > new Date() && (
+              <>
+                <button onClick={alternarLembrete} disabled={lembrete.carregando} aria-pressed={lembrete.ligado}
+                  className={`btn mt-2 w-full py-3 ${lembrete.ligado ? 'bg-brand/10 text-brand' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
+                  {lembrete.carregando ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : lembrete.ligado ? <BellRing className="size-5" aria-hidden /> : <Bell className="size-5" aria-hidden />}
+                  {lembrete.ligado ? 'Lembrete ativado · tocar para tirar' : 'Me lembrar no celular'}
+                </button>
+                <p className="mt-1 text-xs text-muted">{lembrete.suporte === 'ios-instalar' ? 'No iPhone, o lembrete funciona com o app instalado na tela de início.' : 'Você recebe um aviso umas 3 horas antes de começar.'}</p>
+                {lembrete.erro && <p className="mt-1 text-xs text-danger">{lembrete.erro}</p>}
+              </>
+            )}
             {(contagem.vou + contagem.interesse) >= 3 && (
               <p className="mt-2 text-sm font-semibold text-brand">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
             )}

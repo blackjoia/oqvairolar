@@ -80,6 +80,18 @@ service cloud.firestore {
       allow delete: if true;
     }
 
+    match /lembretes/{id} {
+      allow read: if false;
+      allow create, update: if request.resource.data.keys().hasOnly(['eventoId', 'visitante', 'token', 'em'])
+        && request.resource.data.eventoId is string && request.resource.data.eventoId.size() <= 120
+        && request.resource.data.visitante is string && request.resource.data.visitante.size() <= 20
+        && request.resource.data.token is string && request.resource.data.token.size() <= 4096
+        && id == request.resource.data.eventoId + '_' + request.resource.data.visitante
+        && request.resource.data.em == request.time
+        && exists(/databases/$(database)/documents/eventos/$(request.resource.data.eventoId));
+      allow delete: if true;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
