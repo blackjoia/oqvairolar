@@ -17,12 +17,12 @@
       ],
       "inicio": "2026-11-19T21:00:00-03:00",
       "localNome": "Kroko Deck Francisco Beltrão",
-      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314 · Centro",
       "instagram": "krokodeckfb",
       "descricao": "Véspera de feriado: comprando 3 Heineken, a 4ª é por conta da casa.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.0935863,
       "lng": -53.0310943
     },
@@ -37,12 +37,12 @@
       ],
       "inicio": "2026-11-20T21:00:00-03:00",
       "localNome": "Kroko Deck Francisco Beltrão",
-      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314 · Centro",
       "instagram": "krokodeckfb",
       "descricao": "Gin tônica e tropical a R$ 19,90 para elas a noite toda.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.0935863,
       "lng": -53.0310943
     },
@@ -58,12 +58,12 @@
       ],
       "inicio": "2026-11-21T17:00:00-03:00",
       "localNome": "Kroko Deck Francisco Beltrão",
-      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314 · Centro",
       "instagram": "krokodeckfb",
       "descricao": "Caipirinha 50% off até 19h30.",
       "fonte": "https://www.instagram.com/stories/krokodeckfb/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.0935863,
       "lng": -53.0310943
     },
@@ -78,12 +78,12 @@
       ],
       "inicio": "2026-12-05T16:00:00-03:00",
       "localNome": "Kroko Deck Francisco Beltrão",
-      "endereco": "Av. Júlio Assis Cavalheiro, 3314",
+      "endereco": "Av. Júlio Assis Cavalheiro, 3314 · Centro",
       "instagram": "krokodeckfb",
       "descricao": "Ingressos pelo Cheers.",
       "fonte": "https://www.instagram.com/krokodeckfb/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.0935863,
       "lng": -53.0310943
     },
@@ -99,12 +99,16 @@
       "inicio": "2026-11-21T21:00:00-03:00",
       "localNome": "Pátio Barley",
       "instagram": "patiobarley",
-      "descricao": "Data divulgada pela Agenda Rock Beltrão.",
+      "descricao": "Música ao vivo com a banda Dr. Vinil. Couvert free.",
       "fonte": "https://www.instagram.com/p/DfnT3nWPBha/",
       "semHora": true,
-      "rev": 3,
+      "rev": 5,
       "lat": -26.0916709,
-      "lng": -53.0374324
+      "lng": -53.0374324,
+      "endereco": "Av. Júlio Assis Cavalheiro · Industrial",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/dr-vinil-patio-barley.jpg",
+      "gratuito": true,
+      "preco": "Couvert free"
     },
     {
       "id": "ao-cubo-acustico-brahzan-burger-2026-11-21",
@@ -136,14 +140,36 @@
       ],
       "inicio": "2026-11-20T22:00:00-03:00",
       "localNome": "noBar! Francisco Beltrão",
-      "endereco": "Av. Júlio Assis Cavalheiro",
+      "endereco": "Av. Júlio Assis Cavalheiro · Industrial",
       "instagram": "nobarunifb",
       "descricao": "Sexta vira território de missão: cadastre-se no link da bio do bar, guarde o código e vá ao bar na sexta.",
       "fonte": "https://www.instagram.com/nobarunifb/reel/Df4xPNuBRQ9/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.0855578,
       "lng": -53.0443721
+    },
+    {
+      "localNome": "Pátio Barley",
+      "instagram": "patiobarley",
+      "fonte": "https://www.instagram.com/patiobarley/",
+      "semHora": true,
+      "lat": -26.0916709,
+      "lng": -53.0374324,
+      "endereco": "Av. Júlio Assis Cavalheiro · Industrial",
+      "gratuito": true,
+      "preco": "Couvert free",
+      "id": "veto-rubas-patio-barley-2026-11-20",
+      "titulo": "Veto Rubas",
+      "atracoes": [
+        "Veto Rubas"
+      ],
+      "generos": [
+        "Acústico"
+      ],
+      "inicio": "2026-11-20T21:00:00-03:00",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/veto-rubas-patio-barley.jpg",
+      "descricao": "Música ao vivo, voz e violão com Veto Rubas. Couvert free."
     }
   ]
 }
