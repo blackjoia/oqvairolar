@@ -4,6 +4,7 @@ import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
 import Logo from '../components/Logo'
 import Deslizar from '../components/Deslizar'
+import Destaques from '../components/Destaques'
 import Segmentado from '../components/Segmentado'
 import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
@@ -137,14 +138,15 @@ export default function Inicio() {
     <>
       <Topo />
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
-        <section className="pb-4 pt-5 sm:pt-12">
+        <section className="pb-4 pt-5 sm:pt-12 md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_340px]">
           <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Francisco Beltrão e região</p>
           <h1 className="mt-2 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
-          <p className="mt-2 max-w-xl text-muted sm:mt-4"><span className="hidden sm:inline">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}</span>
+          <p className="mt-4 hidden max-w-xl text-muted md:block">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
             <Link to="/semana" className="link-toque -my-2 whitespace-nowrap font-semibold text-brand-ink underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
-          <label className="relative mt-3 block max-w-xl sm:mt-5">
+          <Destaques semana={eventos ? eventos.filter((e) => e.inicio - Date.now() < 7 * 86400000).length : 0} />
+          <label className="relative mt-4 block max-w-xl md:mt-5">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
             <input type="search" value={textoBusca} onChange={(x) => setTextoBusca(x.target.value)} placeholder="Buscar banda, bar ou evento"

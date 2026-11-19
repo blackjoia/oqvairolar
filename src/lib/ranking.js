@@ -46,3 +46,10 @@ export async function fazerCheckin(e) {
   clique('to-aqui', e.id)
   return null
 }
+
+// Dados fictícios para mostrar como fica (abra /ranking?demo). Bares reais de Beltrão, números inventados.
+const pessoa = (nome, n, i) => ({ uid: 'demo' + i, nome, n, foto: '' })
+export const DEMO = {
+  pessoas: [['Ana P.', 9], ['Rafa M.', 8], ['Luis', 7], ['Bruna K.', 6], ['Diego S.', 5], ['Carol T.', 5], ['Jean F.', 4], ['Mari L.', 3], ['Tiago R.', 2], ['Gabi C.', 1]].map(([n, x], i) => pessoa(n, x, i)),
+  bares: [['Formosa Pub', 'formosa-pub', 38], ['Bar do Plets', 'plets', 33], ['Boteco Choppbel', 'boteco-choppbel', 21], ['Hangar 80', 'hangar-80', 16], ['Alles', 'alles', 9], ["Neco's Boteco", 'necos-boteco', 4]].map(([nome, slug, n]) => ({ nome, slug, n })),
+}
