@@ -27,3 +27,11 @@ majiayu000/claude-skill-registry css-styling (a página é só um ponteiro, sem 
 
 github.com/zhuyansen/awesome-claude-design-skills é só uma lista de links (206 repositórios avaliados), sem skill para instalar.
 | logo-design | github.com/kaankiziltug/logo-design-skill | MIT |
+
+## Animação (enviadas pelo Luis em 19/11/2026)
+- pixelfx: https://github.com/patch-gg/pixelfx (efeitos de jogo: conquista, level up, confete; princípio wind-up, freeze e recover)
+- claude-animation: https://github.com/buildwithhanif/claude-animation-skill (timing: snap e hold, antecipação, overshoot, squash)
+- text-to-lottie: https://github.com/diffusionstudio/lottie
+- openmotion: https://github.com/nexu-io/openmotion
+- animejs, react-spring-physics, lightweight-3d-effects, rive-interactive: https://github.com/freshtechbro/claudedesignskills
+- Só na sessão (vídeo e 3D, não servem para o site): blender-skills (EL4CTEO), claude-animation-skills (artemnovitckii), ClaudeAnimationBase (JohnHeibel, p5.js)
