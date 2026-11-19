@@ -96,7 +96,7 @@ export default function Lista() {
                 <span>{diaSemana(e.inicio)} {diaMes(e.inicio)} {mesCurto(e.inicio)} · {hora(e.inicio)}</span>
                 <span className={`rounded-full px-2 py-0.5 normal-case ${STATUS[e.status]?.cor || ''}`}>{STATUS[e.status]?.nome || e.status}</span>
               </div>
-              <Link to={`/admin/evento/${e.id}`} className="block truncate font-bold hover:text-brand">{e.titulo}</Link>
+              <Link to={`/admin/evento/${e.id}`} className="block truncate font-bold hover:text-brand-ink">{e.titulo}</Link>
               <p className="truncate text-sm text-muted">{[e.localNome, e.cidade].filter(Boolean).join(' · ')}</p>
               {e.enviadoPor && <p className="truncate text-xs text-muted">Enviado por {e.enviadoPor.nome} · {e.enviadoPor.contato}</p>}
               {e.status === 'pendente' && acharParecidos(e, eventos).length > 0 && (

@@ -66,7 +66,7 @@ export default function Evento() {
   if (e === undefined) return (<><Topo /><div className="mx-auto mt-8 h-96 max-w-3xl animate-pulse rounded-2xl bg-surface-2 px-4" /></>)
   if (!e) return (
     <><Topo />
-      <main className="mx-auto max-w-3xl px-4 py-16 text-center">
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-3xl px-4 py-16 text-center">
         <p className="font-display text-4xl uppercase">Evento não encontrado</p>
         <p className="mt-2 text-muted">Pode ter sido removido ou o link está errado.</p>
         <Link to="/" className="btn-brand mt-6">Ver a agenda</Link>
@@ -86,16 +86,22 @@ export default function Evento() {
   return (
     <>
       <Topo>{isAdmin ? <Link to={`/admin/evento/${e.id}`} className="btn-ghost py-2 text-sm">Editar</Link> : undefined}</Topo>
-      <main className="mx-auto max-w-5xl px-4 pb-16 pt-4">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm font-semibold text-brand"><ArrowLeft className="size-4" /> Agenda</Link>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-16 pt-4">
+        <Link to="/" className="link-toque -my-2 gap-1 text-sm font-semibold text-brand-ink"><ArrowLeft className="size-4" aria-hidden /> Agenda</Link>
         {e.status !== 'publicado' && (
           <p className="mt-3 rounded-xl bg-amber-400/20 p-3 text-sm font-semibold">Este evento está como "{e.status}" e só você (admin) consegue ver.</p>
         )}
         <div className="mt-4 grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-          <Cartaz evento={e} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
+          {e.cartazUrl ? (
+            <Cartaz evento={e} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
+          ) : (<>
+            {/* Sem cartaz de verdade: no celular, faixa baixa para data, local e botões aparecerem sem rolar */}
+            <Cartaz evento={e} largo className="aspect-[16/9] w-full rounded-2xl border border-line md:hidden" />
+            <Cartaz evento={e} className="hidden aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24 md:block" />
+          </>)}
 
           <div>
-            <span className="inline-block rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand">
+            <span className="inline-block rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-ink">
               <cat.Icone className="mr-1 inline size-3.5 align-[-2px]" aria-hidden />{cat.nome}
             </span>
             <h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-5xl">{e.titulo}</h1>
@@ -103,31 +109,31 @@ export default function Evento() {
               <p className="mt-3 text-lg font-semibold">Com {e.atracoes.map((a, i) => (
                 <span key={a}>{i > 0 && (i === e.atracoes.length - 1 ? ' e ' : ', ')}
                   {a.startsWith('@')
-                    ? <a className="text-brand" target="_blank" rel="noreferrer" onClick={() => clique('instagram', e.id)} href={`https://instagram.com/${a.slice(1)}`}>{a}</a>
-                    : <Link className="text-brand" to={`/local/${slugify(a)}`}>{a}</Link>}
+                    ? <a className="text-brand-ink" target="_blank" rel="noreferrer" onClick={() => clique('instagram', e.id)} href={`https://instagram.com/${a.slice(1)}`}>{a}</a>
+                    : <Link className="text-brand-ink" to={`/local/${slugify(a)}`}>{a}</Link>}
                 </span>))}</p>
             )}
             {!!e.generos?.length && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {e.generos.map((g) => <Link key={g} to={`/?genero=${encodeURIComponent(g)}`} className="rounded-full border border-line px-2.5 py-0.5 text-sm font-semibold text-muted hover:border-brand hover:text-brand">{g}</Link>)}
+                {e.generos.map((g) => <Link key={g} to={`/?genero=${encodeURIComponent(g)}`} className="rounded-full border border-line px-2.5 py-0.5 text-sm font-semibold text-muted hover:border-brand hover:text-brand-ink">{g}</Link>)}
               </div>
             )}
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
-              <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand" /></dt>
+              <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
                 <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}</dd></div>
-              <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand" /></dt>
-                <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand">{e.localNome}</Link> : <b>Local a confirmar</b>}
+              <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
+                <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
                   <div className="text-sm text-muted">{[e.endereco, e.cidade].filter(Boolean).join(' · ')}</div>
                   {km({ lat: 0, lng: 0 }, e) != null && (pos
-                    ? <div className="mt-1 w-fit rounded-full bg-brand/10 px-2.5 py-0.5 text-sm font-bold text-brand">{textoDistancia(km(pos, e))} de você</div>
-                    : <button onClick={() => { setErroLocal(''); pedirLocalizacao().then(() => clique('perto-de-mim')).catch((x) => setErroLocal(x.message)) }} className="mt-1 text-sm font-semibold text-brand underline underline-offset-2">Ver a distância de você</button>)}
+                    ? <div className="mt-1 w-fit rounded-full bg-brand/10 px-2.5 py-0.5 text-sm font-bold text-brand-ink">{textoDistancia(km(pos, e))} de você</div>
+                    : <button onClick={() => { setErroLocal(''); pedirLocalizacao().then(() => clique('perto-de-mim')).catch((x) => setErroLocal(x.message)) }} className="link-toque -my-2 text-sm font-semibold text-brand-ink underline underline-offset-2">Ver a distância de você</button>)}
                   {erroLocal && <div className="mt-1 text-xs text-danger">{erroLocal}</div>}</dd></div>
-              <div className="flex gap-3"><dt aria-label="Valor"><Ticket className="size-5 text-brand" /></dt>
+              <div className="flex gap-3"><dt aria-label="Valor"><Ticket className="size-5 text-brand-ink" /></dt>
                 <dd>{e.gratuito ? <b>Entrada gratuita</b> : <b>{e.preco || 'Valor a confirmar'}</b>}</dd></div>
               {e.instagram && (
-                <div className="flex gap-3"><dt aria-label="Instagram"><Instagram className="size-5 text-brand" /></dt>
-                  <dd><a className="font-semibold text-brand" target="_blank" rel="noreferrer"
+                <div className="flex gap-3"><dt aria-label="Instagram"><Instagram className="size-5 text-brand-ink" /></dt>
+                  <dd><a className="font-semibold text-brand-ink" target="_blank" rel="noreferrer"
                     onClick={() => clique('instagram', e.id)} href={`https://instagram.com/${e.instagram.replace(/^@/, '')}`}>@{e.instagram.replace(/^@/, '')}</a></dd></div>
               )}
             </dl>
@@ -144,7 +150,7 @@ export default function Evento() {
             </div>
             {aviso && (
               <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
-                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand underline underline-offset-2">Entrar</button></p>
+                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
             )}
             {rostos.length > 0 && (
               <div className="mt-3 flex items-center gap-2">
@@ -161,7 +167,7 @@ export default function Evento() {
             {lembrete.suporte && lembrete.suporte !== 'nao-suporta' && e.inicio > new Date() && (
               <>
                 <button onClick={alternarLembrete} disabled={lembrete.carregando} aria-pressed={lembrete.ligado}
-                  className={`btn mt-2 w-full py-3 ${lembrete.ligado ? 'bg-brand/10 text-brand' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
+                  className={`btn mt-2 w-full py-3 ${lembrete.ligado ? 'bg-brand/10 text-brand-ink' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
                   {lembrete.carregando ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : lembrete.ligado ? <BellRing className="size-5" aria-hidden /> : <Bell className="size-5" aria-hidden />}
                   {lembrete.ligado ? 'Lembrete ativado · tocar para tirar' : 'Me lembrar no celular'}
                 </button>
@@ -170,7 +176,7 @@ export default function Evento() {
               </>
             )}
             {(contagem.vou + contagem.interesse) >= 3 && (
-              <p className="mt-2 text-sm font-semibold text-brand">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
+              <p className="mt-2 text-sm font-semibold text-brand-ink">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
             )}
 
             {e.ingressoUrl && (
@@ -178,7 +184,7 @@ export default function Evento() {
             )}
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="relative">
-                <button onClick={() => setAgendaAberta((v) => !v)} aria-expanded={agendaAberta} className="acao-evento acao-evento-on"><CalendarPlus className="size-5" aria-hidden /><span>Agenda</span></button>
+                <button onClick={() => setAgendaAberta((v) => !v)} aria-expanded={agendaAberta} className={`acao-evento ${agendaAberta ? 'acao-evento-on' : ''}`}><CalendarPlus className="size-5" aria-hidden /><span>Agenda</span></button>
                 {agendaAberta && (
                   <div className="absolute left-0 top-full z-10 mt-1 w-60 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
                     <a onClick={() => clique('agenda', e.id)} className="block px-4 py-3 hover:bg-surface-2" target="_blank" rel="noreferrer" href={linkGoogleAgenda(e, url)}>Google Agenda (Android)</a>
@@ -186,7 +192,7 @@ export default function Evento() {
                   </div>
                 )}
               </div>
-              <button onClick={compartilhar} className="acao-evento">{copiado ? <><Check className="size-5 text-brand" aria-hidden /><span>Copiado</span></> : <><Share2 className="size-5" aria-hidden /><span>Compartilhar</span></>}</button>
+              <button onClick={compartilhar} className="acao-evento">{copiado ? <><Check className="size-5 text-brand-ink" aria-hidden /><span>Copiado</span></> : <><Share2 className="size-5" aria-hidden /><span>Compartilhar</span></>}</button>
               <button onClick={async () => { clique('story', e.id); setStory('Gerando…'); const r = await gerarStory(e); setStory(r === 'baixado' ? 'Salva!' : '') }}
                 className="acao-evento"><ImageDown className="size-5" aria-hidden /><span>{story || 'Story'}</span></button>
             </div>

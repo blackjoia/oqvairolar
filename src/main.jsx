@@ -39,7 +39,7 @@ function ContarVisitas() {
 function NaoEncontrado() {
   return (
     <main className="mx-auto max-w-md px-4 py-20 text-center">
-      <p className="font-display text-6xl uppercase text-brand">404</p>
+      <p className="font-display text-6xl uppercase text-brand-ink">404</p>
       <p className="mt-2 text-muted">Essa página não existe.</p>
       <Link to="/" className="btn-brand mt-6">Ver a agenda</Link>
     </main>

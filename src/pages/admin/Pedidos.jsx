@@ -24,7 +24,7 @@ export default function Pedidos() {
           <li key={p.id} className="flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-surface p-4">
             {p.usuario?.foto ? <img src={p.usuario.foto} alt="" referrerPolicy="no-referrer" className="size-12 rounded-xl object-cover" /> : <span className="size-12 rounded-xl bg-surface-2" />}
             <div className="min-w-0 flex-1">
-              <p className="font-semibold">{p.usuario?.nome || 'Sem nome'} quer assumir <Link to={`/local/${p.slug}`} className="text-brand">{p.nome}</Link>
+              <p className="font-semibold">{p.usuario?.nome || 'Sem nome'} quer assumir <Link to={`/local/${p.slug}`} className="text-brand-ink">{p.nome}</Link>
                 <span className="ml-2 inline-flex items-center gap-1 rounded-md bg-surface-2 px-1.5 py-0.5 text-xs font-bold uppercase text-muted">{p.tipo === 'local' ? <Store className="size-3" /> : <Mic2 className="size-3" />}{p.tipo === 'local' ? 'Local' : 'Atração'}</span></p>
               <p className="text-sm text-muted">Contato: <b className="text-ink">{p.contato}</b>{p.mensagem ? ` · “${p.mensagem}”` : ''}</p>
             </div>

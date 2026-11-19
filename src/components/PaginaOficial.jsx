@@ -43,7 +43,7 @@ export default function PaginaOficial({ slug, nome, tipo }) {
 
   return (
     <div className="mt-4">
-      {perfil && <p className="mb-3 inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-2.5 py-1 text-sm font-bold text-brand"><BadgeCheck className="size-4" aria-hidden /> Página oficial</p>}
+      {perfil && <p className="mb-3 inline-flex items-center gap-1.5 rounded-lg bg-brand/10 px-2.5 py-1 text-sm font-bold text-brand-ink"><BadgeCheck className="size-4" aria-hidden /> Página oficial</p>}
       <div className="flex flex-wrap items-center gap-2">
         <button onClick={alternarSeguir} disabled={ocupado} aria-pressed={segue} className={segue ? 'btn-ghost' : 'btn-brand'}>
           {ocupado ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : segue ? <BellRing className="size-5" aria-hidden /> : <Bell className="size-5" aria-hidden />}
@@ -64,7 +64,7 @@ export default function PaginaOficial({ slug, nome, tipo }) {
                 <div className="flex gap-2"><button type="button" onClick={() => setForm(null)} className="btn-ghost">Cancelar</button><button disabled={ocupado} className="btn-brand flex-1">Enviar pedido</button></div>
               </form>
             ) : (
-              <button onClick={async () => { setErro(''); if (await precisaConta()) setForm({ contato: '', mensagem: '' }) }} className="flex items-start gap-2 text-left font-semibold text-brand">
+              <button onClick={async () => { setErro(''); if (await precisaConta()) setForm({ contato: '', mensagem: '' }) }} className="flex items-start gap-2 text-left font-semibold text-brand-ink">
                 <Store className="mt-0.5 size-4 shrink-0" aria-hidden />
                 <span>{tipo === 'local' ? 'Este lugar é seu?' : 'Você é da banda ou da produção?'} Assuma esta página e publique seus eventos direto.</span>
               </button>

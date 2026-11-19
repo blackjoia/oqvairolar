@@ -11,7 +11,9 @@
   --line: #e4def3;
   --brand: #6d28ff;
   --brand-strong: #5a14f0;
+  --brand-ink: #6d28ff;
   --on-brand: #ffffff;
+  --campo-borda: #8e85b8;
   --accent: #c6ff00;
   --on-accent: #1a1630;
   --danger: #e11d48;
@@ -27,9 +29,11 @@
   --ink: #f3f0ff;
   --muted: #a8a1c8;
   --line: #3a3166;
-  --brand: #8b5cff;
-  --brand-strong: #a07bff;
+  --brand: #7444ff;
+  --brand-strong: #8458ff;
+  --brand-ink: #a98bff;
   --on-brand: #ffffff;
+  --campo-borda: #766ea6;
   --accent: #c6ff00;
   --on-accent: #1a1630;
   --danger: #fb7185;
@@ -48,6 +52,8 @@
   --color-line: var(--line);
   --color-brand: var(--brand);
   --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-campo: var(--campo-borda);
   --color-on-brand: var(--on-brand);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
@@ -66,7 +72,7 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 .no-scrollbar { scrollbar-width: none; }
 
 @utility campo {
-  @apply w-full rounded-xl border border-line bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-muted/70 focus:border-brand focus:ring-2 focus:ring-brand/25;
+  @apply min-h-11 w-full rounded-xl border border-campo bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-muted/70 focus:border-brand focus:ring-2 focus:ring-brand/25;
 }
 @utility rotulo { @apply mb-1 block text-sm font-semibold text-ink; }
 @utility btn {
@@ -91,7 +97,7 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   &:active { transform: scale(.96); }
 }
 @utility ferramenta-on { @apply border-brand bg-brand text-on-brand hover:border-brand hover:bg-brand-strong; }
-@utility ferramenta-marcada { @apply border-brand text-brand; }
+@utility ferramenta-marcada { @apply border-brand text-brand-ink; }
 
 /* Ações do evento (Agenda, Compartilhar, Story): ícone em cima, nome embaixo */
 @utility acao-evento {
@@ -154,3 +160,17 @@ a { text-underline-offset: .18em; text-decoration-thickness: from-font; }
 
 /* Setinha que "cutuca" para o lado, indicando que dá para deslizar */
 @keyframes cutucar { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+/* Toque: sem atraso de 300 ms e alvos de 44 px no mapa (ui-ux-pro-max §2) */
+:is(a, button, [role=radio], [role=tab], input, label) { touch-action: manipulation; }
+.leaflet-touch .leaflet-bar a { width: 44px !important; height: 44px !important; line-height: 44px !important; font-size: 20px !important; }
+main:focus { outline: none; }
+/* Números que não "pulam" e títulos sem palavra sozinha (§6) */
+.num, time { font-variant-numeric: tabular-nums; }
+h1, h2, h3 { text-wrap: balance; }
+/* Link de texto com área de toque de 44 px sem mudar o desenho */
+.link-toque { display: inline-flex; align-items: center; min-height: 44px; }
+/* Entrada da lista em cascata, só na primeira carga (§7) */
+@keyframes entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.cascata > * { animation: entrar .42s var(--ease-saida) both; animation-delay: calc(min(var(--i, 0), 12) * 35ms); }
+@media (prefers-reduced-motion: reduce) { .cascata > * { animation: none; } }

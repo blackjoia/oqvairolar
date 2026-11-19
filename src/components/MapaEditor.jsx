@@ -120,7 +120,7 @@ export default function MapaEditor({ lat, lng, onChange, onEscolherLugar, dicaBu
         )}
       </div>
       <p className="text-sm text-muted">Toque no mapa para mover o pino, ou arraste ele.</p>
-      {aviso && <p className="text-sm font-semibold text-brand">{aviso}</p>}
+      {aviso && <p className="text-sm font-semibold text-brand-ink">{aviso}</p>}
 
       <div className="rounded-xl border border-dashed border-line p-3 text-sm">
         <p className="font-semibold">Não achou na busca? Use o Google Maps</p>

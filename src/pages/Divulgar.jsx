@@ -74,8 +74,8 @@ export default function Divulgar() {
 
   if (ok) return (
     <><Topo semDivulgar />
-      <main className="mx-auto max-w-md px-4 py-16 text-center">
-        <CheckCircle2 className="mx-auto size-14 text-brand" />
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-md px-4 py-16 text-center">
+        <CheckCircle2 className="mx-auto size-14 text-brand-ink" />
         <h1 className="mt-3 font-display text-4xl uppercase">{idPublicado ? 'Publicado!' : 'Recebido!'}</h1>
         <p className="mt-2 text-muted">{idPublicado
           ? `O evento já está na agenda, e quem segue ${perfil?.nome || 'a página'} recebe um aviso no celular.`
@@ -90,8 +90,8 @@ export default function Divulgar() {
   return (
     <>
       <Topo semDivulgar />
-      <main className="mx-auto max-w-2xl px-4 pb-16 pt-8">
-        <p className="text-sm font-bold uppercase tracking-widest text-brand">Grátis</p>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-2xl px-4 pb-16 pt-8">
+        <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Grátis</p>
         <h1 className="font-display text-5xl uppercase leading-none">Divulgar <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">evento</span></h1>
         <p className="mt-3 text-muted">Vai ter show, festa, corrida ou qualquer rolê na região? Manda aqui. A gente confere e coloca na agenda.</p>
 
@@ -102,7 +102,7 @@ export default function Divulgar() {
               <p className="text-muted">Achamos um parecido no mesmo dia. Se for o mesmo, não precisa mandar de novo. Se tiver informação nova, pode enviar que a gente junta.</p>
               <ul className="mt-2 space-y-1">
                 {parecidos.map(({ evento: p }) => (
-                  <li key={p.id}><Link to={`/evento/${p.id}`} target="_blank" className="font-semibold text-brand underline">{p.titulo}</Link>
+                  <li key={p.id}><Link to={`/evento/${p.id}`} target="_blank" className="font-semibold text-brand-ink underline">{p.titulo}</Link>
                     <span className="text-muted"> · {rotuloDia(p.inicio)} às {hora(p.inicio)} · {p.localNome}</span></li>
                 ))}
               </ul>
@@ -170,7 +170,7 @@ export default function Divulgar() {
 
           {perfil ? (
             <p className="flex items-center gap-2 rounded-2xl border border-line bg-surface p-4 text-sm">
-              <BadgeCheck className="size-5 shrink-0 text-brand" aria-hidden />
+              <BadgeCheck className="size-5 shrink-0 text-brand-ink" aria-hidden />
               <span>Publicando como <b>{perfil.nome}</b>. O evento entra na agenda na hora, sem esperar aprovação.</span>
             </p>
           ) : (
@@ -199,7 +199,7 @@ export default function Divulgar() {
 function Bloco({ titulo, children }) {
   return (
     <fieldset className="space-y-4 rounded-2xl border border-line bg-surface p-4">
-      <legend className="px-1 font-display text-lg uppercase tracking-wide text-brand">{titulo}</legend>
+      <legend className="px-1 font-display text-lg uppercase tracking-wide text-brand-ink">{titulo}</legend>
       {children}
     </fieldset>
   )

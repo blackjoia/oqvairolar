@@ -45,12 +45,12 @@ export default function Local() {
   return (
     <>
       <Topo />
-      <main className="mx-auto max-w-5xl px-4 pb-16 pt-4">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm font-semibold text-brand"><ArrowLeft className="size-4" /> Agenda</Link>
+      <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-16 pt-4">
+        <Link to="/" className="link-toque -my-2 gap-1 text-sm font-semibold text-brand-ink"><ArrowLeft className="size-4" aria-hidden /> Agenda</Link>
         {!dados && <div className="mt-6 h-40 animate-pulse rounded-2xl bg-surface-2" />}
         {dados && (<>
           <section className="mt-4 rounded-3xl border border-line bg-surface p-5 sm:p-7">
-            <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand">
+            <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wide text-brand-ink">
               {dados.ehLocal ? <><MapPin className="size-3.5" aria-hidden /> Local</> : <><Mic2 className="size-3.5" aria-hidden /> Atração</>}
             </span>
             <h1 className="mt-3 font-display text-5xl uppercase leading-none sm:text-6xl">{dados.nome}</h1>
@@ -66,7 +66,7 @@ export default function Local() {
           <h2 className="mt-8 font-display text-3xl uppercase">Próximos eventos <span className="text-muted">{dados.proximos.length}</span></h2>
           {dados.proximos.length === 0 ? (
             <div className="mt-4 rounded-2xl border border-dashed border-line p-8 text-center">
-              <CalendarX2 className="mx-auto mb-2 size-10 text-brand" aria-hidden />
+              <CalendarX2 className="mx-auto mb-2 size-10 text-brand-ink" aria-hidden />
               <p className="font-display text-2xl uppercase">Nada marcado por enquanto</p>
               <Link to="/divulgar" className="btn-accent mt-4">Divulgar um evento</Link>
             </div>

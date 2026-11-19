@@ -20,7 +20,7 @@ export default function AbasCategoria({ valor, onChange, contagem = {}, total })
         <span className={`max-w-full truncate text-xs leading-tight ${on ? 'font-bold text-ink' : 'font-medium text-muted group-hover:text-ink'}`}>
           {c.nome.replace(' e corrida', '').replace(' e teatro', '')}
         </span>
-        {n > 0 && <span className="absolute right-2 top-0.5 min-w-[18px] rounded-full bg-surface px-1 text-center text-[10px] font-bold leading-[18px] tabular-nums text-muted ring-1 ring-line">{n}</span>}
+        {n > 0 && <span className="absolute right-2 top-0.5 min-w-[18px] rounded-full bg-surface px-1 text-center text-xs font-bold leading-[18px] tabular-nums text-muted ring-1 ring-line">{n}</span>}
         <span aria-hidden className={`absolute inset-x-5 bottom-0 h-[3px] rounded-full transition-transform duration-200 ${on ? 'scale-x-100' : 'scale-x-0'}`} style={{ background: c.cor }} />
       </button>
     )

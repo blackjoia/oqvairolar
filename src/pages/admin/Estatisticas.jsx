@@ -133,7 +133,7 @@ export default function Estatisticas() {
                   <th className="py-2 text-right font-semibold">Ingresso</th><th className="py-2 text-right font-semibold">Agenda</th><th className="py-2 text-right font-semibold">Compart.</th></tr></thead>
                 <tbody>{r.topEv.map((t) => (
                   <tr key={t.id} className="border-t border-line">
-                    <td className="max-w-[240px] truncate py-2 pr-2"><Link className="font-semibold hover:text-brand" to={`/evento/${t.id}`}>{t.ev?.titulo || t.id}</Link></td>
+                    <td className="max-w-[240px] truncate py-2 pr-2"><Link className="font-semibold hover:text-brand-ink" to={`/evento/${t.id}`}>{t.ev?.titulo || t.id}</Link></td>
                     <td className="py-2 text-right tabular-nums">{fmt(t.vistas)}</td><td className="py-2 text-right tabular-nums">{fmt(t.pessoas)}</td>
                     <td className="py-2 text-right tabular-nums">{fmt(t.ingresso)}</td><td className="py-2 text-right tabular-nums">{fmt(t.agenda)}</td><td className="py-2 text-right tabular-nums">{fmt(t.compart)}</td>
                   </tr>))}</tbody>
@@ -180,7 +180,7 @@ function Resumo({ eventos }) {
         <p className="text-xs opacity-80">{pend ? 'Toque para revisar' : 'Nada pendente'}</p>
       </Link>
       <Link to="/admin/eventos" className="rounded-2xl border border-line bg-surface p-4 transition hover:border-brand">
-        <p className="flex items-center gap-1.5 text-sm font-semibold text-muted"><CalendarDays className="size-4 text-brand" aria-hidden /> Na agenda</p>
+        <p className="flex items-center gap-1.5 text-sm font-semibold text-muted"><CalendarDays className="size-4 text-brand-ink" aria-hidden /> Na agenda</p>
         <p className="mt-1 font-display text-4xl tabular-nums">{prox.length}</p>
         <p className="text-xs text-muted">{semana} nos próximos 7 dias</p>
       </Link>
@@ -194,7 +194,7 @@ function Resumo({ eventos }) {
 function Numero({ Icone, rotulo, valor, sub }) {
   return (
     <div className="rounded-2xl border border-line bg-surface p-4">
-      <p className="flex items-center gap-1.5 text-sm font-semibold text-muted"><Icone className="size-4 text-brand" aria-hidden /> {rotulo}</p>
+      <p className="flex items-center gap-1.5 text-sm font-semibold text-muted"><Icone className="size-4 text-brand-ink" aria-hidden /> {rotulo}</p>
       <p className="mt-1 font-display text-4xl tabular-nums">{fmt(valor)}</p>
       {sub && <p className="text-xs text-muted">{sub}</p>}
     </div>

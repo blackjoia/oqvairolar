@@ -44,7 +44,7 @@ function MenuAdmin() {
       <div className="no-scrollbar mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4">
         {itens.map((i) => (
           <Link key={i.to} to={i.to}
-            className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-semibold ${pathname === i.to ? 'border-brand text-brand' : 'border-transparent text-muted hover:text-ink'}`}>
+            className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-semibold ${pathname === i.to ? 'border-brand text-brand-ink' : 'border-transparent text-muted hover:text-ink'}`}>
             {i.nome}
           </Link>
         ))}
@@ -70,7 +70,7 @@ function Login() {
   return (
     <><Topo />
       <main className="mx-auto max-w-sm px-4 py-14">
-        <h1 className="font-display text-4xl uppercase">Painel <span className="text-brand">admin</span></h1>
+        <h1 className="font-display text-4xl uppercase">Painel <span className="text-brand-ink">admin</span></h1>
         <form onSubmit={enviar} className="mt-6 space-y-4 rounded-2xl border border-line bg-surface p-5">
           <label className="block"><span className="rotulo">E-mail</span>
             <input className="campo" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
@@ -78,7 +78,7 @@ function Login() {
             <input className="campo" type="password" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required /></label>
           {msg && <p className="text-sm font-semibold text-danger">{msg}</p>}
           <button disabled={enviando} className="btn-brand w-full">{enviando ? 'Entrando…' : 'Entrar'}</button>
-          <button type="button" onClick={esqueci} className="w-full text-sm font-semibold text-muted hover:text-brand">Esqueci a senha</button>
+          <button type="button" onClick={esqueci} className="w-full text-sm font-semibold text-muted hover:text-brand-ink">Esqueci a senha</button>
         </form>
       </main></>
   )

@@ -26,3 +26,4 @@ majiayu000/claude-skill-registry css-styling (a página é só um ponteiro, sem 
 | video-shotcraft (versão leve) | github.com/Vincentwei1021/video-shotcraft | Apache 2.0 |
 
 github.com/zhuyansen/awesome-claude-design-skills é só uma lista de links (206 repositórios avaliados), sem skill para instalar.
+| logo-design | github.com/kaankiziltug/logo-design-skill | MIT |

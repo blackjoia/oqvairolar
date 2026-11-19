@@ -35,10 +35,10 @@ export default function Segmentado({ opcoes, valor, onChange, rotulo }) {
               onChange(prox.id)
               requestAnimationFrame(() => trilho.current?.querySelector('[aria-checked="true"]')?.focus())
             }}
-            className={`segmento relative z-10 flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-semibold ${on ? 'text-on-brand' : 'text-muted hover:text-ink'}`}>
+            className={`segmento relative z-10 flex h-11 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-sm font-semibold ${on ? 'text-on-brand' : 'text-muted hover:text-ink'}`}>
             {o.curto ? <><span className="sm:hidden">{o.curto}</span><span className="hidden sm:inline">{o.nome}</span></> : o.nome}
             {o.n != null && o.n > 0 && (
-              <span className={`min-w-5 rounded-full px-1.5 text-[11px] font-bold tabular-nums leading-5 ${on ? 'bg-white/20 text-on-brand' : 'bg-surface text-muted ring-1 ring-inset ring-line'}`}>{o.n}</span>
+              <span className={`min-w-5 rounded-full px-1.5 text-xs font-bold tabular-nums leading-5 ${on ? 'bg-white/20 text-on-brand' : 'bg-surface text-muted ring-1 ring-inset ring-line'}`}>{o.n}</span>
             )}
           </button>
         )

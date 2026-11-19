@@ -26,7 +26,7 @@ export default function CampoCartaz({ valor, onChange }) {
         </div>
       ) : uploadAtivo && (
         <button type="button" onClick={() => input.current?.click()} disabled={enviando}
-          className="flex w-full flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line bg-surface-2 p-6 text-muted hover:border-brand hover:text-brand">
+          className="flex w-full flex-col items-center gap-1 rounded-xl border-2 border-dashed border-line bg-surface-2 p-6 text-muted hover:border-brand hover:text-brand-ink">
           {enviando ? <Loader2 className="size-7 animate-spin" /> : <ImagePlus className="size-7" />}
           <span className="font-semibold">{enviando ? 'Enviando…' : 'Enviar foto do cartaz'}</span>
           <span className="text-xs">JPG ou PNG, do celular ou do computador</span>
@@ -34,8 +34,9 @@ export default function CampoCartaz({ valor, onChange }) {
       )}
       <input ref={input} type="file" accept="image/*" className="hidden" onChange={escolher} />
       {!valor && (
-        <input className="campo" type="url" placeholder={uploadAtivo ? 'ou cole o link da imagem' : 'Link da imagem do cartaz (https://…)'}
-          onChange={(e) => onChange(e.target.value.trim())} />
+        <label className="block"><span className="rotulo">{uploadAtivo ? 'Ou cole o link da imagem' : 'Link da imagem do cartaz'}</span>
+          <input className="campo" type="url" inputMode="url" placeholder="https://…"
+            onChange={(e) => onChange(e.target.value.trim())} /></label>
       )}
       {erro && <p className="text-sm font-semibold text-danger">{erro}</p>}
     </div>

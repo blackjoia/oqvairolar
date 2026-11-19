@@ -55,7 +55,7 @@ export default function FormEvento() {
   }, [id, novo])
 
   if (e === null) return <p className="text-muted">Carregando…</p>
-  if (e === false) return <p>Evento não encontrado. <Link className="text-brand" to="/admin/eventos">Voltar</Link></p>
+  if (e === false) return <p>Evento não encontrado. <Link className="text-brand-ink" to="/admin/eventos">Voltar</Link></p>
 
   const set = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.type === 'checkbox' ? ev.target.checked : ev.target.value }))
   const setData = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.value ? new Date(ev.target.value) : null }))
@@ -110,7 +110,7 @@ export default function FormEvento() {
               {parecidos.map(({ evento: p }) => (
                 <li key={p.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-surface p-2.5">
                   <div className="min-w-0 flex-1">
-                    <Link to={`/admin/evento/${p.id}`} className="block truncate font-bold hover:text-brand">{p.titulo}</Link>
+                    <Link to={`/admin/evento/${p.id}`} className="block truncate font-bold hover:text-brand-ink">{p.titulo}</Link>
                     <p className="truncate text-xs text-muted">{diaSemana(p.inicio)} {diaMes(p.inicio)} {mesCurto(p.inicio)} · {hora(p.inicio)} · {[p.localNome, p.cidade].filter(Boolean).join(', ')} · {p.status}</p>
                   </div>
                   <button type="button" disabled={salvando} className="btn-brand px-3 py-1.5 text-sm" onClick={async () => {
@@ -233,7 +233,7 @@ export default function FormEvento() {
         <Bloco titulo="Destaque">
           <label className="flex items-start gap-2">
             <input type="checkbox" className="mt-1 size-5 accent-[var(--brand)]" checked={!!e.destaque} onChange={set('destaque')} />
-            <span><span className="flex items-center gap-1 font-semibold"><Star className="size-4 text-brand" aria-hidden /> Evento em destaque</span>
+            <span><span className="flex items-center gap-1 font-semibold"><Star className="size-4 text-brand-ink" aria-hidden /> Evento em destaque</span>
               <span className="text-sm text-muted">Aparece no topo da agenda com o selo "Destaque". Use para eventos patrocinados ou especiais.</span></span>
           </label>
         </Bloco>
@@ -262,7 +262,7 @@ export default function FormEvento() {
 function Bloco({ titulo, children }) {
   return (
     <fieldset className="space-y-4 rounded-2xl border border-line bg-surface p-4">
-      <legend className="px-1 font-display text-lg uppercase tracking-wide text-brand">{titulo}</legend>
+      <legend className="px-1 font-display text-lg uppercase tracking-wide text-brand-ink">{titulo}</legend>
       {children}
     </fieldset>
   )
