@@ -161,6 +161,32 @@ for (const [uid, n] of [...porPessoa].sort((a, b) => b[1] - a[1]).slice(0, 60)) 
 }
 await db.doc(`ranking/${mes}`).set({ pessoas, bares: [...porBar.values()].filter((b) => b.n > 0).sort((a, b) => b.n - a.n).slice(0, 20), atualizadoEm: FieldValue.serverTimestamp() })
 
+// Ranking de cada bar (estilo prefeito do Foursquare): quem mais fez "Tô aqui" no lugar nos últimos 60 dias.
+// Fica em ranking/locais, que todo mundo lê: { porLocal: { slug: [{ uid, nome, foto, n }] } }.
+const desde60 = new Date(agora.getTime() - 60 * 86400000)
+const chk60 = await db.collection('checkins').where('em', '>=', Timestamp.fromDate(desde60)).get()
+const evLocal = new Map()
+const porLocal = {}
+for (const d of chk60.docs) {
+  const c = d.data()
+  if (!evLocal.has(c.eventoId)) { const ev = await db.doc(`eventos/${c.eventoId}`).get(); evLocal.set(c.eventoId, ev.exists && ev.data().localNome ? slug(ev.data().localNome) : null) }
+  const l = evLocal.get(c.eventoId); if (!l) continue
+  porLocal[l] = porLocal[l] || {}; porLocal[l][c.uid] = (porLocal[l][c.uid] || 0) + 1
+}
+const perfis = new Map()
+const final = {}
+for (const [l, contas] of Object.entries(porLocal)) {
+  const lista = []
+  for (const [uid, n] of Object.entries(contas).sort((a, b) => b[1] - a[1])) {
+    if (!perfis.has(uid)) { const u = await db.doc(`usuarios/${uid}`).get(); perfis.set(uid, u.exists && u.data().publico ? u.data() : null) }
+    const u = perfis.get(uid); if (!u) continue
+    lista.push({ uid, nome: (u.nome || '').split(' ')[0], foto: u.foto || '', n })
+    if (lista.length >= 10) break
+  }
+  if (lista.length) final[l] = lista
+}
+await db.doc('ranking/locais').set({ porLocal: final, atualizadoEm: FieldValue.serverTimestamp() })
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
