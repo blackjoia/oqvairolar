@@ -13,6 +13,7 @@ const Admin = lazy(() => import('./pages/admin/Admin'))
 const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
 import InstalarApp from './components/InstalarApp'
+import AbrirNoNavegador from './components/AbrirNoNavegador'
 const Artes = lazy(() => import('./pages/admin/Artes'))
 const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
 const MeusRoles = lazy(() => import('./pages/MeusRoles'))
@@ -83,6 +84,7 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <BrowserRouter>
         <ContarVisitas />
+        <AbrirNoNavegador />
         <InstalarApp />
         <Conquistas />
         <Suspense fallback={null}>
