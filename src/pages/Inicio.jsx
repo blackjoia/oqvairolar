@@ -21,6 +21,8 @@ const DIAS = [
   { id: 'semana', nome: 'Próximos 7 dias' },
 ]
 
+const RAIO_MAX = 250
+
 export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
@@ -35,6 +37,17 @@ export default function Inicio() {
     try { await pedirLocalizacao(); clique('perto-de-mim') } catch (x) { setErroLocal(x.message) } finally { setBuscandoLocal(false) }
   }
   const [params, setParams] = useSearchParams()
+  const raio = Number(params.get('raio')) || 0
+  const [raioTela, setRaioTela] = useState(raio || RAIO_MAX)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const v = raioTela >= RAIO_MAX ? 0 : raioTela
+      if (v === raio) return
+      const p = new URLSearchParams(params); if (v) p.set('raio', String(v)); else p.delete('raio')
+      setParams(p, { replace: true }); if (v) filtro('raio', String(v))
+    }, 150)
+    return () => clearTimeout(t)
+  }, [raioTela]) // eslint-disable-line react-hooks/exhaustive-deps
   const dia = params.get('dia') || 'todos'
   const cidade = params.get('cidade') || ''
   const genero = params.get('genero') || ''
@@ -76,11 +89,10 @@ export default function Inicio() {
         const texto = normalizar([e.titulo, e.localNome, e.cidade, e.descricao, e.instagram, ...(e.atracoes || []), ...(e.generos || []), ...(e.outrosNomes || [])].join(' '))
         if (!termos.every((t) => texto.includes(t))) return false
       }
+      if (pos && raio) { const d = km(pos, e); if (d == null || d > raio) return false }
       return true
-    }).sort(pos
-      ? (a, b) => (km(pos, a) ?? 1e9) - (km(pos, b) ?? 1e9) || a.inicio - b.inicio
-      : (a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
-  }, [futuros, dia, cidade, genero, cat, termos, pos])
+    }).sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
+  }, [futuros, dia, cidade, genero, cat, termos, pos, raio])
 
   const grupos = useMemo(() => {
     const m = new Map()
@@ -94,7 +106,7 @@ export default function Inicio() {
 
   const nExtras = [cidade, genero].filter(Boolean).length
   const nFiltros = nExtras + (cat ? 1 : 0)
-  const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca
+  const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca || (!!pos && !!raio)
 
   return (
     <>
@@ -121,7 +133,7 @@ export default function Inicio() {
                 <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip shrink-0 ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
               ))}
             </Deslizar>
-            <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância e ordenar do mais perto"
+            <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância e filtrar por raio"
               className={`chip flex shrink-0 items-center gap-1.5 px-3 ${pos ? 'chip-on' : ''}`}>
               {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
               <span className="hidden sm:inline">Perto de mim</span>
@@ -153,7 +165,7 @@ export default function Inicio() {
                 <Grupo titulo="Gênero" opcoes={generos.map((g) => [g, g])} valor={genero} onChange={(v) => setFiltro('genero', v)} />
                 {!cidades.length && !generos.length && <p className="mb-3 text-sm text-muted">Mais filtros aparecem quando tiver eventos na agenda.</p>}
                 <div className="flex gap-2">
-                  <button onClick={() => { setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
+                  <button onClick={() => { setRaioTela(RAIO_MAX); setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
                   <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
                 </div>
               </div>
@@ -161,7 +173,18 @@ export default function Inicio() {
           </div>
 
           {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
-          {pos && <p className="mt-2 flex items-center gap-1.5 text-xs text-muted"><Navigation className="size-3.5 text-brand" aria-hidden />Do mais perto ao mais longe de você. <button onClick={pertoDeMim} className="font-semibold text-brand underline underline-offset-2">Desligar</button></p>}
+          {pos && (
+            <div className="mt-2 flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2">
+              <Navigation className="size-4 shrink-0 text-brand" aria-hidden />
+              <label className="flex min-w-0 flex-1 items-center gap-3">
+                <span className="w-32 shrink-0 text-sm font-bold text-brand tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
+                <input type="range" min="5" max={RAIO_MAX} step="5" value={raioTela} aria-label="Distância máxima"
+                  onChange={(x) => setRaioTela(Number(x.target.value))}
+                  className="min-w-0 flex-1 accent-[var(--brand)]" />
+              </label>
+              <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand underline underline-offset-2">Desligar</button>
+            </div>
+          )}
 
           {!gaveta && nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
