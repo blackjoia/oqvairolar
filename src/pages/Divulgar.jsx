@@ -1,12 +1,14 @@
 import { clique } from '../lib/visitas'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CheckCircle2, ChevronDown, Send } from 'lucide-react'
 import Topo from '../components/Topo'
 import { Rodape } from './Inicio'
 import CampoCartaz from '../components/CampoCartaz'
 import MapaEditor from '../components/MapaEditor'
-import { enviarParaAprovacao } from '../lib/eventos'
+import { enviarParaAprovacao, listarPublicados } from '../lib/eventos'
+import { acharParecidos } from '../lib/parecidos'
+import { rotuloDia, hora } from '../lib/datas'
 import { paraInputLocal } from '../lib/datas'
 import { CATEGORIAS, GENEROS, CIDADES } from '../lib/constantes'
 
@@ -23,6 +25,9 @@ export default function Divulgar() {
   const [enviando, setEnviando] = useState(false)
   const [msg, setMsg] = useState('')
   const [ok, setOk] = useState(false)
+  const [publicados, setPublicados] = useState([])
+  useEffect(() => { listarPublicados().then(setPublicados).catch(() => {}) }, [])
+  const parecidos = useMemo(() => (e.titulo && e.inicio ? acharParecidos(e, publicados).slice(0, 2) : []), [e, publicados])
 
   const set = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.type === 'checkbox' ? ev.target.checked : ev.target.value }))
   const setData = (k) => (ev) => setE((x) => ({ ...x, [k]: ev.target.value ? new Date(ev.target.value) : null }))
@@ -78,6 +83,18 @@ export default function Divulgar() {
         <p className="mt-3 text-muted">Vai ter show, festa, corrida ou qualquer rolê na região? Manda aqui. A gente confere e coloca na agenda.</p>
 
         <form onSubmit={enviar} className="mt-6 space-y-5" noValidate>
+          {parecidos.length > 0 && (
+            <div className="rounded-2xl border-2 border-accent bg-accent/15 p-4 text-sm" role="status">
+              <p className="font-bold">Esse evento já está na agenda?</p>
+              <p className="text-muted">Achamos um parecido no mesmo dia. Se for o mesmo, não precisa mandar de novo. Se tiver informação nova, pode enviar que a gente junta.</p>
+              <ul className="mt-2 space-y-1">
+                {parecidos.map(({ evento: p }) => (
+                  <li key={p.id}><Link to={`/evento/${p.id}`} target="_blank" className="font-semibold text-brand underline">{p.titulo}</Link>
+                    <span className="text-muted"> · {rotuloDia(p.inicio)} às {hora(p.inicio)} · {p.localNome}</span></li>
+                ))}
+              </ul>
+            </div>
+          )}
           <Bloco titulo="O evento">
             <label className="block"><span className="rotulo">Nome do evento *</span>
               <input className="campo" value={e.titulo} onChange={set('titulo')} maxLength={120} placeholder="Ex.: Noite do Rock com Banda X" /></label>

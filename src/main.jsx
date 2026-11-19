@@ -7,11 +7,13 @@ import './index.css'
 import { AuthProvider } from './lib/auth'
 import Inicio from './pages/Inicio'
 import Evento from './pages/Evento'
+const Local = lazy(() => import('./pages/Local'))
 const Divulgar = lazy(() => import('./pages/Divulgar'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
 import InstalarApp from './components/InstalarApp'
+const Artes = lazy(() => import('./pages/admin/Artes'))
 const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
 // Service worker: permite instalar como app (substitui o do site antigo).
@@ -51,12 +53,16 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<Inicio />} />
           <Route path="/evento/:id" element={<Evento />} />
           <Route path="/divulgar" element={<Divulgar />} />
+          <Route path="/local/:slug" element={<Local />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Estatisticas />} />
             <Route path="eventos" element={<Lista />} />
+            <Route path="artes" element={<Artes />} />
             <Route path="estatisticas" element={<Navigate to="/admin" replace />} />
             <Route path="evento/:id" element={<FormEvento />} />
           </Route>
+          {import.meta.env.DEV && <Route path="/dev-form/:id" element={<main className="mx-auto max-w-5xl px-4 py-4"><FormEvento /></main>} />}
+          {import.meta.env.DEV && <Route path="/dev-artes" element={<main className="mx-auto max-w-5xl px-4 py-4"><Artes /></main>} />}
           {import.meta.env.DEV && <Route path="/dev-estatisticas" element={<main className="mx-auto max-w-5xl px-4 py-4"><Estatisticas /></main>} />}
           <Route path="*" element={<NaoEncontrado />} />
         </Routes>

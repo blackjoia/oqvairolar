@@ -16,6 +16,7 @@ export default function CardEvento({ evento: e }) {
             <div className="text-[10px] font-bold uppercase">{mesCurto(e.inicio)}</div>
           </div>
         )}
+        {e.destaque && <span className={`absolute right-2 ${e.gratuito ? "top-9" : "top-2"} rounded-full bg-brand px-2 py-0.5 text-[11px] font-extrabold text-on-brand shadow ring-2 ring-accent`}>★ DESTAQUE</span>}
         {e.gratuito && <span className="absolute right-2 top-2 rounded-full bg-accent px-2 py-0.5 text-[11px] font-extrabold text-on-accent shadow">GRÁTIS</span>}
       </div>
       <div className="flex flex-1 flex-col p-3">

@@ -31,6 +31,7 @@ export async function buscarEvento(id) {
 
 // Admin: tudo.
 export async function listarTodos() {
+  if (modoDemo()) return (await import('./demo')).DEMO
   const snap = await getDocs(query(col, orderBy('inicio', 'desc')))
   return snap.docs.map(normaliza)
 }

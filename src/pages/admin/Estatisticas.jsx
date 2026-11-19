@@ -7,7 +7,7 @@ import { Users, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDay
 
 const PERIODOS = [[7, '7 dias'], [30, '30 dias'], [90, '90 dias']]
 const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-const ACOES = { ingresso: 'Comprar ingresso', agenda: 'Adicionar à agenda', compartilhar: 'Compartilhar', story: 'Arte para Story', rota: 'Como chegar', instagram: 'Abrir Instagram', 'divulgar-enviado': 'Evento enviado pelo formulário', 'instalar-app': 'Instalar app' }
+const ACOES = { ingresso: 'Comprar ingresso', agenda: 'Adicionar à agenda', compartilhar: 'Compartilhar', story: 'Arte para Story', rota: 'Como chegar', instagram: 'Abrir Instagram', 'divulgar-enviado': 'Evento enviado pelo formulário', 'instalar-app': 'Instalar app', 'eu-vou': 'Eu vou', interesse: 'Tenho interesse' }
 const ORIGENS = { direto: 'Direto / WhatsApp', instagram: 'Instagram', facebook: 'Facebook', google: 'Google', whatsapp: 'WhatsApp', compartilhado: 'Link compartilhado do site' }
 const FILTROS = { dia: 'Dia', categoria: 'Categoria', cidade: 'Cidade', genero: 'Gênero' }
 const fmt = (n) => n.toLocaleString('pt-BR')
