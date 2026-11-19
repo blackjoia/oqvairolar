@@ -71,7 +71,7 @@ export default function Evento() {
 
   useEffect(() => {
     if (e) document.title = `${e.titulo} · O Que Vai Rolar?`
-    return () => { document.title = 'O Que Vai Rolar? · Agenda de Francisco Beltrão e região' }
+    return () => { document.title = 'O Que Vai Rolar? · Agenda do Sudoeste do Paraná' }
   }, [e])
 
   if (e === undefined) return (<><Topo /><div className="mx-auto mt-8 h-96 max-w-3xl animate-pulse rounded-2xl bg-surface-2 px-4" /></>)
