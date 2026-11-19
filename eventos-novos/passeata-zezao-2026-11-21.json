@@ -1,0 +1,49 @@
+{
+  "comum": {
+    "localNome": "Parque de Exposições Jayme Canet Jr.",
+    "endereco": "Parque de Exposições, Rua União da Vitória, Miniguaçu",
+    "cidade": "Francisco Beltrão",
+    "lat": -26.0668535,
+    "lng": -53.0395135,
+    "status": "publicado",
+    "origem": "importado",
+    "gratuito": true,
+    "preco": "Entrada free"
+  },
+  "eventos": [
+    {
+      "id": "passeata-solidaria-familia-zezao-2026-11-21",
+      "titulo": "Passeata Solidária em prol da Família Zezão",
+      "categoria": "outros",
+      "inicio": "2026-11-21T10:00:00-03:00",
+      "fim": "2026-11-21T16:00:00-03:00",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/passeata-solidaria-zezao.jpg",
+      "atracoes": ["Boka Vianna Zureta Rosin", "Transtornados"],
+      "descricao": "Passeata com motociclistas e amigos do Zezão para ajudar a família dele neste momento difícil e levar uma mensagem de paz e respeito no trânsito. Toda a renda vai para a família.\n\nSaída às 10h no Posto Petrobras, Av. Atílio Fontana, 4909, Pinheirinho.\nChegada no Parque de Exposições Jayme Canet Jr., com show de rock solidário, cachorro-quente, cerveja, refrigerante e água. Também tem venda de rifas.\n\nShows\n10h30 Boka Vianna Zureta Rosin (acústico, rock nacional)\n13h30 Transtornados (punk e garage)"
+    },
+    {
+      "id": "rock-solidario-boka-vianna-zureta-rosin-2026-11-21",
+      "pai": "passeata-solidaria-familia-zezao-2026-11-21",
+      "titulo": "Rock Solidário: Boka Vianna Zureta Rosin",
+      "categoria": "musica",
+      "generos": ["Rock", "Acústico"],
+      "atracoes": ["Boka Vianna Zureta Rosin"],
+      "inicio": "2026-11-21T10:30:00-03:00",
+      "fim": "2026-11-21T13:00:00-03:00",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/rock-solidario-boka.jpg",
+      "descricao": "Show de rock nacional acústico e ao vivo depois da passeata solidária. Toda a renda vai para a família Zezão."
+    },
+    {
+      "id": "rock-solidario-transtornados-2026-11-21",
+      "pai": "passeata-solidaria-familia-zezao-2026-11-21",
+      "titulo": "Rock Solidário: Transtornados",
+      "categoria": "musica",
+      "generos": ["Punk", "Rock"],
+      "atracoes": ["Transtornados"],
+      "inicio": "2026-11-21T13:30:00-03:00",
+      "fim": "2026-11-21T15:30:00-03:00",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/rock-solidario-transtornados.jpg",
+      "descricao": "Show de punk e garage rock depois da passeata solidária. Toda a renda vai para a família Zezão."
+    }
+  ]
+}
