@@ -1,6 +1,6 @@
 import {
   collection, doc, getDoc, getDocs, query, where, orderBy, setDoc, updateDoc,
-  deleteDoc, serverTimestamp, Timestamp,
+  deleteDoc, serverTimestamp, Timestamp, limit,
 } from 'firebase/firestore'
 import { db } from './firebase'
 import { toDate } from './datas'
@@ -19,6 +19,15 @@ export async function listarPublicados() {
   if (modoDemo()) return (await import('./demo')).DEMO
   const ontem = new Date(); ontem.setHours(0, 0, 0, 0)
   const q = query(col, where('status', '==', 'publicado'), where('inicio', '>=', Timestamp.fromDate(ontem)), orderBy('inicio'))
+  const snap = await getDocs(q)
+  return snap.docs.map(normaliza)
+}
+
+// Eventos que já passaram (mais recentes primeiro), para o histórico de bandas e locais.
+export async function listarAnteriores(limite = 400) {
+  if (modoDemo()) return (await import('./demo')).DEMO_PASSADOS
+  const ontem = new Date(); ontem.setHours(0, 0, 0, 0)
+  const q = query(col, where('status', '==', 'publicado'), where('inicio', '<', Timestamp.fromDate(ontem)), orderBy('inicio', 'desc'), limit(limite))
   const snap = await getDocs(q)
   return snap.docs.map(normaliza)
 }

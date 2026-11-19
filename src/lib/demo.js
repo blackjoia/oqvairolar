@@ -1,7 +1,7 @@
 // Eventos de exemplo, usados só no modo de desenvolvimento com ?demo na URL.
 const h = (dias, hh, mm = 0) => { const d = new Date(); d.setDate(d.getDate() + dias); d.setHours(hh, mm, 0, 0); return d }
 export const DEMO = [
-  { id: 'noite-do-rock-demo', titulo: 'Noite do Rock com Os Tralhas', categoria: 'musica', generos: ['Rock', 'Cover'], inicio: h(0, 22), localNome: 'Bar do Zé', endereco: 'Rua Tenente Camargo, 1200', cidade: 'Francisco Beltrão', lat: -26.0811, lng: -53.055, preco: 'R$ 20', ingressoUrl: 'https://example.com', instagram: 'ostralhas', status: 'publicado', descricao: 'Três bandas, chopp gelado e muito rock.' },
+  { id: 'noite-do-rock-demo', titulo: 'Noite do Rock com Os Tralhas', atracoes: ['Os Tralhas'], categoria: 'musica', generos: ['Rock', 'Cover'], inicio: h(0, 22), localNome: 'Bar do Zé', endereco: 'Rua Tenente Camargo, 1200', cidade: 'Francisco Beltrão', lat: -26.0811, lng: -53.055, preco: 'R$ 20', ingressoUrl: 'https://example.com', instagram: 'ostralhas', status: 'publicado', descricao: 'Três bandas, chopp gelado e muito rock.' },
   { id: 'samba-demo', titulo: 'Roda de Samba no Parque', categoria: 'musica', generos: ['Samba', 'Pagode'], inicio: h(1, 16), localNome: 'Parque Alvorada', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
   { id: 'corrida-demo', titulo: 'Corrida Noturna 5K', categoria: 'esporte', generos: [], inicio: h(2, 19, 30), localNome: 'Praça Central', cidade: 'Pato Branco', preco: 'R$ 60 inscrição', status: 'publicado' },
   { id: 'eletronica-demo', titulo: 'Sunset Eletrônico', categoria: 'festa', generos: ['Eletrônica'], inicio: h(3, 18), localNome: 'Espaço Verde', cidade: 'Dois Vizinhos', preco: 'R$ 40', status: 'publicado' },
@@ -31,3 +31,15 @@ export function visitasDemo(dias) {
   if (dias >= 7) out.push({ visitante: 'x', sessao: 'x', origem: 'direto', disp: 'celular', em: new Date(), tipo: 'clique', acao: 'divulgar-enviado' })
   return out
 }
+
+// Shows que já passaram, para mostrar o histórico de uma banda no modo ?demo.
+export const DEMO_PASSADOS = [
+  ['Os Tralhas no Formosa Pub', -6, 'Formosa Pub', 'Francisco Beltrão', 'Couvert R$ 10'],
+  ['Rock na Praça', -13, 'Praça Central', 'Pato Branco', null],
+  ['Sextou com Os Tralhas', -20, 'Bar do Plets', 'Francisco Beltrão', 'Couvert free'],
+  ['Festival de Inverno', -41, 'Parque de Exposições', 'Dois Vizinhos', 'R$ 30'],
+  ['Os Tralhas no Kroko Deck', -55, 'Kroko Deck', 'Francisco Beltrão', 'R$ 15'],
+  ['Noite Cover', -69, 'Avenida Bombar', 'Pato Branco', 'R$ 20'],
+  ['Aniversário do Bar do Zé', -90, 'Bar do Zé', 'Francisco Beltrão', 'R$ 20'],
+  ['Rock Solidário', -120, 'Clube Comercial', 'Realeza', '1 kg de alimento'],
+].map(([titulo, dias, localNome, cidade, preco], i) => ({ id: `passado-${i}-demo`, titulo, atracoes: ['Os Tralhas'], categoria: 'musica', generos: ['Rock', 'Cover'], inicio: h(dias, 22), localNome, cidade, preco, gratuito: !preco, instagram: 'ostralhas', status: 'publicado' }))
