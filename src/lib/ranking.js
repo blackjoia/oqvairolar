@@ -53,3 +53,10 @@ export const DEMO = {
   pessoas: [['Ana P.', 9], ['Rafa M.', 8], ['Luis', 7], ['Bruna K.', 6], ['Diego S.', 5], ['Carol T.', 5], ['Jean F.', 4], ['Mari L.', 3], ['Tiago R.', 2], ['Gabi C.', 1]].map(([n, x], i) => pessoa(n, x, i)),
   bares: [['Formosa Pub', 'formosa-pub', 38], ['Bar do Plets', 'plets', 33], ['Boteco Choppbel', 'boteco-choppbel', 21], ['Hangar 80', 'hangar-80', 16], ['Alles', 'alles', 9], ["Neco's Boteco", 'necos-boteco', 4]].map(([nome, slug, n]) => ({ nome, slug, n })),
 }
+
+// Ranking de um bar: quem mais fez "Tô aqui" nele nos últimos 60 dias (o 1º é o "dono da mesa").
+export async function rankingDoLocal(slug) {
+  if (new URLSearchParams(location.search).has('demo')) return DEMO.pessoas.slice(0, 6).map((p, i) => ({ ...p, n: [7, 5, 4, 3, 2, 1][i] }))
+  const s = await getDoc(doc(db, 'ranking', 'locais')).catch(() => null)
+  return (s?.exists() && s.data().porLocal?.[slug]) || []
+}
