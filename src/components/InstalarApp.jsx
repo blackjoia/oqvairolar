@@ -14,7 +14,7 @@ const instalado = () => window.matchMedia('(display-mode: standalone)').matches 
 const ua = () => navigator.userAgent
 const ehIOS = () => /iPhone|iPad|iPod/i.test(ua())
 const ehCelular = () => /Android|iPhone|iPad|iPod|Mobi/i.test(ua())
-const navegadorDeApp = () => /Instagram|FBAN|FBAV|FB_IAB|Line\/|WhatsApp/i.test(ua())
+const navegadorDeApp = () => /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Messenger|musical_ly|BytedanceWebview|TikTok|Barcelona|LinkedInApp|Line\/|WhatsApp/i.test(ua())
 function fechadoRecente() {
   try { return Date.now() - Number(localStorage.getItem(CHAVE) || 0) < 14 * 86400000 } catch { return false }
 }
@@ -44,7 +44,7 @@ export default function InstalarApp() {
     window.addEventListener('pode-instalar', pode)
     window.addEventListener('abrir-instalar', abrir)
     let t
-    if (ehCelular() && !instalado() && !fechadoRecente() && !pathname.startsWith('/admin')) t = setTimeout(() => setAberto(true), 5000)
+    if (ehCelular() && !instalado() && !navegadorDeApp() && !fechadoRecente() && !pathname.startsWith('/admin')) t = setTimeout(() => setAberto(true), 5000)
     return () => { clearTimeout(t); window.removeEventListener('pode-instalar', pode); window.removeEventListener('abrir-instalar', abrir) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
