@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listarVisitas } from '../../lib/visitas'
+import { collection, getCountFromServer, query, where, Timestamp } from 'firebase/firestore'
+import { db } from '../../lib/firebase'
 import { listarTodos } from '../../lib/eventos'
 import { CATEGORIAS } from '../../lib/constantes'
-import { Users, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDays, Plus } from 'lucide-react'
+import { Users, UserPlus, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDays, Plus } from 'lucide-react'
 
 const PERIODOS = [[7, '7 dias'], [30, '30 dias'], [90, '90 dias']]
 const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -27,11 +29,20 @@ export default function Estatisticas() {
   const [visitas, setVisitas] = useState(null)
   const [eventos, setEventos] = useState([])
   const [erro, setErro] = useState('')
+  const [contas, setContas] = useState(null)
 
   useEffect(() => { listarTodos().then(setEventos).catch(() => {}) }, [])
   useEffect(() => {
     setVisitas(null); setErro('')
     listarVisitas(dias).then(setVisitas).catch((e) => { console.error(e); setErro('Não deu para carregar as estatísticas: ' + e.message) })
+  }, [dias])
+  // Contas criadas (login com Google): total e quantas no período escolhido
+  useEffect(() => {
+    const col = collection(db, 'usuarios')
+    const desde = Timestamp.fromDate(new Date(Date.now() - dias * 86400000))
+    Promise.all([getCountFromServer(col), getCountFromServer(query(col, where('criadoEm', '>=', desde)))])
+      .then(([t, p]) => setContas({ total: t.data().count, periodo: p.data().count }))
+      .catch((e) => { console.error(e); setContas({ total: null, periodo: null }) })
   }, [dias])
 
   const r = useMemo(() => {
@@ -104,6 +115,7 @@ export default function Estatisticas() {
 
       {r && (<>
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <Numero Icone={UserPlus} rotulo="Usuários cadastrados" valor={contas?.total ?? 0} sub={contas == null ? 'carregando…' : contas.total == null ? 'não deu para contar' : `${fmt(contas.periodo)} novos no período`} />
           <Numero Icone={Users} rotulo="Visitantes" valor={r.visitantes} sub={`${fmt(r.voltaram)} voltaram em outro dia`} />
           <Numero Icone={Eye} rotulo="Páginas vistas" valor={r.paginas} sub={`${fmt(r.sessoes)} acessos (1 por pessoa a cada 24h)`} />
           <Numero Icone={MousePointerClick} rotulo="Eventos abertos" valor={r.vistasEvento} />
