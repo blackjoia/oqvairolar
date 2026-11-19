@@ -23,7 +23,9 @@
       "descricao": "Voz e violão na véspera de feriado.",
       "fonte": "https://www.instagram.com/stories/avenidabombar/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2188857,
+      "lng": -52.672888
     },
     {
       "id": "acoustivibe-avenida-bombar-2026-11-20",
@@ -43,7 +45,9 @@
       "descricao": "O melhor do pop rock nacional e internacional.",
       "fonte": "https://www.instagram.com/stories/avenidabombar/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2188857,
+      "lng": -52.672888
     },
     {
       "id": "veto-e-zico-rubas-avenida-bombar-2026-11-21",
@@ -60,7 +64,10 @@
       "endereco": "Av. Tupi, 1529",
       "instagram": "avenidabombar",
       "descricao": "A partir das 23h.",
-      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+      "fonte": "https://www.instagram.com/stories/avenidabombar/",
+      "lat": -26.2188857,
+      "lng": -52.672888,
+      "rev": 2
     },
     {
       "id": "enterra-marc-t11-nobar-pb-2026-11-19",
@@ -83,7 +90,10 @@
       "instagram": "nobarunipb",
       "preco": "Uni R$ 5 · Clube R$ 30",
       "descricao": "Véspera de feriado com a T11 de Medicina. Medbox 20h–23h30, WP 23h30–0h30, Deh 0h30–2h e Max Recuero 2h–4h.",
-      "fonte": "https://www.instagram.com/stories/nobarunipb/"
+      "fonte": "https://www.instagram.com/stories/nobarunipb/",
+      "lat": -26.2191327,
+      "lng": -52.6726768,
+      "rev": 2
     },
     {
       "id": "boiler-dj-limma-nobar-pb-2026-11-20",
@@ -103,7 +113,9 @@
       "descricao": "DJ no meio do público, estilo Boiler Room. O bar abre às 18h.",
       "fonte": "https://www.instagram.com/nobarunipb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2191327,
+      "lng": -52.6726768
     },
     {
       "id": "aloha-nobar-pb-2026-11-21",
@@ -124,7 +136,9 @@
       "descricao": "Festa Aloha com DJ Harry e DJ Simi. O bar abre às 18h.",
       "fonte": "https://www.instagram.com/nobarunipb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2191327,
+      "lng": -52.6726768
     },
     {
       "id": "murilo-e-santini-nobar-pb-2026-11-22",
@@ -144,7 +158,9 @@
       "descricao": "Domingo com entrada grátis.",
       "fonte": "https://www.instagram.com/nobarunipb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2191327,
+      "lng": -52.6726768
     },
     {
       "id": "no-postinho-do-deck-joao-gustavo-e-murilo-2026-11-28",
@@ -162,7 +178,9 @@
       "descricao": "Ingressos online pelo Cheers.",
       "fonte": "https://www.instagram.com/krokodeckpb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2186477,
+      "lng": -52.6728376
     },
     {
       "id": "resenha-do-deck-kaique-e-felipe-pb-2026-12-05",
@@ -180,7 +198,9 @@
       "descricao": "Lote promocional liberado. Ingressos pelo Cheers.",
       "fonte": "https://www.instagram.com/krokodeckpb/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.2186477,
+      "lng": -52.6728376
     }
   ]
 }

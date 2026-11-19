@@ -92,7 +92,9 @@
       "descricao": "Rolê pré-feriado com rock acústico ao vivo.",
       "fonte": "https://www.instagram.com/p/Df4yBELhK--/",
       "semHora": true,
-      "rev": 2
+      "rev": 3,
+      "lat": -26.073281,
+      "lng": -53.0559627
     },
     {
       "id": "red-friday-taberna-do-albeergue-2026-11-20",
