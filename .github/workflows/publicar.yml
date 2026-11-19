@@ -32,6 +32,8 @@ jobs:
           if [ -z "$CHAVE" ]; then echo "::error::Falta o secret FIREBASE_SERVICE_ACCOUNT no GitHub"; exit 1; fi
           printf '%s' "$CHAVE" > "$RUNNER_TEMP/chave.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
+      - name: Cadastrar eventos novos (pasta eventos-novos)
+        run: npm run importar
       - run: npm run previas
       - name: Publicar no Firebase Hosting
         run: npx -y firebase-tools@14 deploy --only hosting --project oquevairolar-b0129 --non-interactive

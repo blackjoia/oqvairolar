@@ -11,6 +11,7 @@ import { useAuth } from '../lib/auth'
 // O mapa (Leaflet) só carrega quando a página precisa dele.
 const MapaVer = lazy(() => import('../components/MapaVer'))
 import { gerarStory } from '../lib/story'
+import { Programacao, FazParte } from '../components/Programacao'
 import { janelaCheckin, jaFiz, fazerCheckin } from '../lib/ranking'
 import { clique } from '../lib/visitas'
 import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
@@ -115,6 +116,7 @@ export default function Evento() {
               <cat.Icone className="mr-1 inline size-3.5 align-[-2px]" aria-hidden />{cat.nome}
             </span>
             <h1 className="mt-3 font-display text-4xl uppercase leading-none sm:text-5xl">{e.titulo}</h1>
+            {e.pai && <FazParte evento={e} />}
             {!!e.atracoes?.length && (
               <p className="mt-3 text-lg font-semibold">Com {e.atracoes.map((a, i) => (
                 <span key={a}>{i > 0 && (i === e.atracoes.length - 1 ? ' e ' : ', ')}
@@ -131,7 +133,7 @@ export default function Evento() {
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
               <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
-                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}
+                <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${e.fim - e.inicio > 24 * 3600000 ? rotuloDia(e.fim).toLowerCase() + ', ' : ''}${hora(e.fim)}` : ''}
                   {(() => { const s = situacao(e); return s && <div className={`mt-1 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-bold ${s.tipo === 'passou' ? 'bg-surface-2 text-muted' : 'bg-accent text-on-accent'}`}>{s.tipo === 'agora' && <span className="ao-vivo size-2 rounded-full bg-on-accent" aria-hidden />}{s.texto}</div> })()}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
@@ -224,6 +226,7 @@ export default function Evento() {
                 className="acao-evento"><ImageDown className="size-5" aria-hidden /><span>{story || 'Story'}</span></button>
             </div>
 
+            <Programacao evento={e} />
             {e.descricao && <p className="mt-6 whitespace-pre-line leading-relaxed">{e.descricao}</p>}
           </div>
         </div>

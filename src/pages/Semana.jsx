@@ -19,7 +19,7 @@ export default function Semana() {
   const dias = useMemo(() => {
     if (!eventos) return null
     const m = new Map()
-    eventos.filter((e) => e.inicio < fim && (e.fim || e.inicio) >= hoje).sort((a, b) => a.inicio - b.inicio).forEach((e) => {
+    eventos.filter((e) => !e.pai && e.inicio < fim && (e.fim || e.inicio) >= hoje).sort((a, b) => a.inicio - b.inicio).forEach((e) => {
       const d = e.inicio < hoje ? hoje : e.inicio
       const k = chaveDia(d); if (!m.has(k)) m.set(k, { data: d, itens: [] }); m.get(k).itens.push(e)
     })

@@ -9,6 +9,9 @@ export const DEMO = [
   { id: 'teatro-demo', titulo: 'Peça Infantil: O Pequeno Príncipe', categoria: 'cultura', inicio: h(2, 15), localNome: 'Teatro Municipal', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
   { id: 'feira-demo', titulo: 'Feira Gastronômica do Sudoeste', categoria: 'gastronomia', inicio: h(3, 11), localNome: 'Parque de Exposições', cidade: 'Francisco Beltrão', gratuito: true, status: 'publicado' },
   { id: 'pagode-demo', titulo: 'Pagode do Domingão', categoria: 'musica', inicio: h(4, 17), localNome: 'Bar do Zé', cidade: 'Francisco Beltrão', preco: 'R$ 10', status: 'publicado' },
+  { id: 'festa-demo', titulo: 'Festa na Vila: Memórias de Natal', categoria: 'gastronomia', inicio: h(1, 11), fim: h(3, 23), localNome: 'Parque de Exposições', cidade: 'Francisco Beltrão', lat: -26.0668, lng: -53.0395, status: 'publicado', descricao: 'Três dias de gastronomia e shows.' },
+  { id: 'show1-demo', pai: 'festa-demo', titulo: 'Show Sudobanda na Festa na Vila', categoria: 'musica', inicio: h(1, 17), fim: h(1, 19), localNome: 'Parque de Exposições', cidade: 'Francisco Beltrão', status: 'publicado' },
+  { id: 'show2-demo', pai: 'festa-demo', titulo: 'Show Diretoria do Pagode na Festa na Vila', categoria: 'musica', generos: ['Pagode'], inicio: h(3, 19), fim: h(3, 23), localNome: 'Parque de Exposições', cidade: 'Francisco Beltrão', status: 'publicado' },
   { id: 'metal-demo', titulo: 'Metal Fest Sudoeste', categoria: 'musica', generos: ['Metal', 'Autoral'], inicio: h(6, 20), localNome: 'Galpão 77', cidade: 'Francisco Beltrão', preco: 'R$ 35', status: 'publicado' },
 ]
 
