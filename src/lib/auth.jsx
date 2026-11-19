@@ -8,12 +8,17 @@ export function AuthProvider({ children }) {
   const [estado, setEstado] = useState({ user: null, isAdmin: false, carregando: true, usuario: null, perfis: [] })
   const carregarConta = useCallback(async (user) => {
     if (!user || user.isAnonymous || !user.providerData.some((p) => p.providerId === 'google.com')) return { usuario: null, perfis: [] }
+    // Mesmo se o banco falhar, a pessoa continua entrada com os dados da conta Google.
+    const basico = { uid: user.uid, nome: user.displayName || 'Sem nome', foto: user.photoURL || '', publico: false }
     try {
       const { garantirUsuario, meusPerfis, trazerMarcacoesDoAparelho } = await import('./social')
-      const usuario = await garantirUsuario(user)
-      const [perfis] = await Promise.all([meusPerfis(user.uid), trazerMarcacoesDoAparelho(user.uid, usuario.publico)])
+      const usuario = await garantirUsuario(user).catch((e) => { console.warn('usuario', e); return basico })
+      const [perfis] = await Promise.all([
+        meusPerfis(user.uid).catch(() => []),
+        trazerMarcacoesDoAparelho(user.uid, usuario.publico).catch(() => 0),
+      ])
       return { usuario, perfis }
-    } catch (e) { console.warn('conta', e); return { usuario: null, perfis: [] } }
+    } catch (e) { console.warn('conta', e); return { usuario: basico, perfis: [] } }
   }, [])
   useEffect(() => onAuthStateChanged(auth, async (user) => {
     const base = { user, isAdmin: !!user && ADMIN_UIDS.includes(user.uid) }
