@@ -102,8 +102,9 @@ export default function Divulgar() {
               <span className="rotulo">Tipo</span>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIAS.map((c) => (
-                  <button type="button" key={c.id} onClick={() => setE((x) => ({ ...x, categoria: c.id }))}
-                    className={`chip inline-flex items-center gap-1.5 ${e.categoria === c.id ? 'chip-on' : ''}`}><c.Icone className="size-4" aria-hidden /> {c.nome}</button>
+                  <button type="button" key={c.id} onClick={() => setE((x) => ({ ...x, categoria: c.id }))} aria-pressed={e.categoria === c.id}
+                    className={`tipo-evento ${e.categoria === c.id ? 'tipo-evento-on' : ''}`} style={{ '--cor': c.cor }}>
+                    <span className="tipo-evento-icone"><c.Icone className="size-[18px]" aria-hidden /></span>{c.nome}</button>
                 ))}
               </div>
             </div>

@@ -129,12 +129,12 @@ export default function Evento() {
 
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button onClick={() => presenca('vou')} aria-pressed={minha === 'vou'}
-                className={`btn py-3 ${minha === 'vou' ? 'bg-accent text-on-accent' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
+                className={`btn h-12 text-sm ${minha === 'vou' ? 'bg-accent text-on-accent' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
                 <PartyPopper className="size-5" aria-hidden /> Eu vou{contagem.vou ? <span className="tabular-nums opacity-80"> · {contagem.vou}</span> : ''}
               </button>
               <button onClick={() => presenca('interesse')} aria-pressed={minha === 'interesse'}
-                className={`btn py-3 ${minha === 'interesse' ? 'bg-brand text-on-brand' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
-                <Star className="size-5" aria-hidden /> Tenho interesse{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
+                className={`btn h-12 text-sm ${minha === 'interesse' ? 'bg-brand text-on-brand' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
+                <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
             {lembrete.suporte && lembrete.suporte !== 'nao-suporta' && e.inicio > new Date() && (
@@ -152,22 +152,22 @@ export default function Evento() {
               <p className="mt-2 text-sm font-semibold text-brand">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
             )}
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              {e.ingressoUrl && (
-                <a onClick={() => clique('ingresso', e.id)} href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent sm:col-span-2 py-3 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
-              )}
+            {e.ingressoUrl && (
+              <a onClick={() => clique('ingresso', e.id)} href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent mt-4 w-full py-3.5 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
+            )}
+            <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="relative">
-                <button onClick={() => setAgendaAberta((v) => !v)} className="btn-brand w-full"><CalendarPlus className="size-5" /> Adicionar à agenda</button>
+                <button onClick={() => setAgendaAberta((v) => !v)} aria-expanded={agendaAberta} className="acao-evento acao-evento-on"><CalendarPlus className="size-5" aria-hidden /><span>Agenda</span></button>
                 {agendaAberta && (
-                  <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
+                  <div className="absolute left-0 top-full z-10 mt-1 w-60 overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
                     <a onClick={() => clique('agenda', e.id)} className="block px-4 py-3 hover:bg-surface-2" target="_blank" rel="noreferrer" href={linkGoogleAgenda(e, url)}>Google Agenda (Android)</a>
                     <button className="block w-full px-4 py-3 text-left hover:bg-surface-2" onClick={() => { clique('agenda', e.id); baixarIcs(e, url); setAgendaAberta(false) }}>iPhone / outro app (.ics)</button>
                   </div>
                 )}
               </div>
-              <button onClick={compartilhar} className="btn-ghost">{copiado ? <><Check className="size-5 text-brand" /> Link copiado</> : <><Share2 className="size-5" /> Compartilhar</>}</button>
-              <button onClick={async () => { clique('story', e.id); setStory('Gerando…'); const r = await gerarStory(e); setStory(r === 'baixado' ? 'Arte salva! Poste no seu Story.' : '') }}
-                className="btn-ghost sm:col-span-2"><ImageDown className="size-5" /> {story || 'Arte para o Story'}</button>
+              <button onClick={compartilhar} className="acao-evento">{copiado ? <><Check className="size-5 text-brand" aria-hidden /><span>Copiado</span></> : <><Share2 className="size-5" aria-hidden /><span>Compartilhar</span></>}</button>
+              <button onClick={async () => { clique('story', e.id); setStory('Gerando…'); const r = await gerarStory(e); setStory(r === 'baixado' ? 'Salva!' : '') }}
+                className="acao-evento"><ImageDown className="size-5" aria-hidden /><span>{story || 'Story'}</span></button>
             </div>
 
             {e.descricao && <p className="mt-6 whitespace-pre-line leading-relaxed">{e.descricao}</p>}

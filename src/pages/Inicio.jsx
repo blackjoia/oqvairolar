@@ -4,6 +4,8 @@ import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'
 import Logo from '../components/Logo'
 import Deslizar from '../components/Deslizar'
+import Segmentado from '../components/Segmentado'
+import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
@@ -17,8 +19,8 @@ const DIAS = [
   { id: 'todos', nome: 'Tudo' },
   { id: 'hoje', nome: 'Hoje' },
   { id: 'amanha', nome: 'Amanhã' },
-  { id: 'fds', nome: 'Fim de semana' },
-  { id: 'semana', nome: 'Próximos 7 dias' },
+  { id: 'fds', nome: 'Fim de semana', curto: 'Fim de semana' },
+  { id: 'semana', nome: 'Próximos 7 dias', curto: '7 dias' },
 ]
 
 const RAIO_MAX = 250
@@ -94,6 +96,16 @@ export default function Inicio() {
     }).sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
   }, [futuros, dia, cidade, genero, cat, termos, pos, raio])
 
+  const noDia = (e, d) => {
+    if (d === 'todos') return true
+    const [ini, fim] = faixaDia(d); const fimEv = e.fim || e.inicio
+    return !(fimEv < ini || (fim && e.inicio >= fim))
+  }
+  const contaDias = useMemo(() => Object.fromEntries(DIAS.map((d) => [d.id, futuros.filter((e) => noDia(e, d.id)).length])), [futuros]) // eslint-disable-line react-hooks/exhaustive-deps
+  const contaCat = useMemo(() => {
+    const m = {}; futuros.forEach((e) => { if (noDia(e, dia)) m[e.categoria] = (m[e.categoria] || 0) + 1 }); return m
+  }, [futuros, dia]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const grupos = useMemo(() => {
     const m = new Map()
     filtrados.forEach((e) => {
@@ -129,33 +141,24 @@ export default function Inicio() {
         <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
           <div className="flex items-center gap-2">
             <Deslizar className="flex-1">
-              {DIAS.map((d) => (
-                <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip shrink-0 ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
-              ))}
+              <Segmentado rotulo="Quando" valor={dia} onChange={(v) => setFiltro('dia', v)}
+                opcoes={DIAS.map((d) => ({ ...d, n: eventos ? contaDias[d.id] : null }))} />
             </Deslizar>
             <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância e filtrar por raio"
-              className={`chip flex shrink-0 items-center gap-1.5 px-3 ${pos ? 'chip-on' : ''}`}>
+              className={`ferramenta ${pos ? 'ferramenta-on' : ''}`}>
               {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
               <span className="hidden sm:inline">Perto de mim</span>
             </button>
             <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade e gênero"
-              className={`chip relative flex shrink-0 items-center gap-1.5 px-3 ${gaveta || nExtras ? 'border-brand text-brand' : ''}`}>
+              className={`ferramenta relative ${gaveta || nExtras ? 'ferramenta-marcada' : ''}`}>
               <SlidersHorizontal className="size-4" aria-hidden /><span className="hidden sm:inline">Filtros</span>
               <ChevronDown className={`size-4 transition-transform ${gaveta ? 'rotate-180' : ''}`} aria-hidden />
               {nExtras > 0 && <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-brand text-[11px] font-bold text-on-brand">{nExtras}</span>}
             </button>
           </div>
 
-          <Deslizar className="mt-2">
-            {CATEGORIAS.map((c) => {
-              const on = cat === c.id
-              return (
-                <button key={c.id} onClick={() => setFiltro('categoria', on ? '' : c.id)} aria-pressed={on}
-                  className={`chip flex shrink-0 items-center gap-1.5 py-1.5 text-sm ${on ? 'chip-on' : ''}`}>
-                  <c.Icone className="size-4" style={on ? undefined : { color: c.cor }} aria-hidden /> {c.nome}
-                </button>
-              )
-            })}
+          <Deslizar className="mt-3 -mb-1">
+            <AbasCategoria valor={cat} onChange={(v) => setFiltro('categoria', v)} contagem={contaCat} total={eventos ? Object.values(contaCat).reduce((a, b) => a + b, 0) : 0} />
           </Deslizar>
 
           <div className={`grid transition-[grid-template-rows] duration-300 ${gaveta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>

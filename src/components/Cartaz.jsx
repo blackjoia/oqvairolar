@@ -18,8 +18,8 @@ export default function Cartaz({ evento: e, className = '', comData = true }) {
       <Icone aria-hidden strokeWidth={1.25}
         className="absolute -bottom-[8%] -right-[12%] size-[70%] rotate-[-14deg] opacity-20" />
       <div className="absolute inset-0 flex flex-col justify-between p-[7cqw]">
-        <span className="inline-flex w-fit items-center gap-[2cqw] rounded-full bg-black/20 px-[3.5cqw] py-[1.2cqw] text-[5cqw] font-bold uppercase tracking-wide">
-          <Icone aria-hidden className="size-[5.5cqw]" strokeWidth={2.4} />{cat.nome}
+        <span className="inline-flex w-fit max-w-[62%] items-center gap-[2cqw] rounded-full bg-black/20 px-[3.5cqw] py-[1.2cqw] text-[5cqw] font-bold uppercase tracking-wide">
+          <Icone aria-hidden className="size-[5.5cqw] shrink-0" strokeWidth={2.4} /><span className="truncate">{cat.nome}</span>
         </span>
         <p className="line-clamp-4 font-display leading-[.95] break-words" style={{ fontSize: `${tam}cqw` }}>{titulo}</p>
         <div className="flex items-end justify-between gap-[3cqw]">

@@ -10,9 +10,9 @@ export default function CardEvento({ evento: e }) {
   const dist = textoDistancia(km(pos, e))
   return (
     <Link to={`/evento/${e.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg hover:shadow-brand/15">
-      <div className="relative aspect-[4/5]">
-        <Cartaz evento={e} comData={!temImagem} className="absolute inset-0 size-full" />
+      className="card-evento group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface hover:border-brand/40">
+      <div className="relative aspect-[4/5] overflow-hidden">
+        <Cartaz evento={e} comData={!temImagem} className="card-img absolute inset-0 size-full" />
         {temImagem && (
           <div className="absolute left-2 top-2 rounded-lg bg-accent px-2 py-1 text-center leading-none text-on-accent shadow">
             <div className="font-display text-xl">{diaMes(e.inicio)}</div>
