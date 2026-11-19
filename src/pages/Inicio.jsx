@@ -8,9 +8,10 @@ import { abrirInstalar } from '../components/InstalarApp'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS } from '../lib/constantes'
-import { filtro } from '../lib/visitas'
+import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
-import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search } from 'lucide-react'
+import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
+import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -24,6 +25,15 @@ export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
   const [gaveta, setGaveta] = useState(false)
+  const pos = useMinhaPosicao()
+  const [buscandoLocal, setBuscandoLocal] = useState(false)
+  const [erroLocal, setErroLocal] = useState('')
+  async function pertoDeMim() {
+    setErroLocal('')
+    if (pos) { esquecerLocalizacao(); return }
+    setBuscandoLocal(true)
+    try { await pedirLocalizacao(); clique('perto-de-mim') } catch (x) { setErroLocal(x.message) } finally { setBuscandoLocal(false) }
+  }
   const [params, setParams] = useSearchParams()
   const dia = params.get('dia') || 'todos'
   const cidade = params.get('cidade') || ''
@@ -67,8 +77,10 @@ export default function Inicio() {
         if (!termos.every((t) => texto.includes(t))) return false
       }
       return true
-    }).sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
-  }, [futuros, dia, cidade, genero, cat, termos])
+    }).sort(pos
+      ? (a, b) => (km(pos, a) ?? 1e9) - (km(pos, b) ?? 1e9) || a.inicio - b.inicio
+      : (a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
+  }, [futuros, dia, cidade, genero, cat, termos, pos])
 
   const grupos = useMemo(() => {
     const m = new Map()
@@ -109,6 +121,11 @@ export default function Inicio() {
                 <button key={d.id} onClick={() => setFiltro('dia', d.id)} className={`chip shrink-0 ${dia === d.id ? 'chip-on' : ''}`}>{d.nome}</button>
               ))}
             </Deslizar>
+            <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância e ordenar do mais perto"
+              className={`chip flex shrink-0 items-center gap-1.5 px-3 ${pos ? 'chip-on' : ''}`}>
+              {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
+              <span className="hidden sm:inline">Perto de mim</span>
+            </button>
             <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade e gênero"
               className={`chip relative flex shrink-0 items-center gap-1.5 px-3 ${gaveta || nExtras ? 'border-brand text-brand' : ''}`}>
               <SlidersHorizontal className="size-4" aria-hidden /><span className="hidden sm:inline">Filtros</span>
@@ -142,6 +159,9 @@ export default function Inicio() {
               </div>
             </div>
           </div>
+
+          {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
+          {pos && <p className="mt-2 flex items-center gap-1.5 text-xs text-muted"><Navigation className="size-3.5 text-brand" aria-hidden />Do mais perto ao mais longe de você. <button onClick={pertoDeMim} className="font-semibold text-brand underline underline-offset-2">Desligar</button></p>}
 
           {!gaveta && nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">

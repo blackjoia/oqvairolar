@@ -11,6 +11,7 @@ import { useAuth } from '../lib/auth'
 import MapaVer from '../components/MapaVer'
 import { gerarStory } from '../lib/story'
 import { clique } from '../lib/visitas'
+import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
 import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star } from 'lucide-react'
 
@@ -18,6 +19,8 @@ export default function Evento() {
   const { id } = useParams()
   const { isAdmin } = useAuth()
   const [e, setE] = useState(undefined)
+  const pos = useMinhaPosicao()
+  const [erroLocal, setErroLocal] = useState('')
   const [copiado, setCopiado] = useState(false)
   const [agendaAberta, setAgendaAberta] = useState(false)
   const [story, setStory] = useState('')
@@ -98,7 +101,11 @@ export default function Evento() {
                 <dd><b>{rotuloDia(e.inicio)}</b>, às {hora(e.inicio)}{e.fim ? ` até ${hora(e.fim)}` : ''}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand">{e.localNome}</Link> : <b>Local a confirmar</b>}
-                  <div className="text-sm text-muted">{[e.endereco, e.cidade].filter(Boolean).join(' · ')}</div></dd></div>
+                  <div className="text-sm text-muted">{[e.endereco, e.cidade].filter(Boolean).join(' · ')}</div>
+                  {km({ lat: 0, lng: 0 }, e) != null && (pos
+                    ? <div className="mt-1 w-fit rounded-full bg-brand/10 px-2.5 py-0.5 text-sm font-bold text-brand">{textoDistancia(km(pos, e))} de você</div>
+                    : <button onClick={() => { setErroLocal(''); pedirLocalizacao().then(() => clique('perto-de-mim')).catch((x) => setErroLocal(x.message)) }} className="mt-1 text-sm font-semibold text-brand underline underline-offset-2">Ver a distância de você</button>)}
+                  {erroLocal && <div className="mt-1 text-xs text-danger">{erroLocal}</div>}</dd></div>
               <div className="flex gap-3"><dt aria-label="Valor"><Ticket className="size-5 text-brand" /></dt>
                 <dd>{e.gratuito ? <b>Entrada gratuita</b> : <b>{e.preco || 'Valor a confirmar'}</b>}</dd></div>
               {e.instagram && (
