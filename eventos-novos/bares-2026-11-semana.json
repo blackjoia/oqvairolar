@@ -17,7 +17,7 @@
       ],
       "inicio": "2026-11-19T20:30:00-03:00",
       "localNome": "Formosa Pub",
-      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "endereco": "Rua Ponta Grossa, 2080 · Centro",
       "lat": -26.0758613,
       "lng": -53.053133,
       "instagram": "formosapub",
@@ -25,7 +25,7 @@
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/crsfqgrb6tgnedktavxk.jpg",
       "descricao": "Véspera de feriado com rock and roll ao vivo a partir das 20h30.\nReservas pelo WhatsApp (46) 99103-7545.",
       "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
-      "rev": 2
+      "rev": 3
     },
     {
       "id": "vivi-e-douglas-formosa-pub-2026-11-20",
@@ -39,14 +39,14 @@
       ],
       "inicio": "2026-11-20T20:30:00-03:00",
       "localNome": "Formosa Pub",
-      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "endereco": "Rua Ponta Grossa, 2080 · Centro",
       "lat": -26.0758613,
       "lng": -53.053133,
       "instagram": "formosapub",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/nkjigxrrcjrbwghmoviz.jpg",
       "descricao": "Pop rock nacional e internacional às 20h30. Desconto para retirada ou entrega de chope Formosa na garrafa PET.\nReservas pelo WhatsApp (46) 99103-7545.",
       "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
-      "rev": 2,
+      "rev": 3,
       "preco": "Couvert R$ 7"
     },
     {
@@ -61,14 +61,14 @@
       ],
       "inicio": "2026-11-21T20:30:00-03:00",
       "localNome": "Formosa Pub",
-      "endereco": "Rua Ponta Grossa, 2080, Centro",
+      "endereco": "Rua Ponta Grossa, 2080 · Centro",
       "lat": -26.0758613,
       "lng": -53.053133,
       "instagram": "formosapub",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/zjgwdzqdrkn1hobyufis.jpg",
       "descricao": "Rock and roll acústico às 20h30. Happy hour das 17h30 às 20h: chope Formosa de 450 ml pelo valor de 300 ml.\nReservas pelo WhatsApp (46) 99103-7545.",
       "fonte": "https://www.instagram.com/p/Df0IQUKAN22/",
-      "rev": 2,
+      "rev": 3,
       "preco": "Couvert R$ 5"
     },
     {
@@ -84,7 +84,7 @@
       ],
       "inicio": "2026-11-19T21:00:00-03:00",
       "localNome": "Bar do Plets",
-      "endereco": "Rua Florianópolis, 155",
+      "endereco": "Rua Florianópolis, 155 · Centro",
       "instagram": "bardoplets",
       "gratuito": true,
       "preco": "Couvert free",
@@ -92,7 +92,7 @@
       "descricao": "Rolê pré-feriado com rock acústico ao vivo.",
       "fonte": "https://www.instagram.com/p/Df4yBELhK--/",
       "semHora": true,
-      "rev": 3,
+      "rev": 4,
       "lat": -26.073281,
       "lng": -53.0559627
     },
@@ -108,15 +108,16 @@
         "@tormentorslayertributo"
       ],
       "inicio": "2026-11-20T20:00:00-03:00",
-      "localNome": "Taberna do Albeergue",
-      "endereco": "Rua Santa Luzia, 616, Cristo Rei",
+      "localNome": "Taberna Albeergue",
+      "endereco": "Rua Santa Luzia, 616 · Cristo Rei",
       "lat": -26.0671562,
       "lng": -53.0675573,
       "instagram": "albeerguecervejaria",
       "preco": "R$ 20 antecipado (com 1 chopp) · R$ 25 na portaria",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106343/cartazes/i2itwcvex5z61rchag4l.webp",
       "descricao": "Noite de rock e metal com Dopesick (System of a Down, Linkin Park, Slipknot, Korn, Deftones e mais) e Tormentor, tributo ao Slayer. Início às 20h.\nIngresso antecipado pelo WhatsApp (46) 99905-2138.",
-      "fonte": "https://www.instagram.com/p/Dfzrm7Hpebf/"
+      "fonte": "https://www.instagram.com/p/Dfzrm7Hpebf/",
+      "rev": 2
     }
   ]
 }
