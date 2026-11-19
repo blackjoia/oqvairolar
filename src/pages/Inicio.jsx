@@ -13,7 +13,7 @@ import { CATEGORIAS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
 import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
-import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle } from 'lucide-react'
+import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle, ArrowRight } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -129,7 +129,8 @@ export default function Inicio() {
           <h1 className="mt-3 font-display text-[clamp(3.6rem,13vw,7.5rem)] uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
-          <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.</p>
+          <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
+            <Link to="/semana" className="whitespace-nowrap font-semibold text-brand underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
           <label className="relative mt-5 block max-w-xl">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
@@ -255,7 +256,12 @@ export function Rodape() {
     <footer className="border-t border-line py-8 text-center text-sm text-muted">
       <Logo className="mx-auto mb-2 h-12 w-auto text-ink" />
       <p>Agenda de Francisco Beltrão e região · oquevairolar.com.br</p>
-      <button onClick={abrirInstalar} className="mt-3 font-semibold text-brand hover:underline">Instalar o app no celular</button>
+      <nav className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
+        <Link to="/semana" className="hover:underline">Esta semana</Link>
+        <Link to="/meus-roles" className="hover:underline">Meus rolês</Link>
+        <Link to="/divulgar" className="hover:underline">Divulgar evento</Link>
+        <button onClick={abrirInstalar} className="hover:underline">Instalar o app no celular</button>
+      </nav>
     </footer>
   )
 }

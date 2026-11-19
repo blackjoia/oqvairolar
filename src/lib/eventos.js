@@ -102,3 +102,18 @@ export async function enviarParaAprovacao(e) {
   })
   return id
 }
+
+// Página oficial: o dono publica direto, sem aprovação (as regras conferem se ele é dono).
+export async function publicarComoPerfil(e, perfil, uid) {
+  const dados = Object.fromEntries(CAMPOS_PUBLICOS.filter((k) => k !== 'enviadoPor').map((k) => [k, e[k] ?? null]))
+  const id = gerarId(e.titulo, e.inicio)
+  await setDoc(doc(db, 'eventos', id), {
+    ...paraFirestore(dados),
+    perfil, criadoPor: uid,
+    status: 'publicado',
+    origem: 'perfil',
+    criadoEm: serverTimestamp(),
+    atualizadoEm: serverTimestamp(),
+  })
+  return id
+}

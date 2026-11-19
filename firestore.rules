@@ -34,10 +34,36 @@ service cloud.firestore {
         && d.enviadoPor.contato is string && d.enviadoPor.contato.size() <= 120;
     }
 
+    // Página oficial (bar, banda): quem é dono publica direto, sem passar pela aprovação.
+    function envioPerfilValido() {
+      let d = request.resource.data;
+      return request.auth != null
+        && d.keys().hasOnly(['titulo', 'categoria', 'generos', 'inicio', 'fim', 'localNome', 'endereco', 'cidade',
+          'lat', 'lng', 'descricao', 'cartazUrl', 'ingressoUrl', 'gratuito', 'preco', 'instagram',
+          'perfil', 'criadoPor', 'status', 'origem', 'criadoEm', 'atualizadoEm'])
+        && d.status == 'publicado'
+        && d.origem == 'perfil'
+        && d.criadoPor == request.auth.uid
+        && d.perfil is string && d.perfil.size() <= 120
+        && exists(/databases/$(database)/documents/perfis/$(d.perfil))
+        && request.auth.uid in get(/databases/$(database)/documents/perfis/$(d.perfil)).data.donos
+        && d.titulo is string && d.titulo.size() > 0 && d.titulo.size() <= 120
+        && d.inicio is timestamp && d.inicio > request.time - duration.value(1, 'd')
+        && d.criadoEm == request.time
+        && texto('categoria', 30) && texto('localNome', 120) && texto('endereco', 200) && texto('cidade', 80)
+        && texto('descricao', 2000) && texto('cartazUrl', 500) && texto('ingressoUrl', 500)
+        && texto('preco', 80) && texto('instagram', 60)
+        && (d.generos == null || (d.generos is list && d.generos.size() <= 10));
+    }
+
+    function dono(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
     match /eventos/{eventoId} {
       // O público só vê eventos publicados. O admin vê todos (pendentes, ocultos).
       allow read: if resource.data.status == 'publicado' || isAdmin();
-      allow create: if isAdmin() || envioPublicoValido();
+      allow create: if isAdmin() || envioPublicoValido() || envioPerfilValido();
       allow update: if isAdmin()
         && request.resource.data.titulo is string
         && request.resource.data.titulo.size() > 0
@@ -67,17 +93,82 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
-    // "Eu vou" / "Tenho interesse": um documento por aparelho e evento (id = eventoId_visitante).
+    // "Eu vou" / "Tenho interesse": um documento por pessoa e evento (id = eventoId_visitante).
+    // Sem conta, visitante é o código do aparelho. Com conta Google, é o uid (e vem com uid e perfil).
+    function presencaValida(id) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['eventoId', 'visitante', 'tipo', 'em', 'uid', 'perfil'])
+        && d.tipo in ['vou', 'interesse']
+        && d.eventoId is string && d.eventoId.size() <= 120
+        && d.visitante is string && d.visitante.size() <= 40
+        && id == d.eventoId + '_' + d.visitante
+        && d.em == request.time
+        && (d.get('uid', null) == null ? d.visitante.size() <= 20 : (dono(d.uid) && d.visitante == d.uid))
+        && (d.get('perfil', null) == null || d.perfil is bool)
+        && exists(/databases/$(database)/documents/eventos/$(d.eventoId));
+    }
     match /presencas/{id} {
       allow read: if true;
-      allow create, update: if request.resource.data.keys().hasOnly(['eventoId', 'visitante', 'tipo', 'em'])
-        && request.resource.data.tipo in ['vou', 'interesse']
-        && request.resource.data.eventoId is string && request.resource.data.eventoId.size() <= 120
-        && request.resource.data.visitante is string && request.resource.data.visitante.size() <= 20
-        && id == request.resource.data.eventoId + '_' + request.resource.data.visitante
+      allow create: if presencaValida(id);
+      allow update: if presencaValida(id)
+        && (resource.data.get('uid', null) == null || dono(resource.data.uid));
+      allow delete: if resource.data.get('uid', null) == null || dono(resource.data.uid);
+    }
+
+    // Conta do público: nome, foto e se aparece em "quem vai". Os outros só veem quem deixou público.
+    match /usuarios/{uid} {
+      allow read: if resource.data.publico == true || dono(uid) || isAdmin();
+      allow create, update: if dono(uid)
+        && request.resource.data.keys().hasOnly(['nome', 'foto', 'publico', 'criadoEm', 'atualizadoEm'])
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 60
+        && request.resource.data.foto is string && request.resource.data.foto.size() <= 500
+        && request.resource.data.publico is bool;
+    }
+
+    // Página oficial de um bar ou banda: quem cuida dela (donos) é definido pelo admin.
+    match /perfis/{slug} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Pedido para cuidar de uma página: a pessoa cria, o admin aprova ou recusa.
+    match /pedidos/{id} {
+      allow read: if isAdmin() || (request.auth != null && resource.data.uid == request.auth.uid);
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['slug', 'nome', 'tipo', 'uid', 'contato', 'mensagem', 'status', 'em'])
+        && request.resource.data.uid == request.auth.uid
+        && id == request.resource.data.slug + '_' + request.auth.uid
+        && request.resource.data.status == 'pendente'
+        && request.resource.data.tipo in ['local', 'atracao']
+        && request.resource.data.slug is string && request.resource.data.slug.size() <= 120
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 120
+        && request.resource.data.contato is string && request.resource.data.contato.size() <= 120
+        && request.resource.data.mensagem is string && request.resource.data.mensagem.size() <= 500
         && request.resource.data.em == request.time
-        && exists(/databases/$(database)/documents/eventos/$(request.resource.data.eventoId));
-      allow delete: if true;
+        && !exists(/databases/$(database)/documents/pedidos/$(id));
+      allow update, delete: if isAdmin();
+    }
+
+    // Quem segue cada bar ou banda (para avisar de evento novo).
+    match /seguidores/{id} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['slug', 'uid', 'nome', 'em'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.slug is string && request.resource.data.slug.size() <= 120
+        && request.resource.data.nome is string && request.resource.data.nome.size() <= 120
+        && id == request.resource.data.slug + '_' + request.auth.uid
+        && request.resource.data.em == request.time;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // Endereços de notificação dos aparelhos de cada conta. Só o robô (servidor) lê.
+    match /aparelhos/{uid} {
+      allow read: if false;
+      allow create, update: if dono(uid)
+        && request.resource.data.keys().hasOnly(['tokens', 'em'])
+        && request.resource.data.tokens is list && request.resource.data.tokens.size() <= 10
+        && request.resource.data.em == request.time;
     }
 
     match /lembretes/{id} {

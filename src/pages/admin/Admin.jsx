@@ -36,6 +36,7 @@ function MenuAdmin() {
     { to: '/admin/eventos', nome: 'Eventos' },
     { to: '/admin/evento/novo', nome: '+ Novo evento' },
     { to: '/admin/artes', nome: 'Artes' },
+    { to: '/admin/pedidos', nome: 'Pedidos' },
     { to: '/', nome: 'Ver site' },
   ]
   return (

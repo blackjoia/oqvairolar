@@ -19,7 +19,9 @@ import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, N
 
 export default function Evento() {
   const { id } = useParams()
-  const { isAdmin } = useAuth()
+  const { isAdmin, user, usuario } = useAuth()
+  const [rostos, setRostos] = useState([])
+  const [aviso, setAviso] = useState('')
   const [e, setE] = useState(undefined)
   const pos = useMinhaPosicao()
   const [erroLocal, setErroLocal] = useState('')
@@ -41,12 +43,15 @@ export default function Evento() {
   useEffect(() => {
     if (id.endsWith('-demo')) return
     minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
-  }, [id])
+    import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
+  }, [id, user?.uid])
   const presenca = async (tipo) => {
     const novo = minha === tipo ? null : tipo
     setContagem((c) => ({ ...c, ...(minha ? { [minha]: Math.max(0, c[minha] - 1) } : {}), ...(novo ? { [novo]: (minha === novo ? c[novo] : c[novo] + 1) } : {}) }))
     setMinha(novo)
-    try { await marcarPresenca(id, novo) } catch { /* sem internet: fica só local */ }
+    try { await marcarPresenca(id, novo, usuario?.publico) } catch { /* sem internet: fica só local */ }
+    if (novo && !usuario) setAviso('Entre com o Google para guardar nos seus rolês e ver em qualquer aparelho.')
+    if (usuario?.publico) import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
   }
 
   useEffect(() => {
@@ -137,6 +142,22 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
+            {aviso && (
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
+                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand underline underline-offset-2">Entrar</button></p>
+            )}
+            {rostos.length > 0 && (
+              <div className="mt-3 flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  {rostos.slice(0, 8).map((u) => (
+                    <Link key={u.uid} to={`/u/${u.uid}`} title={u.nome} className="relative block size-8 overflow-hidden rounded-full bg-surface-2 ring-2 ring-bg hover:z-10">
+                      {u.foto ? <img src={u.foto} alt={u.nome} referrerPolicy="no-referrer" className="size-full object-cover" /> : <span className="grid size-full place-items-center text-xs font-bold">{u.nome?.[0]}</span>}
+                    </Link>
+                  ))}
+                </div>
+                <span className="text-sm text-muted">{rostos.length === 1 ? `${rostos[0].nome.split(' ')[0]} vai` : `${rostos[0].nome.split(' ')[0]} e mais ${rostos.length - 1} vão`}</span>
+              </div>
+            )}
             {lembrete.suporte && lembrete.suporte !== 'nao-suporta' && e.inicio > new Date() && (
               <>
                 <button onClick={alternarLembrete} disabled={lembrete.carregando} aria-pressed={lembrete.ligado}
