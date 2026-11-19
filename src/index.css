@@ -179,3 +179,8 @@ h1, h2, h3 { text-wrap: balance; }
 @keyframes ao-vivo { 50% { opacity: .35; transform: scale(.75) } }
 .ao-vivo { animation: ao-vivo 1.4s ease-in-out infinite }
 @media (prefers-reduced-motion: reduce) { .ao-vivo { animation: none } }
+
+/* Pódio do ranking: os degraus sobem uma vez ao abrir (a única animação da tela) */
+@keyframes subir { from { transform: scaleY(0) } }
+.podio-degrau { transform-origin: bottom; animation: subir .6s var(--ease-saida) both; animation-delay: var(--d, 0ms) }
+@media (prefers-reduced-motion: reduce) { .podio-degrau { animation: none } }
