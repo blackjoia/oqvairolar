@@ -16,7 +16,7 @@ import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../li
 import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
-import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle } from 'lucide-react'
+import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
@@ -150,6 +150,13 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
+            {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
+              <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
+                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} às ${hora(e.inicio)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
+                className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
+                <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
+              </a>
+            )}
             {aviso && (
               <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
                 <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
@@ -176,9 +183,6 @@ export default function Evento() {
                 <p className="mt-1 text-xs text-muted">{lembrete.suporte === 'ios-instalar' ? 'No iPhone, o lembrete funciona com o app instalado na tela de início.' : 'Você recebe um aviso umas 3 horas antes de começar.'}</p>
                 {lembrete.erro && <p className="mt-1 text-xs text-danger">{lembrete.erro}</p>}
               </>
-            )}
-            {(contagem.vou + contagem.interesse) >= 3 && (
-              <p className="mt-2 text-sm font-semibold text-brand-ink">{contagem.vou ? `${contagem.vou} ${contagem.vou === 1 ? 'pessoa vai' : 'pessoas vão'}` : ''}{contagem.vou && contagem.interesse ? ' e ' : ''}{contagem.interesse ? `${contagem.interesse} com interesse` : ''}</p>
             )}
 
             {e.ingressoUrl && (

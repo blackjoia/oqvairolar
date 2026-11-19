@@ -132,7 +132,18 @@ if (pendentes.length || pedidosNovos.length) {
   await Promise.all([...pendentes, ...pedidosNovos].map((d) => d.ref.update({ avisoAdmin: true })))
 }
 
+// Quantas pessoas vão em cada evento das próximas 2 semanas: o número aparece no card da agenda.
+let contados = 0
+const proximos = await db.collection('eventos')
+  .where('inicio', '>=', Timestamp.fromDate(new Date(agora.getTime() - 6 * 3600000)))
+  .where('inicio', '<=', Timestamp.fromDate(new Date(agora.getTime() + 14 * 86400000))).get()
+for (const d of proximos.docs) {
+  if (d.data().status !== 'publicado') continue
+  const n = (await db.collection('presencas').where('eventoId', '==', d.id).where('tipo', '==', 'vou').count().get()).data().count
+  if ((d.data().vao || 0) !== n) { await d.ref.update({ vao: n }); contados++ }
+}
+
 // Limpa pedidos antigos de eventos que já passaram (mais de 60 dias).
 const velhos = await db.collection('lembretes').where('em', '<', Timestamp.fromDate(new Date(agora.getTime() - 60 * 86400000))).limit(200).get()
 await Promise.all(velhos.docs.map((v) => v.ref.delete()))
-console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}.`)
+console.log(`Lembretes: ${enviados} enviados, ${falhas} falharam, ${velhos.size} antigos apagados. Avisos de evento novo: ${avisos}. Avisos ao admin: ${avisosAdmin}. Contagens atualizadas: ${contados}.`)

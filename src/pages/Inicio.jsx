@@ -137,14 +137,14 @@ export default function Inicio() {
     <>
       <Topo />
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
-        <section className="pb-4 pt-8 sm:pt-12">
+        <section className="pb-4 pt-5 sm:pt-12">
           <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Francisco Beltrão e região</p>
-          <h1 className="mt-3 font-display text-[clamp(3.4rem,11vw,6rem)] uppercase leading-[.9] tracking-[-.005em]">
+          <h1 className="mt-2 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
-          <p className="mt-4 max-w-xl text-muted">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
+          <p className="mt-2 max-w-xl text-muted sm:mt-4"><span className="hidden sm:inline">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}</span>
             <Link to="/semana" className="link-toque -my-2 whitespace-nowrap font-semibold text-brand-ink underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
-          <label className="relative mt-5 block max-w-xl">
+          <label className="relative mt-3 block max-w-xl sm:mt-5">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
             <input type="search" value={textoBusca} onChange={(x) => setTextoBusca(x.target.value)} placeholder="Buscar banda, bar ou evento"
