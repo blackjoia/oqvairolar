@@ -89,8 +89,10 @@
       "gratuito": true,
       "preco": "Couvert free",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106256/cartazes/xxuqkucpbucmko5wpfl6.jpg",
-      "descricao": "Rolê pré-feriado com rock acústico ao vivo. O bar não informou o horário do show (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/p/Df4yBELhK--/"
+      "descricao": "Rolê pré-feriado com rock acústico ao vivo.",
+      "fonte": "https://www.instagram.com/p/Df4yBELhK--/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "red-friday-taberna-do-albeergue-2026-11-20",

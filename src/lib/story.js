@@ -59,7 +59,7 @@ export async function gerarStory(e) {
   y += 50
 
   // Selo da data em limão
-  const data = `${rotuloDia(e.inicio).toUpperCase()} · ${hora(e.inicio)}`
+  const data = `${rotuloDia(e.inicio).toUpperCase()}${e.semHora ? '' : ` · ${hora(e.inicio)}`}`
   ctx.font = '64px Anton'
   const lw = ctx.measureText(data).width + 64
   ctx.fillStyle = '#c6ff00'; ctx.beginPath(); ctx.roundRect(80, y, lw, 104, 22); ctx.fill()

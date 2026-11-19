@@ -20,8 +20,10 @@
       "localNome": "Avenida Bombar",
       "endereco": "Av. Tupi, 1529",
       "instagram": "avenidabombar",
-      "descricao": "Voz e violão na véspera de feriado. O bar não informou o horário (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+      "descricao": "Voz e violão na véspera de feriado.",
+      "fonte": "https://www.instagram.com/stories/avenidabombar/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "acoustivibe-avenida-bombar-2026-11-20",
@@ -38,8 +40,10 @@
       "localNome": "Avenida Bombar",
       "endereco": "Av. Tupi, 1529",
       "instagram": "avenidabombar",
-      "descricao": "O melhor do pop rock nacional e internacional. O bar não informou o horário (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/stories/avenidabombar/"
+      "descricao": "O melhor do pop rock nacional e internacional.",
+      "fonte": "https://www.instagram.com/stories/avenidabombar/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "veto-e-zico-rubas-avenida-bombar-2026-11-21",
@@ -96,8 +100,10 @@
       "endereco": "Av. Tupi, 1571",
       "instagram": "nobarunipb",
       "preco": "Uni grátis · Clube R$ 30",
-      "descricao": "DJ no meio do público, estilo Boiler Room. O bar abre às 18h; horário do DJ não informado (o site mostra 22h como referência).",
-      "fonte": "https://www.instagram.com/nobarunipb/"
+      "descricao": "DJ no meio do público, estilo Boiler Room. O bar abre às 18h.",
+      "fonte": "https://www.instagram.com/nobarunipb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "aloha-nobar-pb-2026-11-21",
@@ -115,8 +121,10 @@
       "localNome": "noBar! Pato Branco",
       "endereco": "Av. Tupi, 1571",
       "instagram": "nobarunipb",
-      "descricao": "Festa Aloha com DJ Harry e DJ Simi. O bar abre às 18h; horário não informado (o site mostra 22h como referência).",
-      "fonte": "https://www.instagram.com/nobarunipb/"
+      "descricao": "Festa Aloha com DJ Harry e DJ Simi. O bar abre às 18h.",
+      "fonte": "https://www.instagram.com/nobarunipb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "murilo-e-santini-nobar-pb-2026-11-22",
@@ -133,8 +141,10 @@
       "instagram": "nobarunipb",
       "gratuito": true,
       "preco": "Entrada grátis",
-      "descricao": "Domingo com entrada grátis. Horário não informado (o site mostra 19h como referência).",
-      "fonte": "https://www.instagram.com/nobarunipb/"
+      "descricao": "Domingo com entrada grátis.",
+      "fonte": "https://www.instagram.com/nobarunipb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "no-postinho-do-deck-joao-gustavo-e-murilo-2026-11-28",
@@ -149,8 +159,10 @@
       "localNome": "Kroko Deck Pato Branco",
       "endereco": "Av. Tupi, 1509 · Bairro Brasília",
       "instagram": "krokodeckpb",
-      "descricao": "Ingressos online pelo Cheers. Horário não informado (o site mostra 22h como referência).",
-      "fonte": "https://www.instagram.com/krokodeckpb/"
+      "descricao": "Ingressos online pelo Cheers.",
+      "fonte": "https://www.instagram.com/krokodeckpb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "resenha-do-deck-kaique-e-felipe-pb-2026-12-05",
@@ -165,8 +177,10 @@
       "localNome": "Kroko Deck Pato Branco",
       "endereco": "Av. Tupi, 1509 · Bairro Brasília",
       "instagram": "krokodeckpb",
-      "descricao": "Lote promocional liberado. Ingressos pelo Cheers. Horário não informado (o site mostra 22h como referência).",
-      "fonte": "https://www.instagram.com/krokodeckpb/"
+      "descricao": "Lote promocional liberado. Ingressos pelo Cheers.",
+      "fonte": "https://www.instagram.com/krokodeckpb/",
+      "semHora": true,
+      "rev": 2
     }
   ]
 }

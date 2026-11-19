@@ -8,6 +8,9 @@ export const diaSemana = (d) => fmt(d, { weekday: 'short' }).replace('.', '')
 export const diaMes = (d) => fmt(d, { day: '2-digit' })
 export const mesCurto = (d) => fmt(d, { month: 'short' }).replace('.', '')
 export const hora = (d) => fmt(d, { hour: '2-digit', minute: '2-digit' })
+// Hora do evento; quando o local não divulgou (semHora), não mostra hora inventada.
+export const horaDe = (e, curto = false) => (e?.semHora ? (curto ? '—' : 'horário a confirmar') : hora(e.inicio))
+export const asHora = (e) => (e?.semHora ? '(horário a confirmar)' : `às ${hora(e.inicio)}`)
 export const dataLonga = (d) => fmt(d, { weekday: 'long', day: 'numeric', month: 'long' })
 export const chaveDia = (d) => fmt(d, { year: 'numeric', month: '2-digit', day: '2-digit' }) // dd/mm/aaaa
 

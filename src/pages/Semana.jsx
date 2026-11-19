@@ -4,7 +4,7 @@ import Topo from '../components/Topo'
 import { Rodape } from './Inicio'
 import { listarPublicados } from '../lib/eventos'
 import { categoria } from '../lib/constantes'
-import { hora, inicioDoDia, addDias, chaveDia, rotuloDia, diaMes, mesCurto } from '../lib/datas'
+import { hora, horaDe, inicioDoDia, addDias, chaveDia, rotuloDia, diaMes, mesCurto } from '../lib/datas'
 import { clique } from '../lib/visitas'
 import { Share2, Check, Copy, ArrowRight } from 'lucide-react'
 
@@ -32,7 +32,7 @@ export default function Semana() {
     const linhas = ['*O QUE VAI ROLAR ESTA SEMANA* 🎉', '']
     dias.forEach((d) => {
       linhas.push(`*${rotuloDia(d.data).toUpperCase()}*`)
-      d.itens.forEach((e) => linhas.push(`• ${hora(e.inicio)} — ${e.titulo}${e.localNome ? ` (${e.localNome})` : ''}${e.gratuito ? ' · grátis' : ''}`))
+      d.itens.forEach((e) => linhas.push(`• ${horaDe(e, true)} — ${e.titulo}${e.localNome ? ` (${e.localNome})` : ''}${e.gratuito ? ' · grátis' : ''}`))
       linhas.push('')
     })
     linhas.push(`Agenda completa: ${url}`)
@@ -70,7 +70,7 @@ export default function Semana() {
                   return (
                     <li key={e.id}>
                       <Link to={`/evento/${e.id}`} className="group flex items-center gap-3 px-4 py-3 hover:bg-surface-2">
-                        <span className="w-12 shrink-0 font-display text-xl tabular-nums">{hora(e.inicio)}</span>
+                        <span className="w-12 shrink-0 font-display text-xl tabular-nums">{horaDe(e, true)}</span>
                         <span className="h-9 w-1 shrink-0 rounded-full" style={{ background: c.cor }} aria-hidden />
                         <span className="min-w-0 flex-1">
                           <b className="block truncate group-hover:text-brand-ink">{e.titulo}</b>

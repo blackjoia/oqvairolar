@@ -19,8 +19,10 @@
       "localNome": "Kroko Deck Francisco Beltrão",
       "endereco": "Av. Júlio Assis Cavalheiro, 3314",
       "instagram": "krokodeckfb",
-      "descricao": "Véspera de feriado: comprando 3 Heineken, a 4ª é por conta da casa. Horário não informado (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+      "descricao": "Véspera de feriado: comprando 3 Heineken, a 4ª é por conta da casa.",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "sexta-deck-nilton-e-tiago-kroko-fb-2026-11-20",
@@ -35,8 +37,10 @@
       "localNome": "Kroko Deck Francisco Beltrão",
       "endereco": "Av. Júlio Assis Cavalheiro, 3314",
       "instagram": "krokodeckfb",
-      "descricao": "Gin tônica e tropical a R$ 19,90 para elas a noite toda. Horário não informado (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+      "descricao": "Gin tônica e tropical a R$ 19,90 para elas a noite toda.",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "roda-de-samba-dose-certa-kroko-fb-2026-11-21",
@@ -52,8 +56,10 @@
       "localNome": "Kroko Deck Francisco Beltrão",
       "endereco": "Av. Júlio Assis Cavalheiro, 3314",
       "instagram": "krokodeckfb",
-      "descricao": "Caipirinha 50% off até 19h30. Horário de início não informado (o site mostra 17h como referência).",
-      "fonte": "https://www.instagram.com/stories/krokodeckfb/"
+      "descricao": "Caipirinha 50% off até 19h30.",
+      "fonte": "https://www.instagram.com/stories/krokodeckfb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "tardezinha-sunset-kaique-e-felipe-kroko-fb-2026-12-05",
@@ -68,8 +74,10 @@
       "localNome": "Kroko Deck Francisco Beltrão",
       "endereco": "Av. Júlio Assis Cavalheiro, 3314",
       "instagram": "krokodeckfb",
-      "descricao": "Ingressos pelo Cheers. Horário não informado (o site mostra 16h como referência).",
-      "fonte": "https://www.instagram.com/krokodeckfb/"
+      "descricao": "Ingressos pelo Cheers.",
+      "fonte": "https://www.instagram.com/krokodeckfb/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "dr-vinil-patio-barley-2026-11-21",
@@ -83,8 +91,10 @@
       "inicio": "2026-11-21T21:00:00-03:00",
       "localNome": "Pátio Barley",
       "instagram": "patiobarley",
-      "descricao": "Data divulgada pela Agenda Rock Beltrão. Horário não informado (o site mostra 21h como referência).",
-      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/"
+      "descricao": "Data divulgada pela Agenda Rock Beltrão.",
+      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "ao-cubo-acustico-brahzan-burger-2026-11-21",
@@ -100,8 +110,10 @@
       "localNome": "Brahzan Burger",
       "endereco": "Rua Londrina, 1080 · Vila Nova",
       "instagram": "brahzanburger",
-      "descricao": "Clássicos do rock, rock nacional e pop rock. Data divulgada pela Agenda Rock Beltrão. Horário não informado (o site mostra 20h como referência).",
-      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/"
+      "descricao": "Clássicos do rock, rock nacional e pop rock. Data divulgada pela Agenda Rock Beltrão.",
+      "fonte": "https://www.instagram.com/p/DfnT3nWPBha/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "missao-1-nobar-fb-2026-11-20",
@@ -114,8 +126,10 @@
       "localNome": "noBar! Francisco Beltrão",
       "endereco": "Av. Júlio Assis Cavalheiro",
       "instagram": "nobarunifb",
-      "descricao": "Sexta vira território de missão: cadastre-se no link da bio do bar, guarde o código e vá ao bar na sexta. Horário não informado (o site mostra 22h como referência).",
-      "fonte": "https://www.instagram.com/nobarunifb/reel/Df4xPNuBRQ9/"
+      "descricao": "Sexta vira território de missão: cadastre-se no link da bio do bar, guarde o código e vá ao bar na sexta.",
+      "fonte": "https://www.instagram.com/nobarunifb/reel/Df4xPNuBRQ9/",
+      "semHora": true,
+      "rev": 2
     }
   ]
 }

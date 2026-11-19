@@ -13,7 +13,7 @@ import { CATEGORIAS, GENEROS, CIDADES } from '../../lib/constantes'
 const VAZIO = {
   titulo: '', categoria: 'musica', generos: [], inicio: null, fim: null,
   localNome: '', endereco: '', cidade: 'Francisco Beltrão', lat: null, lng: null,
-  descricao: '', cartazUrl: '', ingressoUrl: '', gratuito: false, preco: '',
+  descricao: '', cartazUrl: '', ingressoUrl: '', gratuito: false, semHora: false, preco: '',
   instagram: '', atracoes: [], destaque: false, status: 'publicado', origem: 'admin',
 }
 
@@ -186,6 +186,9 @@ export default function FormEvento() {
             <label className="block"><span className="rotulo">Fim (opcional)</span>
               <input type="datetime-local" className="campo" value={paraInputLocal(e.fim)} onChange={setData('fim')} /></label>
           </div>
+          <label className="flex items-center gap-2 text-sm font-semibold">
+            <input type="checkbox" className="size-5 accent-[var(--brand)]" checked={!!e.semHora} onChange={set('semHora')} /> O local não divulgou o horário (o site mostra "horário a confirmar")
+          </label>
           <div className="rounded-xl bg-surface-2 p-3">
             <p className="rotulo flex items-center gap-1.5"><Repeat className="size-4" aria-hidden /> Repetir</p>
             <div className="flex flex-wrap gap-1.5">
