@@ -22,7 +22,19 @@ const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
 
 // Service worker: permite instalar como app (substitui o do site antigo).
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}))
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then((reg) => {
+    // App instalado: ao voltar para ele, confere se saiu versão nova do site e recarrega sozinho.
+    const versao = document.querySelector('script[type=module][src*="/assets/"]')?.getAttribute('src')
+    const conferir = async () => {
+      if (document.visibilityState !== 'visible') return
+      reg.update().catch(() => {})
+      try {
+        const html = await (await fetch('/', { cache: 'no-store' })).text()
+        if (versao && !html.includes(versao)) location.reload()
+      } catch {}
+    }
+    document.addEventListener('visibilitychange', conferir)
+  }).catch(() => {}))
 }
 
 // Conta cada página aberta (menos o painel admin).
