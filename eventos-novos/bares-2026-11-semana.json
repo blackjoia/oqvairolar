@@ -110,14 +110,61 @@
       "inicio": "2026-11-20T20:00:00-03:00",
       "localNome": "Taberna Albeergue",
       "endereco": "Rua Santa Luzia, 616 · Cristo Rei",
-      "lat": -26.0671562,
-      "lng": -53.0675573,
+      "lat": -26.063521,
+      "lng": -53.0707696,
       "instagram": "albeerguecervejaria",
-      "preco": "R$ 20 antecipado (com 1 chopp) · R$ 25 na portaria",
+      "preco": "R$ 25 antecipado até 18h (ganha 1 chopp) · R$ 30 na portaria",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106343/cartazes/i2itwcvex5z61rchag4l.webp",
-      "descricao": "Noite de rock e metal com Dopesick (System of a Down, Linkin Park, Slipknot, Korn, Deftones e mais) e Tormentor, tributo ao Slayer. Início às 20h.\nIngresso antecipado pelo WhatsApp (46) 99905-2138.",
+      "descricao": "Noite de rock e metal na Taberna Albeergue.\nInício às 20h · Tormentor às 20h30 · Dopesick às 22h30.\nDopesick e Tormentor são bandas tributo.\nIngresso antecipado pelo WhatsApp (46) 99905-2138.",
       "fonte": "https://www.instagram.com/p/Dfzrm7Hpebf/",
-      "rev": 2
+      "rev": 3,
+      "fim": "2026-11-21T02:00:00-03:00"
+    },
+    {
+      "localNome": "Taberna Albeergue",
+      "endereco": "Rua Santa Luzia, 616 · Cristo Rei",
+      "lat": -26.063521,
+      "lng": -53.0707696,
+      "instagram": "albeerguecervejaria",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106343/cartazes/i2itwcvex5z61rchag4l.webp",
+      "generos": [
+        "Metal",
+        "Cover"
+      ],
+      "preco": "R$ 25 antecipado até 18h (ganha 1 chopp) · R$ 30 na portaria",
+      "id": "tormentor-red-friday-2026-11-20",
+      "pai": "red-friday-taberna-do-albeergue-2026-11-20",
+      "titulo": "Red Friday: Tormentor",
+      "atracoes": [
+        "@tormentorslayertributo"
+      ],
+      "inicio": "2026-11-20T20:30:00-03:00",
+      "fim": "2026-11-20T22:15:00-03:00",
+      "descricao": "Banda tributo na Red Friday da Taberna Albeergue.",
+      "rev": 1
+    },
+    {
+      "localNome": "Taberna Albeergue",
+      "endereco": "Rua Santa Luzia, 616 · Cristo Rei",
+      "lat": -26.063521,
+      "lng": -53.0707696,
+      "instagram": "albeerguecervejaria",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/v1795106343/cartazes/i2itwcvex5z61rchag4l.webp",
+      "generos": [
+        "Metal",
+        "Cover"
+      ],
+      "preco": "R$ 25 antecipado até 18h (ganha 1 chopp) · R$ 30 na portaria",
+      "id": "dopesick-red-friday-2026-11-20",
+      "pai": "red-friday-taberna-do-albeergue-2026-11-20",
+      "titulo": "Red Friday: Dopesick",
+      "atracoes": [
+        "@dopesickmetal"
+      ],
+      "inicio": "2026-11-20T22:30:00-03:00",
+      "fim": "2026-11-21T01:00:00-03:00",
+      "descricao": "Banda tributo na Red Friday da Taberna Albeergue.",
+      "rev": 1
     }
   ]
 }
