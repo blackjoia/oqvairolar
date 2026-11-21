@@ -222,3 +222,38 @@ h1, h2, h3 { text-wrap: balance; }
   .conquista-cartao, .conquista-cartao.ouro, .medalha, .coroa, .conquista-texto { animation: c-fade .2s linear both }
   .confete, .brilho, .onda, .raios { display: none }
 }
+
+/* Balão que chama para criar conta (BalaoConta.jsx): entra com mola, conta 5 s na barrinha e sai.
+   Não é popup: não escurece nem trava a tela. Claro = escuro com limão (igual ao "Ranking do mês"); escuro = limão. */
+.balao-conta {
+  position: absolute; top: calc(100% + 12px); right: -4px; z-index: 40; width: max-content; max-width: min(236px, calc(100vw - 32px));
+  padding: 12px 38px 14px 14px; border-radius: 16px; background: #1a1630; color: #fff;
+  box-shadow: 0 14px 34px -12px rgb(26 22 48 / .45); transform-origin: calc(100% - 26px) 0;
+  animation: balao-entra .45s var(--mola) both;
+}
+.balao-conta::before { content: ""; position: absolute; top: -6px; right: 19px; width: 14px; height: 14px; background: inherit; transform: rotate(45deg); border-radius: 3px 0 0 0; }
+.balao-conta.saindo { animation: balao-sai .2s var(--ease-saida) both; }
+.balao-conta-titulo { font-family: var(--font-display); font-size: 19px; line-height: 1.05; letter-spacing: .02em; text-transform: uppercase; }
+.balao-conta-titulo span { color: #c6ff00; }
+.balao-conta-texto { margin-top: 4px; font-size: 13px; line-height: 1.35; color: #d9d3f2; }
+.balao-conta-x { position: absolute; top: 4px; right: 4px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 999px; color: #a8a1c8; }
+.balao-conta-x:hover { color: #fff; background: rgb(255 255 255 / .08); }
+.balao-conta-barra { position: absolute; left: 14px; right: 14px; bottom: 6px; height: 3px; border-radius: 9px; background: rgb(255 255 255 / .15); overflow: hidden; }
+.balao-conta-barra i { display: block; height: 100%; background: #c6ff00; transform-origin: left; animation: balao-barra var(--dur) linear both; }
+.balao-conta.pausado .balao-conta-barra i { animation-play-state: paused; }
+.dark .balao-conta { background: #c6ff00; color: #1a1630; box-shadow: 0 14px 34px -12px rgb(0 0 0 / .6); }
+.dark .balao-conta-titulo span { color: #6d28ff; }
+.dark .balao-conta-texto { color: #2e2752; }
+.dark .balao-conta-x { color: #3a3166; }
+.dark .balao-conta-x:hover { color: #1a1630; background: rgb(26 22 48 / .1); }
+.dark .balao-conta-barra { background: rgb(26 22 48 / .15); }
+.dark .balao-conta-barra i { background: #1a1630; }
+.conta-chamando { box-shadow: 0 0 0 3px #c6ff00, 0 0 0 7px rgb(198 255 0 / .3); transition: box-shadow .3s var(--ease-saida); }
+@keyframes balao-entra { from { opacity: 0; transform: translateY(-6px) scale(.94) } }
+@keyframes balao-sai { to { opacity: 0; transform: translateY(-4px) scale(.97) } }
+@keyframes balao-barra { to { transform: scaleX(0) } }
+@media (prefers-reduced-motion: reduce) {
+  .balao-conta { animation: c-fade .2s linear both; }
+  .balao-conta.saindo { animation: none; opacity: 0; }
+  .balao-conta-barra { display: none; }
+}
