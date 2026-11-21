@@ -49,7 +49,7 @@ export default function BalaoConta({ onMostrar }) {
       onMouseEnter={() => setPausado(true)} onMouseLeave={() => setPausado(false)}
       onFocus={() => setPausado(true)} onBlur={() => setPausado(false)}>
       <p className="balao-conta-titulo">Crie sua conta <span>grátis</span></p>
-      <p className="balao-conta-texto">Marque “Eu vou” nos rolês e não perca nenhum.</p>
+      <p className="balao-conta-texto">Marque “Eu vou” nos rolês e veja quem mais vai.</p>
       <button type="button" onClick={() => setFase('saindo')} aria-label="Fechar aviso" className="balao-conta-x"><X className="size-4" aria-hidden /></button>
       <span className="balao-conta-barra" style={{ '--dur': `${DURACAO}ms` }} aria-hidden><i /></span>
     </div>

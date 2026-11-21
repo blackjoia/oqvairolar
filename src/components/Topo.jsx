@@ -7,6 +7,7 @@ import { abrirInstalar, appInstalado, podeInstalarDireto, instalarDireto } from 
 import { clique } from '../lib/visitas'
 import { useAuth } from '../lib/auth'
 import BalaoConta from './BalaoConta'
+import { RANKING_LIGADO } from '../lib/recursos'
 
 export default function Topo({ children, semDivulgar }) {
   const { usuario } = useAuth()
@@ -28,7 +29,7 @@ export default function Topo({ children, semDivulgar }) {
         <Link to="/" aria-label="Início" className="-my-0.5 py-0.5"><Logo className="h-10 w-auto text-ink" /></Link>
         <div className="relative flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Computador e tablet: o ranking é um botão de destaque no topo (no celular ele vira o carrossel da agenda) */}
-          {!children && <Link to="/ranking" className="hidden h-11 items-center gap-2 rounded-full bg-[#1a1630] px-4 text-sm font-bold text-white shadow-sm ring-2 ring-inset ring-accent/70 hover:bg-[#2a2450] md:inline-flex"><Trophy className="size-4 text-accent" aria-hidden /> Ranking do mês</Link>}
+          {!children && RANKING_LIGADO && <Link to="/ranking" className="hidden h-11 items-center gap-2 rounded-full bg-[#1a1630] px-4 text-sm font-bold text-white shadow-sm ring-2 ring-inset ring-accent/70 hover:bg-[#2a2450] md:inline-flex"><Trophy className="size-4 text-accent" aria-hidden /> Ranking do mês</Link>}
           {mostrarInstalar && <button onClick={instalar} className="inline-flex h-11 shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-brand/40 bg-brand/10 px-2.5 text-[13px] font-bold text-brand-ink md:hidden"><Download className="size-4" aria-hidden /> Instalar app</button>}
           {children ?? (!semDivulgar && <Link to="/divulgar" aria-label="Divulgar" className={`btn-accent h-11 text-sm ${mostrarInstalar ? 'px-3 max-md:w-11 max-md:px-0' : 'px-3.5'}`}><Plus className="size-4" /> <span className={mostrarInstalar ? 'max-md:hidden' : ''}>Divulgar</span></Link>)}<span className={mostrarInstalar ? 'max-md:hidden' : ''}><BotaoTema /></span>
           <Link to="/meus-roles" aria-label={usuario ? 'Meus rolês' : 'Entrar'} title={usuario ? 'Meus rolês' : 'Entrar'}

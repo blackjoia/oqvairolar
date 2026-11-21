@@ -13,6 +13,7 @@ const MapaVer = lazy(() => import('../components/MapaVer'))
 import { gerarStory } from '../lib/story'
 import { Programacao, FazParte } from '../components/Programacao'
 import { janelaCheckin, jaFiz, fazerCheckin } from '../lib/ranking'
+import { RANKING_LIGADO } from '../lib/recursos'
 import { clique } from '../lib/visitas'
 import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../lib/lembrete'
 import { abrirInstalar } from '../components/InstalarApp'
@@ -163,7 +164,7 @@ export default function Evento() {
                 <Star className="size-5" aria-hidden /> <span className="sm:hidden">Interesse</span><span className="hidden sm:inline">Tenho interesse</span>{contagem.interesse ? <span className="tabular-nums opacity-80"> · {contagem.interesse}</span> : ''}
               </button>
             </div>
-            {janelaCheckin(e) && (
+            {RANKING_LIGADO && janelaCheckin(e) && (
               <div className="mt-2 rounded-2xl border-2 border-brand bg-brand/10 p-3">
                 {checkin.feito ? (
                   <p className="flex flex-wrap items-center gap-x-2 font-semibold"><MapPinCheck className="size-5 text-brand-ink" aria-hidden /> Você está no rolê! Contou no ranking do mês.
