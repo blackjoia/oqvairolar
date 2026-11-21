@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Trophy, MapPin, CalendarRange, ChevronRight } from 'lucide-react'
 import { useAuth } from '../lib/auth'
 import { buscarRanking, mesAtual, nomeMes, DEMO } from '../lib/ranking'
+import { RANKING_LIGADO } from '../lib/recursos'
 
 // Carrossel do topo da agenda no celular: ranking de pessoas, de bares e a semana.
 // Desliza para o lado com encaixe; o próximo cartão aparece pela metade para mostrar que tem mais.
@@ -24,7 +25,7 @@ export default function Destaques({ semana }) {
   const { user } = useAuth()
   const [r, setR] = useState(null)
   const mes = mesAtual()
-  useEffect(() => { if (demo) setR(DEMO); else buscarRanking(mes).then(setR) }, [demo, mes])
+  useEffect(() => { if (!RANKING_LIGADO) return; if (demo) setR(DEMO); else buscarRanking(mes).then(setR) }, [demo, mes])
   const pessoas = r?.pessoas || [], bares = r?.bares || []
   const euId = demo ? 'demo2' : user?.uid
   const pos = pessoas.findIndex((p) => p.uid === euId)
@@ -48,9 +49,10 @@ export default function Destaques({ semana }) {
 
   const cartao = 'destaque-cartao relative flex min-h-[104px] w-[82%] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-3xl p-4 sm:w-[46%]'
   return (<>
-    {pc}
+    {RANKING_LIGADO && pc}
     <div className="-mx-4 mt-4 md:hidden" aria-label="Destaques">
       <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1">
+        {RANKING_LIGADO && <>
         <Link to={`/ranking${sufixo}`} className={`${cartao} bg-[#1a1630] text-white ring-2 ring-inset ring-accent/50`}>
           <Trophy className="absolute -right-3 -top-3 size-24 rotate-12 text-accent opacity-15" aria-hidden />
           <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-accent"><Trophy className="size-4" aria-hidden /> Ranking de {nomeMes(mes)}</span>
@@ -77,7 +79,8 @@ export default function Destaques({ semana }) {
             <ChevronRight className="size-6 shrink-0" aria-hidden />
           </span>
         </Link>
-        <Link to="/semana" className={`${cartao} bg-accent text-on-accent`}>
+        </>}
+        <Link to="/semana" className={`${cartao} bg-accent text-on-accent ${RANKING_LIGADO ? '' : '!w-full'}`}>
           <CalendarRange className="absolute -right-3 -top-3 size-24 rotate-6 opacity-15" aria-hidden />
           <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest"><CalendarRange className="size-4" aria-hidden /> Esta semana</span>
           <span className="mt-2 flex items-end justify-between gap-3">

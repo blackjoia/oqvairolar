@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react
 import { registrar } from './lib/visitas'
 import './index.css'
 import { AuthProvider, useAuth } from './lib/auth'
+import { RANKING_LIGADO } from './lib/recursos'
 import Inicio from './pages/Inicio'
 import Evento from './pages/Evento'
 const Local = lazy(() => import('./pages/Local'))
@@ -86,7 +87,7 @@ createRoot(document.getElementById('root')).render(
         <ContarVisitas />
         <AbrirNoNavegador />
         <InstalarApp />
-        <Conquistas />
+        {RANKING_LIGADO && <Conquistas />}
         <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Inicio />} />
@@ -96,7 +97,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/meus-roles" element={<MeusRoles />} />
           <Route path="/u/:uid" element={<Usuario />} />
           <Route path="/semana" element={<Semana />} />
-          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/ranking" element={RANKING_LIGADO ? <Ranking /> : <Navigate to="/" replace />} />
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Estatisticas />} />
             <Route path="eventos" element={<Lista />} />

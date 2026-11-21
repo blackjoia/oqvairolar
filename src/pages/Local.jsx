@@ -7,6 +7,7 @@ const MapaVer = lazy(() => import('../components/MapaVer'))
 import { Rodape } from './Inicio'
 import PaginaOficial from '../components/PaginaOficial'
 import RankingLocal from '../components/RankingLocal'
+import { RANKING_LIGADO } from '../lib/recursos'
 import { listarPublicados, slugify } from '../lib/eventos'
 import { linkComoChegar } from '../lib/agenda'
 import { ArrowLeft, MapPin, Instagram, Share2, Check, CalendarX2, Navigation, Mic2 } from 'lucide-react'
@@ -65,7 +66,7 @@ export default function Local() {
             <PaginaOficial slug={slug} nome={dados.nome} tipo={dados.ehLocal ? 'local' : 'atracao'} />
           </section>
 
-          {dados.ehLocal && <RankingLocal slug={slug} nome={dados.nome} />}
+          {RANKING_LIGADO && dados.ehLocal && <RankingLocal slug={slug} nome={dados.nome} />}
 
           <h2 className="mt-8 font-display text-3xl uppercase">Próximos eventos <span className="text-muted">{dados.proximos.length}</span></h2>
           {dados.proximos.length === 0 ? (
