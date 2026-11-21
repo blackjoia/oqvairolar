@@ -1,0 +1,27 @@
+{
+  "comum": {
+    "cidade": "Francisco Beltrão",
+    "status": "publicado",
+    "origem": "importado"
+  },
+  "eventos": [
+    {
+      "id": "quem-casa-quer-casa-teatro-eunice-sartori-2026-11-23",
+      "titulo": "Quem Casa, Quer Casa",
+      "categoria": "cultura",
+      "inicio": "2026-11-23T19:00:00-03:00",
+      "localNome": "Teatro Eunice Sartori (Espaço da Arte)",
+      "endereco": "Rua Octaviano Teixeira dos Santos, 1121 · Centro",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/quem-casa-quer-casa.jpg",
+      "atracoes": [
+        "Carlos Samuel", "Cris Martins", "Guilherme Schreiber", "Henrique Valmont", "Isa Rokembach",
+        "João Antonio Franz", "Katia Bueno", "Lua Souza", "Luz Schmitz", "Maricélia Muniz",
+        "Nil Pirueta", "Rober Schmitz", "Thatah Cavalli"
+      ],
+      "descricao": "Reapresentação da hilariante comédia de Martins Pena, com o Departamento de Cultura de Francisco Beltrão.\n\nElenco: Carlos Samuel, Cris Martins, Guilherme Schreiber, Henrique Valmont, Isa Rokembach, João Antonio Franz, Katia Bueno, Lua Souza, Luz Schmitz, Maricélia Muniz, Nil Pirueta, Rober Schmitz, Thatah Cavalli e grande elenco.\n\nDireção geral: Nei Machado · Assistente de direção: Maricélia Muniz\nCenário: Cris Martins, Maricélia Muniz e Nei Machado · Trilha sonora: Igor Alejandro\nSonoplastia e iluminação: Silvio Rodrigues · Figurinos: o elenco\n\nEntrada gratuita.",
+      "rev": 1
+    }
+  ]
+}
