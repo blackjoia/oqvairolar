@@ -230,25 +230,59 @@ function Caixa({ titulo, sub, children }) {
 
 const Vazio = () => <p className="text-sm text-muted">Sem dados ainda.</p>
 
-// Colunas verticais com dica ao passar o dedo/mouse
+// Escala "redonda" para o eixo: 0, 2, 4, 6... ou 0, 5, 10... (sempre números inteiros)
+function escala(max) {
+  const bruto = Math.max(1, max) / 4
+  const pot = 10 ** Math.floor(Math.log10(bruto))
+  const passo = Math.max(1, [1, 2, 5, 10].map((m) => m * pot).find((p) => p >= bruto))
+  const topo = Math.max(passo, Math.ceil(Math.max(1, max) / passo) * passo)
+  const marcas = []
+  for (let v = 0; v <= topo; v += passo) marcas.push(v)
+  return { topo, marcas }
+}
+
+// Colunas verticais com eixo de valores, linhas de grade, número em cima de cada barra e dica ao tocar
 function Colunas({ dados, rotuloCada = 1, altura = 160 }) {
   const [ativo, setAtivo] = useState(null)
-  const max = Math.max(1, ...dados.map((d) => d.valor))
+  const max = Math.max(0, ...dados.map((d) => d.valor))
+  const { topo, marcas } = escala(max)
   const a = ativo != null ? dados[ativo] : null
+  // Número em cima da barra só quando cabe (poucas barras); nas outras o eixo e o toque mostram o valor
+  const numeroNaBarra = dados.length <= 14
   return (
     <div>
-      <p className="mb-1 h-5 text-sm font-semibold tabular-nums text-ink">{a ? `${a.rotulo} · ${a.dica}` : <span className="font-normal text-muted">Toque numa barra para ver o número. Maior: {fmt(max === 1 && dados.every((d) => !d.valor) ? 0 : max)}</span>}</p>
-      <div className="flex items-end gap-[2px] border-b border-line" style={{ height: altura }} onMouseLeave={() => setAtivo(null)}>
-        {dados.map((d, i) => (
-          <button key={i} type="button" aria-label={`${d.rotulo}: ${d.dica}`} onMouseEnter={() => setAtivo(i)} onFocus={() => setAtivo(i)} onClick={() => setAtivo(i)}
-            className="group flex h-full min-w-0 flex-1 items-end">
-            <span className={`block w-full rounded-t-[4px] ${ativo === i ? 'bg-brand-strong' : 'bg-brand'} ${d.valor ? '' : 'opacity-0'}`}
-              style={{ height: `${Math.max(d.valor ? 3 : 0, (d.valor / max) * 100)}%` }} />
-          </button>
-        ))}
-      </div>
-      <div className="mt-1 flex gap-[2px] text-[10px] text-muted">
-        {dados.map((d, i) => <span key={i} className="min-w-0 flex-1 overflow-visible whitespace-nowrap text-center">{i % rotuloCada === 0 ? d.rotulo : ''}</span>)}
+      <p className="mb-1 h-5 truncate text-sm font-semibold tabular-nums text-ink">{a ? `${a.rotulo} · ${a.dica}` : <span className="font-normal text-muted">Toque numa barra para ver o detalhe</span>}</p>
+      <div className="mt-3 flex gap-1.5">
+        {/* Eixo de valores */}
+        <div className="relative w-7 shrink-0 text-right text-[10px] tabular-nums text-muted" style={{ height: altura }} aria-hidden>
+          {marcas.map((m) => (
+            <span key={m} className="absolute right-0 translate-y-1/2 leading-none" style={{ bottom: `${(m / topo) * 100}%` }}>{fmt(m)}</span>
+          ))}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="relative" style={{ height: altura }} onMouseLeave={() => setAtivo(null)}>
+            {/* Linhas de grade */}
+            {marcas.map((m) => (
+              <div key={m} aria-hidden className={`pointer-events-none absolute inset-x-0 border-t ${m === 0 ? 'border-line' : 'border-dashed border-line/70'}`} style={{ bottom: `${(m / topo) * 100}%` }} />
+            ))}
+            <div className="relative flex h-full items-end gap-[2px]">
+              {dados.map((d, i) => (
+                <button key={i} type="button" aria-label={`${d.rotulo}: ${d.dica}`} onMouseEnter={() => setAtivo(i)} onFocus={() => setAtivo(i)} onClick={() => setAtivo(i)}
+                  className="group relative flex h-full min-w-0 flex-1 items-end">
+                  {numeroNaBarra && d.valor > 0 && (
+                    <span className="pointer-events-none absolute inset-x-0 text-center text-[10px] font-semibold leading-none tabular-nums text-ink"
+                      style={{ bottom: `calc(${(d.valor / topo) * 100}% + 3px)` }}>{fmt(d.valor)}</span>
+                  )}
+                  <span className={`block w-full rounded-t-[4px] ${ativo === i ? 'bg-brand-strong' : 'bg-brand'} ${d.valor ? '' : 'opacity-0'}`}
+                    style={{ height: `${Math.max(d.valor ? 2 : 0, (d.valor / topo) * 100)}%` }} />
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-1 flex gap-[2px] text-[10px] text-muted">
+            {dados.map((d, i) => <span key={i} className="min-w-0 flex-1 overflow-visible whitespace-nowrap text-center">{i % rotuloCada === 0 ? d.rotulo : ''}</span>)}
+          </div>
+        </div>
       </div>
     </div>
   )
