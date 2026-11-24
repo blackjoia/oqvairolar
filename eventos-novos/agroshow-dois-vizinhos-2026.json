@@ -1,0 +1,136 @@
+{
+  "comum": {
+    "cidade": "Dois Vizinhos",
+    "localNome": "Parque de Exposições de Dois Vizinhos",
+    "status": "publicado",
+    "origem": "importado",
+    "fonte": "https://educadoradv.com.br/noticia/27093-organizacao-intensifica-preparativos-para-o-agroshow-2026"
+  },
+  "eventos": [
+    {
+      "id": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow 2026",
+      "categoria": "outros",
+      "inicio": "2026-11-25T09:00:00-03:00",
+      "fim": "2026-11-29T23:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Mariana & Mateus",
+        "Danilo & Davi",
+        "Fiduma & Jeca",
+        "Eduarda Constantino",
+        "Antony & Gabriel",
+        "DJ Vovô James"
+      ],
+      "descricao": "2º AgroShow, a feira do agronegócio de Dois Vizinhos, que também celebra os 65 anos da cidade. Entrada gratuita.\n\nRodeio de 26 a 28/11, fazendinha, exposição, leilões, estandes, praça de alimentação e a Arena do Conhecimento da UTFPR (palestras gratuitas de 27 a 29/11, 5º Torneio de Silagem e torneio de xadrez).\n\nShows\nQua 25/11 · Mariana & Mateus\nQui 26/11 · rodeio e Danilo & Davi\nSex 27/11 · Fiduma & Jeca e Eduarda Constantino\nSáb 28/11 · Antony & Gabriel e DJ Vovô James\nDom 29/11 · sem shows\n\nHorários dos shows ainda não divulgados.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1
+    },
+    {
+      "id": "mariana-e-mateus-agroshow-2026-11-25",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: Mariana & Mateus",
+      "categoria": "musica",
+      "inicio": "2026-11-25T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Mariana & Mateus"
+      ],
+      "descricao": "Show de Mariana & Mateus no AgroShow 2026, Quarta. Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1,
+      "generos": [
+        "Sertanejo"
+      ]
+    },
+    {
+      "id": "danilo-e-davi-agroshow-2026-11-26",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: Danilo & Davi",
+      "categoria": "musica",
+      "inicio": "2026-11-26T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Danilo & Davi"
+      ],
+      "descricao": "Show de Danilo & Davi no AgroShow 2026, Quinta (depois do rodeio). Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1,
+      "generos": [
+        "Sertanejo"
+      ]
+    },
+    {
+      "id": "fiduma-e-jeca-agroshow-2026-11-27",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: Fiduma & Jeca",
+      "categoria": "musica",
+      "inicio": "2026-11-27T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Fiduma & Jeca"
+      ],
+      "descricao": "Show de Fiduma & Jeca no AgroShow 2026, Sexta. Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1,
+      "generos": [
+        "Sertanejo"
+      ]
+    },
+    {
+      "id": "eduarda-constantino-agroshow-2026-11-27",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: Eduarda Constantino",
+      "categoria": "musica",
+      "inicio": "2026-11-27T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Eduarda Constantino"
+      ],
+      "descricao": "Show de Eduarda Constantino no AgroShow 2026, Sexta. Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1
+    },
+    {
+      "id": "antony-e-gabriel-agroshow-2026-11-28",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: Antony & Gabriel",
+      "categoria": "musica",
+      "inicio": "2026-11-28T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "Antony & Gabriel"
+      ],
+      "descricao": "Show de Antony & Gabriel no AgroShow 2026, Sábado (aniversário de 65 anos de Dois Vizinhos). Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1,
+      "generos": [
+        "Sertanejo"
+      ]
+    },
+    {
+      "id": "dj-vovo-james-agroshow-2026-11-28",
+      "pai": "agroshow-dois-vizinhos-2026-11-25",
+      "titulo": "AgroShow: DJ Vovô James",
+      "categoria": "musica",
+      "inicio": "2026-11-28T22:00:00-03:00",
+      "semHora": true,
+      "atracoes": [
+        "DJ Vovô James"
+      ],
+      "descricao": "Show de DJ Vovô James no AgroShow 2026, Sábado, depois de Antony & Gabriel. Entrada gratuita. Horário ainda não divulgado.",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "rev": 1,
+      "generos": [
+        "Eletrônica"
+      ]
+    }
+  ]
+}
