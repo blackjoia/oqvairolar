@@ -9,40 +9,57 @@
     {
       "id": "sandri-e-marco-formosa-pub-2026-11-27",
       "titulo": "Sandri e Marco no Formosa Pub",
-      "generos": ["Rock", "MPB"],
-      "atracoes": ["Sandri e Marco"],
+      "generos": [
+        "Rock",
+        "MPB"
+      ],
+      "atracoes": [
+        "Sandri e Marco"
+      ],
       "inicio": "2026-11-27T20:30:00-03:00",
       "localNome": "Formosa Pub",
       "endereco": "Rua Ponta Grossa, 2080 · Centro",
       "lat": -26.0758613,
       "lng": -53.053133,
       "instagram": "formosapub",
-      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/rwtwniqv9zjc3bxitrkt.jpg",
-      "descricao": "Especial Legião Urbana e Tropicalidades às 20h30. Desconto para retirada ou entrega de chope Formosa na garrafa PET.\nReservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/p/DgGZynRDKCj/",
-      "rev": 1
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/jj7pfwoq5yiimr4v3r6t.jpg",
+      "descricao": "@santossandri e @marcofagundes dedicam 1h30 do repertório a Legião Urbana e mais 30 minutos de tropicalidades. Show às 20h30.\nReservas pelo WhatsApp (46) 99103-7545.",
+      "fonte": "https://www.instagram.com/p/DgC6zhOFlp7/",
+      "rev": 2,
+      "preco": "Couvert R$ 7"
     },
     {
       "id": "carla-ramos-formosa-pub-2026-11-28",
       "titulo": "Carla Ramos no Formosa Pub",
-      "generos": ["Pop", "Rock"],
-      "atracoes": ["Carla Ramos"],
+      "generos": [
+        "Pop",
+        "Rock"
+      ],
+      "atracoes": [
+        "Carla Ramos"
+      ],
       "inicio": "2026-11-28T20:30:00-03:00",
       "localNome": "Formosa Pub",
       "endereco": "Rua Ponta Grossa, 2080 · Centro",
       "lat": -26.0758613,
       "lng": -53.053133,
       "instagram": "formosapub",
-      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/rwtwniqv9zjc3bxitrkt.jpg",
-      "descricao": "Pop rock nacional às 20h30. Happy hour das 17h30 às 20h: chope Formosa de 450 ml pelo valor de 300 ml.\nReservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/p/DgGZynRDKCj/",
-      "rev": 1
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/ljkgz5sc9sezrxdew3cv.jpg",
+      "descricao": "Carla Ramos canta pop rock nacional. Show às 20h30. Happy hour das 17h30 às 20h: chope Formosa de 450 ml pelo valor de 300 ml.\nReservas pelo WhatsApp (46) 99103-7545.",
+      "fonte": "https://www.instagram.com/p/DgC6zhOFlp7/",
+      "rev": 2,
+      "preco": "Couvert R$ 7"
     },
     {
       "id": "lucas-e-higor-consulado-2026-11-27",
       "titulo": "Lucas & Higor no Consulado",
-      "generos": ["Sertanejo"],
-      "atracoes": ["Lucas & Higor", "DJ Keth"],
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Lucas & Higor",
+        "DJ Keth"
+      ],
       "inicio": "2026-11-27T22:00:00-03:00",
       "semHora": true,
       "localNome": "Consulado",
@@ -57,8 +74,14 @@
       "id": "sabado-prime-consulado-2026-11-28",
       "titulo": "Sábado Prime no Consulado",
       "categoria": "festa",
-      "generos": ["Eletrônica"],
-      "atracoes": ["DJ One", "Lolosky", "Pepo"],
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "DJ One",
+        "Lolosky",
+        "Pepo"
+      ],
       "inicio": "2026-11-28T23:00:00-03:00",
       "semHora": true,
       "localNome": "Consulado",
@@ -72,8 +95,14 @@
     {
       "id": "tri-baile-show-challe-2026-11-27",
       "titulo": "Tri Baile Show no Challé",
-      "generos": ["Bailão"],
-      "atracoes": ["Grupo Festerê", "Banda Movimentos", "Rogério Magrão e Banda"],
+      "generos": [
+        "Bailão"
+      ],
+      "atracoes": [
+        "Grupo Festerê",
+        "Banda Movimentos",
+        "Rogério Magrão e Banda"
+      ],
       "inicio": "2026-11-27T23:00:00-03:00",
       "localNome": "Challé Clube",
       "instagram": "challeclubeoficial",
@@ -86,8 +115,12 @@
     {
       "id": "postinho-do-deck-joao-gustavo-e-murilo-kroko-fb-2026-11-28",
       "titulo": "Postinho do Deck com João Gustavo & Murilo",
-      "generos": ["Sertanejo"],
-      "atracoes": ["João Gustavo & Murilo"],
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "João Gustavo & Murilo"
+      ],
       "inicio": "2026-11-28T22:00:00-03:00",
       "semHora": true,
       "localNome": "Kroko Deck Francisco Beltrão",
@@ -103,8 +136,12 @@
     {
       "id": "alma-latina-caldeirao-fb-2026-11-28",
       "titulo": "Banda Alma Latina no Caldeirão",
-      "generos": ["Bailão"],
-      "atracoes": ["Banda Alma Latina"],
+      "generos": [
+        "Bailão"
+      ],
+      "atracoes": [
+        "Banda Alma Latina"
+      ],
       "inicio": "2026-11-28T23:00:00-03:00",
       "semHora": true,
       "localNome": "Caldeirão Francisco Beltrão",
@@ -146,8 +183,12 @@
       "id": "moving-illusionize-rancho-dariva-2027-01-23",
       "titulo": "MOVING com Illusionize",
       "categoria": "festa",
-      "generos": ["Eletrônica"],
-      "atracoes": ["Illusionize"],
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "Illusionize"
+      ],
       "inicio": "2027-01-23T22:00:00-03:00",
       "semHora": true,
       "localNome": "Rancho Dáriva",
