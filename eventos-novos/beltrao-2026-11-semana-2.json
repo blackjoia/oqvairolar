@@ -81,11 +81,12 @@
       "endereco": "Av. Júlio Assis Cavalheiro, 3314 · Centro",
       "instagram": "krokodeckfb",
       "descricao": "Ingressos pelo Cheers.",
-      "fonte": "https://www.instagram.com/krokodeckfb/",
+      "fonte": "https://www.instagram.com/krokodeckfb/p/Df5mv9POjyU/",
       "semHora": true,
-      "rev": 4,
+      "rev": 5,
       "lat": -26.0935863,
-      "lng": -53.0310943
+      "lng": -53.0310943,
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/ozkp22oburkw249oxx2e.jpg"
     },
     {
       "id": "dr-vinil-patio-barley-2026-11-21",
