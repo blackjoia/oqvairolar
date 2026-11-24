@@ -20,9 +20,11 @@ export const GENEROS = [
 // Subfiltros de cada categoria (aparecem embaixo das abas quando a pessoa escolhe uma).
 // Ficam gravados no campo "generos" do evento. "inclui": outros nomes que contam como o mesmo.
 // A lista segue o que mais rola no Sudoeste do Paraná; na tela só aparecem os que têm evento.
+// FIXOS: ficam sempre em primeiro na categoria e aparecem mesmo sem evento (pedido do Luis).
+export const FIXOS = { musica: ['Rock'] }
 export const SUBFILTROS = {
   musica: [
-    'Sertanejo', 'Rock', { nome: 'Pagode e samba', inclui: ['Pagode', 'Samba'] }, 'Eletrônica',
+    'Rock', 'Sertanejo', { nome: 'Pagode e samba', inclui: ['Pagode', 'Samba'] }, 'Eletrônica',
     { nome: 'Bailão e gaúcha', inclui: ['Bailão', 'Gaúcha / Nativista', 'Gaúcha', 'Nativista'] },
     'Acústico', 'Pop', 'MPB', 'Metal', 'Punk', 'Funk', { nome: 'Rap e hip-hop', inclui: ['Rap / Hip-hop', 'Rap', 'Hip-hop'] },
     'Blues', 'Reggae', 'Forró', 'Jazz', 'Indie', 'Gospel',
