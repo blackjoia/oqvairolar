@@ -176,7 +176,7 @@ export default function Inicio() {
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
         <section className={`pb-4 pt-5 sm:pt-12 ${RANKING_LIGADO ? 'md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_340px]' : ''}`}>
           <SeletorCidade cidade={cidade} cidades={cidades} onEscolher={escolherCidade} />
-          <h1 className="mt-2 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
+          <h1 className="mt-4 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
           <p className="mt-4 hidden max-w-xl text-muted md:block">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}

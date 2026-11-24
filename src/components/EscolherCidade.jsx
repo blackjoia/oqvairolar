@@ -59,10 +59,11 @@ export function SeletorCidade({ cidade, cidades, onEscolher }) {
   const [aberto, setAberto] = useState(false)
   return (
     <>
-      <button onClick={() => setAberto(true)} className="link-toque -my-2 inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-widest text-brand-ink" aria-haspopup="dialog">
-        <MapPin className="size-4" aria-hidden />
-        {cidade || 'Sudoeste do Paraná'}
-        <ChevronDown className="size-4" aria-hidden />
+      <button onClick={() => setAberto(true)} aria-haspopup="dialog"
+        className="inline-flex h-11 max-w-full items-center gap-2 rounded-full border-2 border-brand/30 bg-surface py-1 pl-3 pr-1.5 text-sm font-bold text-ink shadow-[var(--sombra-1)] hover:border-brand active:scale-[.98]">
+        <MapPin className="size-4 shrink-0 text-brand-ink" aria-hidden />
+        <span className="truncate uppercase tracking-wide">{cidade || 'Sudoeste do Paraná'}</span>
+        <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-brand px-2.5 py-1 text-xs font-extrabold text-on-brand">Trocar <ChevronDown className="size-3.5" aria-hidden /></span>
         <span className="sr-only">: trocar de cidade</span>
       </button>
       {aberto && (
