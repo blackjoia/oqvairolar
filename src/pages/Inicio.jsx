@@ -11,7 +11,7 @@ import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
-import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub } from '../lib/constantes'
+import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub, FIXOS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
 import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
@@ -127,8 +127,9 @@ export default function Inicio() {
     const naTela = daCat.filter((e) => noDia(e, dia) && (!cidade || e.cidade === cidade))
     return subfiltros(cat)
       .map((s, i) => ({ id: s.nome, nome: s.nome, i, total: daCat.filter((e) => casaSub(e, s.nome)).length, n: naTela.filter((e) => casaSub(e, s.nome)).length }))
-      .filter((s) => s.total > 0)
-      .sort((a, b) => b.total - a.total || a.i - b.i)
+      .map((s) => ({ ...s, fixo: (FIXOS[cat] || []).indexOf(s.id) }))
+      .filter((s) => s.total > 0 || s.fixo >= 0)
+      .sort((a, b) => (a.fixo < 0) - (b.fixo < 0) || (a.fixo - b.fixo) || b.total - a.total || a.i - b.i)
   }, [futuros, cat, dia, cidade]) // eslint-disable-line react-hooks/exhaustive-deps
   const subAtivo = genero && subfiltros(cat).find((s) => s.nome === genero || s.inclui.includes(genero))
   const escolherCat = (v) => {
