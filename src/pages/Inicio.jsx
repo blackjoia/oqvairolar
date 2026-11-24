@@ -18,8 +18,7 @@ import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub, FIXOS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
-import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
-import { X, CalendarX2, Search, Navigation, LoaderCircle, ArrowRight, WifiOff } from 'lucide-react'
+import { X, CalendarX2, Search, ArrowRight, WifiOff } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -29,33 +28,12 @@ const DIAS = [
   { id: 'semana', nome: 'Próximos 7 dias', curto: '7 dias' },
 ]
 
-const RAIO_MAX = 250
 
 export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
   const [semRede, setSemRede] = useState(false)
-  const pos = useMinhaPosicao()
-  const [buscandoLocal, setBuscandoLocal] = useState(false)
-  const [erroLocal, setErroLocal] = useState('')
-  async function pertoDeMim() {
-    setErroLocal('')
-    if (pos) { esquecerLocalizacao(); return }
-    setBuscandoLocal(true)
-    try { await pedirLocalizacao(); clique('perto-de-mim') } catch (x) { setErroLocal(x.message) } finally { setBuscandoLocal(false) }
-  }
   const [params, setParams] = useSearchParams()
-  const raio = Number(params.get('raio')) || 0
-  const [raioTela, setRaioTela] = useState(raio || RAIO_MAX)
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const v = raioTela >= RAIO_MAX ? 0 : raioTela
-      if (v === raio) return
-      const p = new URLSearchParams(params); if (v) p.set('raio', String(v)); else p.delete('raio')
-      setParams(p, { replace: true }); if (v) filtro('raio', String(v))
-    }, 150)
-    return () => clearTimeout(t)
-  }, [raioTela]) // eslint-disable-line react-hooks/exhaustive-deps
   const dia = params.get('dia') || 'todos'
   // Cidade: a da URL (link compartilhado) vence; senão, a preferida deste aparelho.
   const pref = useCidadePreferida()
@@ -120,10 +98,9 @@ export default function Inicio() {
         const texto = normalizar([e.titulo, e.localNome, e.cidade, e.descricao, e.instagram, ...(e.atracoes || []), ...(e.generos || []), ...(e.outrosNomes || [])].join(' '))
         if (!termos.every((t) => texto.includes(t))) return false
       }
-      if (pos && raio) { const d = km(pos, e); if (d == null || d > raio) return false }
       return true
     }).sort((a, b) => (b.destaque ? 1 : 0) - (a.destaque ? 1 : 0) || a.inicio - b.inicio)
-  }, [futuros, dia, cidade, genero, cat, termos, pos, raio])
+  }, [futuros, dia, cidade, genero, cat, termos])
 
   const noDia = (e, d) => {
     if (d === 'todos') return true
@@ -166,7 +143,7 @@ export default function Inicio() {
 
   const nExtras = [!cat && genero].filter(Boolean).length
   const nFiltros = nExtras + (cat ? 1 : 0)
-  const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca || (!!pos && !!raio)
+  const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca
   // Primeira vez no app: pergunta a cidade (só se tiver mais de uma com rolê e o link não escolheu uma)
   const perguntarCidade = !pref && !cidadeUrl && cidades.length > 1
 
@@ -202,11 +179,6 @@ export default function Inicio() {
               <Segmentado rotulo="Quando" valor={dia} onChange={(v) => setFiltro('dia', v)}
                 opcoes={DIAS.map((d) => ({ ...d, n: eventos ? contaDias[d.id] : null }))} />
             </Deslizar>
-            <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância e filtrar por raio"
-              className={`ferramenta ${pos ? 'ferramenta-on' : ''}`}>
-              {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
-              <span className="hidden sm:inline">Perto de mim</span>
-            </button>
           </div>
 
           <Deslizar className="mt-3 -mb-1">
@@ -221,24 +193,6 @@ export default function Inicio() {
             </Deslizar>
           )}
 
-          {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
-          {pos && (
-            <div className="mt-2 w-full rounded-xl border border-line bg-surface px-3 pb-1.5 pt-2 sm:max-w-sm">
-              <div className="flex items-center gap-2">
-                <Navigation className="size-4 shrink-0 text-brand-ink" aria-hidden />
-                <span className="flex-1 text-sm font-bold text-brand-ink tabular-nums">{raioTela >= RAIO_MAX ? 'Qualquer distância' : `Até ${raioTela} km`}</span>
-                <button onClick={() => { setRaioTela(RAIO_MAX); setFiltro('raio', ''); pertoDeMim() }} className="shrink-0 text-xs font-semibold text-brand-ink underline underline-offset-2">Desligar</button>
-              </div>
-              <input type="range" min="5" max={RAIO_MAX} step="5" value={raioTela} aria-label="Distância máxima"
-                onChange={(x) => setRaioTela(Number(x.target.value))}
-                className="mt-1 block w-full accent-[var(--brand)]" />
-              <div className="relative mx-2 h-4 text-[10px] font-semibold text-muted tabular-nums" aria-hidden>
-                {[0, 50, 100, 150, 200, 250].map((v) => (
-                  <span key={v} className="absolute -translate-x-1/2" style={{ left: `${Math.max(0, (v - 5) / (RAIO_MAX - 5)) * 100}%` }}>{v}</span>
-                ))}
-              </div>
-            </div>
-          )}
 
           {nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -268,7 +222,7 @@ export default function Inicio() {
             <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : cidade ? `em ${cidade} por enquanto` : 'por enquanto'}</p>
             <p className="mt-1 text-muted">{temFiltro ? 'Tenta outro dia, outra categoria ou uma distância maior.' : 'Volta logo que a agenda enche.'}</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {temFiltro && <button onClick={() => { setRaioTela(RAIO_MAX); setTextoBusca(''); setParams({}, { replace: true }) }} className="btn-brand">Ver tudo</button>}
+              {temFiltro && <button onClick={() => { setTextoBusca(''); setParams({}, { replace: true }) }} className="btn-brand">Ver tudo</button>}
               {cidade && <button onClick={() => escolherCidade('todas')} className="btn-ghost">Ver todas as cidades</button>}
               <Link to="/divulgar" className={temFiltro ? 'btn-ghost' : 'btn-accent'}>Divulgar um evento</Link>
             </div>
