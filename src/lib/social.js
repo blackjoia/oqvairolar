@@ -10,8 +10,14 @@ import { clique } from './visitas'
 export async function garantirUsuario(user) {
   const ref = doc(db, 'usuarios', user.uid)
   const s = await getDoc(ref)
-  if (s.exists()) return { uid: user.uid, ...s.data() }
-  const novo = { nome: (user.displayName || 'Sem nome').slice(0, 60), foto: (user.photoURL || '').slice(0, 500), publico: true, criadoEm: serverTimestamp() }
+  if (s.exists()) {
+    const d = s.data()
+    // Contas antigas ganham o campo da busca por nome (usado em Amigos).
+    if (d.busca !== normalizar(d.nome)) await updateDoc(ref, { busca: normalizar(d.nome) }).catch(() => {})
+    return { uid: user.uid, ...d }
+  }
+  const nome = (user.displayName || 'Sem nome').slice(0, 60)
+  const novo = { nome, busca: normalizar(nome), foto: (user.photoURL || '').slice(0, 500), publico: true, criadoEm: serverTimestamp() }
   await setDoc(ref, novo)
   return { uid: user.uid, ...novo }
 }
@@ -19,8 +25,12 @@ export async function buscarUsuario(uid) {
   const s = await getDoc(doc(db, 'usuarios', uid)).catch(() => null)
   return s?.exists() ? { uid, ...s.data() } : null
 }
+// Nome sem acento e em minúsculas, para a busca por nome em Amigos.
+export const normalizar = (t = '') => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/\s+/g, ' ').slice(0, 60)
+
 export const salvarUsuario = (uid, dados) => updateDoc(doc(db, 'usuarios', uid), {
   ...Object.fromEntries(Object.entries(dados).filter(([k]) => ['nome', 'publico'].includes(k))),
+  ...(dados.nome ? { busca: normalizar(dados.nome) } : {}),
   atualizadoEm: serverTimestamp(),
 })
 

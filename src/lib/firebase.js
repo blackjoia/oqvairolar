@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getAuth, connectAuthEmulator, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 
 // Configuração pública do app web (não é segredo; a proteção está em firestore.rules).
 const firebaseConfig = {
@@ -21,3 +21,11 @@ export const ADMIN_UIDS = ['1rDi2JoNIuNa7ssJ8uP6YnmxSaI2']
 // Contas Google que também são admin (e-mail verificado). Mesmo valor de firestore.rules.
 export const ADMIN_EMAILS = ['luisfmrtns@gmail.com']
 export const ehAdmin = (u) => !!u && (ADMIN_UIDS.includes(u.uid) || (u.emailVerified && ADMIN_EMAILS.includes((u.email || '').toLowerCase())))
+
+// Só em desenvolvimento: ?emu na URL usa os emuladores locais (para testar contas e amigos sem mexer no banco real).
+if (import.meta.env.DEV && /[?&]emu/.test(location.search)) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
+  connectFirestoreEmulator(db, '127.0.0.1', 8080)
+  // Entrar como uma conta Google de teste: __entrarTeste({ sub, name, email, picture })
+  window.__entrarTeste = (c) => signInWithCredential(auth, GoogleAuthProvider.credential(JSON.stringify({ email_verified: true, ...c })))
+}

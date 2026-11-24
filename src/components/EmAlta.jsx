@@ -3,7 +3,8 @@ import { TrendingUp } from 'lucide-react'
 import Cartaz from './Cartaz'
 import { clique } from '../lib/visitas'
 import Bombando from './Bombando'
-import Rostos, { textoQuemVai, veRostos } from './Rostos'
+import Rostos, { quemVaiDe } from './Rostos'
+import { useAmigos } from '../lib/amigos-ctx'
 import { rotuloDia, horaDe } from '../lib/datas'
 import { bombando, pontos } from '../lib/alta'
 import { useAuth } from '../lib/auth'
@@ -12,6 +13,7 @@ import { useAuth } from '../lib/auth'
 // Numerados grandes, como uma lista de mais tocadas.
 export default function EmAlta({ eventos }) {
   const { user } = useAuth() || {}
+  const { vao } = useAmigos()
   const limite = Date.now() + 7 * 86400000
   const top = eventos.filter((e) => e.inicio.getTime() < limite && pontos(e) > 0)
     .sort((a, b) => pontos(b) - pontos(a) || a.inicio - b.inicio).slice(0, 5)
@@ -24,8 +26,8 @@ export default function EmAlta({ eventos }) {
       <p className="mt-1 text-sm text-muted">Os mais marcados com "Eu vou" e os mais vistos.</p>
       <ol className="no-scrollbar -mx-4 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1">
         {top.map((e, i) => {
-          const rostos = veRostos(user) ? (e.rostos || []) : []
-          const quem = textoQuemVai(e, rostos.length > 0) || `${e.acessos7} ${e.acessos7 === 1 ? 'pessoa viu' : 'pessoas viram'}`
+          const { rostos, texto } = quemVaiDe(e, user, vao)
+          const quem = texto || `${e.acessos7} ${e.acessos7 === 1 ? 'pessoa viu' : 'pessoas viram'}`
           return (
             <li key={e.id} className="relative w-[58%] shrink-0 snap-start min-[540px]:w-[38%] md:w-[250px]">
               <Link to={`/evento/${e.id}`} onClick={() => clique('em-alta', e.id)} className="group block">

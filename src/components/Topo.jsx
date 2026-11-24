@@ -7,10 +7,12 @@ import { abrirInstalar, appInstalado, podeInstalarDireto, instalarDireto } from 
 import { clique } from '../lib/visitas'
 import { useAuth } from '../lib/auth'
 import BalaoConta from './BalaoConta'
+import { useAmigos } from '../lib/amigos-ctx'
 import { RANKING_LIGADO } from '../lib/recursos'
 
 export default function Topo({ children, semDivulgar }) {
   const { usuario } = useAuth()
+  const { recebidos } = useAmigos()
   // Celular: botão "Instalar app" no topo (some quando o app já está instalado)
   const [mostrarInstalar, setMostrarInstalar] = useState(false)
   const [chamando, setChamando] = useState(false)
@@ -36,6 +38,7 @@ export default function Topo({ children, semDivulgar }) {
             className={`grid size-11 shrink-0 place-items-center overflow-hidden rounded-full border border-line bg-surface text-brand-ink hover:bg-surface-2 ${chamando ? 'conta-chamando' : ''}`}>
             {usuario?.foto ? <img src={usuario.foto} alt="" referrerPolicy="no-referrer" className="size-full object-cover" /> : <UserRound className="size-5" aria-hidden />}
           </Link>
+          {recebidos.length > 0 && <span className="pointer-events-none absolute -right-0.5 -top-0.5 grid size-5 place-items-center rounded-full bg-accent text-[11px] font-extrabold text-on-accent ring-2 ring-bg" title="Pedido de amizade">{recebidos.length}<span className="sr-only"> pedido de amizade</span></span>}
           {!children && <BalaoConta onMostrar={setChamando} />}</div>
       </div>
     </header>

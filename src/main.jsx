@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react
 import { registrar } from './lib/visitas'
 import './index.css'
 import { AuthProvider, useAuth } from './lib/auth'
+import { AmigosProvider } from './lib/amigos-ctx'
 import { RANKING_LIGADO } from './lib/recursos'
 import Inicio from './pages/Inicio'
 import Evento from './pages/Evento'
@@ -19,6 +20,7 @@ const Artes = lazy(() => import('./pages/admin/Artes'))
 const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
 const MeusRoles = lazy(() => import('./pages/MeusRoles'))
 const Usuario = lazy(() => import('./pages/Usuario'))
+const Amigos = lazy(() => import('./pages/Amigos'))
 const Semana = lazy(() => import('./pages/Semana'))
 const Ranking = lazy(() => import('./pages/Ranking'))
 const Estatisticas = lazy(() => import('./pages/admin/Estatisticas'))
@@ -83,6 +85,7 @@ function NaoEncontrado() {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
+      <AmigosProvider>
       <BrowserRouter>
         <ContarVisitas />
         <AbrirNoNavegador />
@@ -96,6 +99,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/local/:slug" element={<Local />} />
           <Route path="/meus-roles" element={<MeusRoles />} />
           <Route path="/u/:uid" element={<Usuario />} />
+          <Route path="/amigos" element={<Amigos />} />
           <Route path="/semana" element={<Semana />} />
           <Route path="/ranking" element={RANKING_LIGADO ? <Ranking /> : <Navigate to="/" replace />} />
           <Route path="/admin" element={<Admin />}>
@@ -113,6 +117,7 @@ createRoot(document.getElementById('root')).render(
         </Routes>
         </Suspense>
       </BrowserRouter>
+      </AmigosProvider>
     </AuthProvider>
   </StrictMode>,
 )

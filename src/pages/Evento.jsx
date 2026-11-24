@@ -19,12 +19,14 @@ import { podeLembrar, temLembrete, ligarLembrete, desligarLembrete } from '../li
 import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
+import { useAmigos } from '../lib/amigos-ctx'
 import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
   const { isAdmin, user, usuario } = useAuth()
   const [rostos, setRostos] = useState([])
+  const amigosVao = useAmigos().vao[id] || []
   const [aviso, setAviso] = useState('')
   const [e, setE] = useState(undefined)
   const pos = useMinhaPosicao()
@@ -191,6 +193,21 @@ export default function Evento() {
               <p className="mt-3 text-sm text-muted">
                 <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Faça login</button> para conferir quem vai no evento.
               </p>
+            )}
+            {user && amigosVao.length > 0 && (
+              <div className="mt-3 flex items-center gap-2 rounded-2xl bg-accent/15 p-2 pr-3">
+                <div className="flex -space-x-2">
+                  {amigosVao.slice(0, 5).map((u) => (
+                    <Link key={u.uid} to={`/u/${u.uid}`} title={u.nome} className="relative block size-9 overflow-hidden rounded-full bg-surface-2 ring-2 ring-accent hover:z-10">
+                      {u.foto ? <img src={u.foto} alt={u.nome} referrerPolicy="no-referrer" className="size-full object-cover" /> : <span className="grid size-full place-items-center text-xs font-bold">{u.nome?.[0]}</span>}
+                    </Link>
+                  ))}
+                </div>
+                <span className="text-sm"><b className="block text-xs uppercase tracking-wide text-brand-ink">Amigos</b><span className="font-semibold">{(() => {
+                  const n = amigosVao.map((u) => u.nome.split(' ')[0])
+                  return n.length === 1 ? `${n[0]} vai` : n.length === 2 ? `${n[0]} e ${n[1]} vão` : n.length === 3 ? `${n[0]}, ${n[1]} e ${n[2]} vão` : `${n[0]}, ${n[1]} e mais ${n.length - 2} vão`
+                })()}</span></span>
+              </div>
             )}
             {user && rostos.length > 0 && (
               <div className="mt-3 flex items-center gap-2">

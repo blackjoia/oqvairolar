@@ -5,8 +5,10 @@ import CardEvento from '../components/CardEvento'
 import { Rodape } from './Inicio'
 import { useAuth, entrarComGoogle, sair } from '../lib/auth'
 import { buscarEvento } from '../lib/eventos'
+import { useAmigos } from '../lib/amigos-ctx'
+import Rostos from '../components/Rostos'
 import { minhasPresencas, quemSigo, salvarUsuario, atualizarVisibilidade, registrarAparelho } from '../lib/social'
-import { CalendarHeart, Bell, BadgeCheck, LogOut, Users, Store, LoaderCircle, Star, PartyPopper } from 'lucide-react'
+import { CalendarHeart, Bell, BadgeCheck, LogOut, Users, Store, LoaderCircle, Star, PartyPopper, UserPlus, ChevronRight } from 'lucide-react'
 
 function Google() {
   return (
@@ -29,6 +31,7 @@ export function BotaoGoogle({ className = '' }) {
 
 export default function MeusRoles() {
   const { usuario, perfis, carregando, recarregar } = useAuth()
+  const amg = useAmigos()
   const [eventos, setEventos] = useState(null)
   const [sigo, setSigo] = useState([])
   const [avisos, setAvisos] = useState({ estado: '', erro: '' })
@@ -66,7 +69,7 @@ export default function MeusRoles() {
         <p className="mt-4 max-w-lg text-muted">Entre com a sua conta do Google, de graça e sem senha nova. O que você já marcou neste aparelho vem junto.</p>
         <ul className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-2">
           {[[CalendarHeart, 'Os eventos que você marcou', 'Eu vou e Interesse aparecem em qualquer aparelho.'],
-            [Users, 'Veja quem vai', 'Se quiser, sua foto aparece em “quem vai” e você vê os amigos.'],
+            [Users, 'Adicione seus amigos', 'Veja em quais rolês eles vão. Se quiser, sua foto aparece em “quem vai”.'],
             [Bell, 'Siga bares e bandas', 'Receba um aviso no celular quando sair evento novo.'],
             [Store, 'É dono de bar ou banda?', 'Assuma a página e publique seus eventos direto.']].map(([I, t, d]) => (
             <li key={t} className="flex gap-3 rounded-2xl border border-line bg-surface p-4"><I className="mt-0.5 size-5 shrink-0 text-brand-ink" aria-hidden /><div><b className="text-sm">{t}</b><p className="text-sm text-muted">{d}</p></div></li>
@@ -92,7 +95,7 @@ export default function MeusRoles() {
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface p-4">
             <input type="checkbox" checked={!!usuario.publico} onChange={alternarPublico} disabled={salvando} className="mt-1 size-5" />
-            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span>{erroPublico && <span className="mt-1 block text-sm font-semibold text-danger" role="alert">{erroPublico}</span>}</span>
+            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou. Seus amigos sempre veem seus rolês{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span>{erroPublico && <span className="mt-1 block text-sm font-semibold text-danger" role="alert">{erroPublico}</span>}</span>
           </label>
           <div className="rounded-2xl border border-line bg-surface p-4">
             <b className="text-sm">Avisos no celular</b>
@@ -102,6 +105,18 @@ export default function MeusRoles() {
             {avisos.erro && <p className="mt-1 text-xs text-danger">{avisos.erro}</p>}
           </div>
         </div>
+
+        <Link to="/amigos" className="mt-3 flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 hover:border-brand/40">
+          {amg.amigos.length > 0
+            ? <Rostos lista={amg.amigos.map((u) => amg.pessoas[u]).filter(Boolean)} max={4} tamanho="size-9" />
+            : <span className="grid size-9 place-items-center rounded-full bg-brand/10 text-brand-ink"><UserPlus className="size-5" aria-hidden /></span>}
+          <span className="min-w-0 flex-1">
+            <span className="flex flex-wrap items-center gap-2"><b className="text-sm">Amigos{amg.amigos.length > 0 && ` · ${amg.amigos.length}`}</b>
+              {amg.recebidos.length > 0 && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-on-accent">{amg.recebidos.length} {amg.recebidos.length === 1 ? 'pedido novo' : 'pedidos novos'}</span>}</span>
+            <span className="block text-sm text-muted">{amg.amigos.length ? 'Veja em quais rolês eles vão.' : 'Adicione amigos e veja em quais rolês eles vão.'}</span>
+          </span>
+          <ChevronRight className="size-5 shrink-0 text-muted" aria-hidden />
+        </Link>
 
         {perfis.length > 0 && (
           <section className="mt-8">
