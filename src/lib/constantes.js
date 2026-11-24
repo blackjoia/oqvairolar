@@ -14,8 +14,40 @@ export const CATEGORIAS = [
 export const GENEROS = [
   'Rock', 'Metal', 'Punk', 'Indie', 'Pop', 'Sertanejo', 'Pagode', 'Samba',
   'MPB', 'Eletrônica', 'Funk', 'Rap / Hip-hop', 'Reggae', 'Blues', 'Jazz',
-  'Gaúcha / Nativista', 'Forró', 'Acústico', 'Cover', 'Autoral',
+  'Gaúcha / Nativista', 'Bailão', 'Forró', 'Gospel', 'Acústico', 'Cover', 'Autoral',
 ]
+
+// Subfiltros de cada categoria (aparecem embaixo das abas quando a pessoa escolhe uma).
+// Ficam gravados no campo "generos" do evento. "inclui": outros nomes que contam como o mesmo.
+// A lista segue o que mais rola no Sudoeste do Paraná; na tela só aparecem os que têm evento.
+export const SUBFILTROS = {
+  musica: [
+    'Sertanejo', 'Rock', { nome: 'Pagode e samba', inclui: ['Pagode', 'Samba'] }, 'Eletrônica',
+    { nome: 'Bailão e gaúcha', inclui: ['Bailão', 'Gaúcha / Nativista', 'Gaúcha', 'Nativista'] },
+    'Acústico', 'Pop', 'MPB', 'Metal', 'Punk', 'Funk', { nome: 'Rap e hip-hop', inclui: ['Rap / Hip-hop', 'Rap', 'Hip-hop'] },
+    'Blues', 'Reggae', 'Forró', 'Jazz', 'Indie', 'Gospel',
+  ],
+  festa: ['Eletrônica', 'Funk', 'Sertanejo', 'Universitária', 'Na piscina', 'Open bar', 'Temática', 'Junina', 'Réveillon e Carnaval'],
+  esporte: ['Futsal', 'Futebol', 'Corrida de rua', 'Caminhada', 'Ciclismo e MTB', 'Trilha de moto', 'Motocross e velocross', 'Vôlei e beach tennis', 'Lutas', 'Rodeio e laço'],
+  cultura: ['Teatro', 'Humor e stand-up', 'Dança', 'Cinema', 'Exposição', 'Tradicionalista (CTG)', 'Infantil', 'Literatura', 'Palestra'],
+  gastronomia: ['Festival', 'Churrasco e costelão', 'Cerveja artesanal', 'Festa de comunidade', 'Food truck e feira', 'Café colonial', 'Vinho'],
+  outros: ['Feira e exposição', 'Solidário', 'Religioso', 'Infantil', 'Natal', 'Curso e oficina'],
+}
+
+const semAcento = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+const def = (s) => (typeof s === 'string' ? { nome: s, inclui: [] } : s)
+export const subfiltros = (cat) => (SUBFILTROS[cat] || []).map(def)
+// Nomes para marcar no cadastro: música usa a lista completa de gêneros.
+export const opcoesSub = (cat) => (cat === 'musica' ? GENEROS : subfiltros(cat).map((s) => s.nome))
+export const rotuloSub = (cat) => (cat === 'musica' ? 'Gêneros / estilos' : 'Tipo de evento')
+
+// O evento entra no subfiltro "nome"? Procura a definição na categoria do evento (ou em qualquer uma).
+export function casaSub(e, nome) {
+  const lista = subfiltros(e.categoria).concat(...Object.keys(SUBFILTROS).map(subfiltros))
+  const d = lista.find((s) => semAcento(s.nome) === semAcento(nome)) || { nome, inclui: [] }
+  const alvos = [d.nome, ...d.inclui].map(semAcento)
+  return (e.generos || []).some((g) => alvos.includes(semAcento(g)))
+}
 
 export const CIDADES = [
   'Francisco Beltrão', 'Pato Branco', 'Dois Vizinhos', 'Marmeleiro', 'Realeza',

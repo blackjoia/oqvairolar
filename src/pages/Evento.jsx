@@ -130,7 +130,7 @@ export default function Evento() {
             )}
             {!!e.generos?.length && (
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {e.generos.map((g) => <Link key={g} to={`/?genero=${encodeURIComponent(g)}`} className="rounded-full border border-line px-2.5 py-0.5 text-sm font-semibold text-muted hover:border-brand hover:text-brand-ink">{g}</Link>)}
+                {e.generos.map((g) => <Link key={g} to={`/?categoria=${e.categoria}&genero=${encodeURIComponent(g)}`} className="rounded-full border border-line px-2.5 py-0.5 text-sm font-semibold text-muted hover:border-brand hover:text-brand-ink">{g}</Link>)}
               </div>
             )}
 

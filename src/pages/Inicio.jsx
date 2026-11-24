@@ -11,7 +11,7 @@ import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
-import { CATEGORIAS } from '../lib/constantes'
+import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
 import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
@@ -85,7 +85,6 @@ export default function Inicio() {
   const futuros = useMemo(() => (eventos || []).filter((e) => (e.fim || new Date(e.inicio.getTime() + 6 * 3600000)) > agora), [eventos])
 
   const cidades = useMemo(() => [...new Set(futuros.map((e) => e.cidade).filter(Boolean))].sort(), [futuros])
-  const generos = useMemo(() => [...new Set(futuros.flatMap((e) => e.generos || []))].sort(), [futuros])
 
   const termos = useMemo(() => normalizar(busca).split(/\s+/).filter(Boolean), [busca])
   const [textoBusca, setTextoBusca] = useState(busca)
@@ -100,7 +99,7 @@ export default function Inicio() {
         if (fimEv < ini || (fim && e.inicio >= fim)) return false
       }
       if (cidade && e.cidade !== cidade) return false
-      if (genero && !(e.generos || []).includes(genero)) return false
+      if (genero && !casaSub(e, genero)) return false
       if (cat && e.categoria !== cat) return false
       if (termos.length) {
         const texto = normalizar([e.titulo, e.localNome, e.cidade, e.descricao, e.instagram, ...(e.atracoes || []), ...(e.generos || []), ...(e.outrosNomes || [])].join(' '))
@@ -121,6 +120,24 @@ export default function Inicio() {
     const m = {}; futuros.forEach((e) => { if (noDia(e, dia)) m[e.categoria] = (m[e.categoria] || 0) + 1 }); return m
   }, [futuros, dia]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Subfiltros da categoria escolhida: só os que têm evento, os mais comuns primeiro.
+  const subs = useMemo(() => {
+    if (!cat) return []
+    const daCat = futuros.filter((e) => e.categoria === cat)
+    const naTela = daCat.filter((e) => noDia(e, dia) && (!cidade || e.cidade === cidade))
+    return subfiltros(cat)
+      .map((s, i) => ({ id: s.nome, nome: s.nome, i, total: daCat.filter((e) => casaSub(e, s.nome)).length, n: naTela.filter((e) => casaSub(e, s.nome)).length }))
+      .filter((s) => s.total > 0)
+      .sort((a, b) => b.total - a.total || a.i - b.i)
+  }, [futuros, cat, dia, cidade]) // eslint-disable-line react-hooks/exhaustive-deps
+  const subAtivo = genero && subfiltros(cat).find((s) => s.nome === genero || s.inclui.includes(genero))
+  const escolherCat = (v) => {
+    const p = new URLSearchParams(params)
+    p.delete('genero')
+    if (v) { p.set('categoria', v); filtro('categoria', v) } else p.delete('categoria')
+    setParams(p, { replace: true })
+  }
+
   const grupos = useMemo(() => {
     const m = new Map()
     filtrados.forEach((e) => {
@@ -131,7 +148,7 @@ export default function Inicio() {
     return [...m.values()]
   }, [filtrados])
 
-  const nExtras = [cidade, genero].filter(Boolean).length
+  const nExtras = [cidade, !cat && genero].filter(Boolean).length
   const nFiltros = nExtras + (cat ? 1 : 0)
   const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca || (!!pos && !!raio)
 
@@ -166,7 +183,7 @@ export default function Inicio() {
               {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
               <span className="hidden sm:inline">Perto de mim</span>
             </button>
-            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade e gênero"
+            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade"
               className={`ferramenta relative ${gaveta || nExtras ? 'ferramenta-marcada' : ''}`}>
               <SlidersHorizontal className="size-4" aria-hidden /><span className="hidden sm:inline">Filtros</span>
               <ChevronDown className={`size-4 transition-transform ${gaveta ? 'rotate-180' : ''}`} aria-hidden />
@@ -175,15 +192,22 @@ export default function Inicio() {
           </div>
 
           <Deslizar className="mt-3 -mb-1">
-            <AbasCategoria valor={cat} onChange={(v) => setFiltro('categoria', v)} contagem={contaCat} total={eventos ? Object.values(contaCat).reduce((a, b) => a + b, 0) : 0} />
+            <AbasCategoria valor={cat} onChange={escolherCat} contagem={contaCat} total={eventos ? Object.values(contaCat).reduce((a, b) => a + b, 0) : 0} />
           </Deslizar>
+
+          {subs.length > 0 && (
+            <Deslizar key={cat} className="sub-entra mt-3">
+              <Segmentado rotulo={`Tipos de ${dadosCat(cat).nome}`} cor={dadosCat(cat).cor} tinta={dadosCat(cat).tinta} valor={subAtivo ? subAtivo.nome : (genero || '')}
+                onChange={(v) => setFiltro('genero', v)}
+                opcoes={[{ id: '', nome: 'Todos' }, ...subs]} />
+            </Deslizar>
+          )}
 
           <div className={`grid transition-[grid-template-rows] duration-300 ${gaveta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
             <div className="overflow-hidden">
               <div className="mt-3 rounded-2xl border border-line bg-surface p-4">
                 <Grupo titulo="Cidade" opcoes={cidades.map((c) => [c, c])} valor={cidade} onChange={(v) => setFiltro('cidade', v)} />
-                <Grupo titulo="Gênero" opcoes={generos.map((g) => [g, g])} valor={genero} onChange={(v) => setFiltro('genero', v)} />
-                {!cidades.length && !generos.length && <p className="mb-3 text-sm text-muted">Mais filtros aparecem quando tiver eventos na agenda.</p>}
+                {!cidades.length && <p className="mb-3 text-sm text-muted">Mais filtros aparecem quando tiver eventos na agenda.</p>}
                 <div className="flex gap-2">
                   <button onClick={() => { setRaioTela(RAIO_MAX); setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
                   <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
@@ -213,7 +237,7 @@ export default function Inicio() {
 
           {!gaveta && nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {[['cidade', cidade], ['genero', genero]].filter(([, v]) => v).map(([k, v]) => (
+              {[['cidade', cidade], ['genero', !cat && genero]].filter(([, v]) => v).map(([k, v]) => (
                 <button key={k} onClick={() => setFiltro(k, '')} className="chip chip-on flex items-center gap-1 py-1 text-xs">{v} <X className="size-3.5" aria-label="Tirar filtro" /></button>
               ))}
             </div>

@@ -8,7 +8,7 @@ import { acharParecidos, juntar } from '../../lib/parecidos'
 import { diaSemana, diaMes, mesCurto, hora } from '../../lib/datas'
 import { Copy, Star, Repeat, X } from 'lucide-react'
 import { paraInputLocal } from '../../lib/datas'
-import { CATEGORIAS, GENEROS, CIDADES } from '../../lib/constantes'
+import { CATEGORIAS, CIDADES, opcoesSub, rotuloSub } from '../../lib/constantes'
 
 const VAZIO = {
   titulo: '', categoria: 'musica', generos: [], inicio: null, fim: null,
@@ -147,15 +147,15 @@ export default function FormEvento() {
             </div>
           </div>
           <div>
-            <span className="rotulo">Gêneros / estilos</span>
+            <span className="rotulo">{rotuloSub(e.categoria)}</span>
             <div className="flex flex-wrap gap-1.5">
-              {[...new Set([...GENEROS, ...e.generos])].map((g) => (
+              {[...new Set([...opcoesSub(e.categoria), ...e.generos])].map((g) => (
                 <button type="button" key={g} onClick={() => alternarGenero(g)}
                   className={`chip py-1 text-xs ${e.generos.includes(g) ? 'chip-on' : ''}`}>{g}</button>
               ))}
             </div>
             <div className="mt-2 flex gap-2">
-              <input className="campo" placeholder="Outro estilo" value={generoExtra} onChange={(x) => setGeneroExtra(x.target.value)}
+              <input className="campo" placeholder={e.categoria === 'musica' ? 'Outro estilo' : 'Outro tipo'} value={generoExtra} onChange={(x) => setGeneroExtra(x.target.value)}
                 onKeyDown={(x) => { if (x.key === 'Enter') { x.preventDefault(); addGenero() } }} />
               <button type="button" onClick={addGenero} className="btn-ghost">Adicionar</button>
             </div>

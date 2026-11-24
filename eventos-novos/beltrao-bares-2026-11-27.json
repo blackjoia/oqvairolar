@@ -164,7 +164,11 @@
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/asoayu1wsvjcq02aht10.jpg",
       "descricao": "8 estações: cordeiro, costela, chorizo, maminha, panceta, brisket defumado, hambúrguer de costela e sobremesas. Festival das 17h às 21h, tudo incluso no ingresso. Ingressos nos pontos de venda ou pelo WhatsApp da bio do @schafbier.",
       "fonte": "https://www.instagram.com/p/DgGUWOFM12l/",
-      "rev": 1
+      "rev": 2,
+      "generos": [
+        "Churrasco e costelão",
+        "Cerveja artesanal"
+      ]
     },
     {
       "id": "quase-de-ferias-norole-piscina-dariva-2026-12-05",
@@ -177,7 +181,11 @@
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/facdf7usavwlccat6fgj.jpg",
       "descricao": "Piscina, sol e copão para fechar o semestre. Ingressos à venda pelo link na bio do @noroleuni.",
       "fonte": "https://www.instagram.com/p/DgDXbOYSFUG/",
-      "rev": 1
+      "rev": 2,
+      "generos": [
+        "Na piscina",
+        "Universitária"
+      ]
     },
     {
       "id": "moving-illusionize-rancho-dariva-2027-01-23",

@@ -25,9 +25,12 @@
       "descricao": "2º AgroShow, a feira do agronegócio de Dois Vizinhos, que também celebra os 65 anos da cidade. Entrada gratuita.\n\nRodeio de 26 a 28/11, fazendinha, exposição, leilões, estandes, praça de alimentação e a Arena do Conhecimento da UTFPR (palestras gratuitas de 27 a 29/11, 5º Torneio de Silagem e torneio de xadrez).\n\nShows\nQua 25/11 · Mariana & Mateus\nQui 26/11 · rodeio e Danilo & Davi\nSex 27/11 · Fiduma & Jeca e Eduarda Constantino\nSáb 28/11 · Antony & Gabriel e DJ Vovô James\nDom 29/11 · sem shows\n\nHorários dos shows ainda não divulgados.",
       "gratuito": true,
       "preco": "Entrada gratuita",
-      "rev": 2,
+      "rev": 3,
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/yse4u8erozducpixvcic.jpg",
-      "fonte": "https://www.instagram.com/agroshow_dv/p/DfDSE8BuVJE/"
+      "fonte": "https://www.instagram.com/agroshow_dv/p/DfDSE8BuVJE/",
+      "generos": [
+        "Feira e exposição"
+      ]
     },
     {
       "id": "mariana-e-mateus-agroshow-2026-11-25",

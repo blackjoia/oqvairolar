@@ -11,7 +11,7 @@ import { enviarParaAprovacao, publicarComoPerfil, listarPublicados } from '../li
 import { acharParecidos } from '../lib/parecidos'
 import { rotuloDia, hora } from '../lib/datas'
 import { paraInputLocal } from '../lib/datas'
-import { CATEGORIAS, GENEROS, CIDADES } from '../lib/constantes'
+import { CATEGORIAS, CIDADES, opcoesSub, rotuloSub } from '../lib/constantes'
 
 const VAZIO = {
   titulo: '', categoria: 'musica', generos: [], inicio: null, fim: null,
@@ -144,9 +144,9 @@ export default function Divulgar() {
           {mais && (
             <Bloco titulo="Detalhes">
               <div>
-                <span className="rotulo">Estilos</span>
+                <span className="rotulo">{rotuloSub(e.categoria)}</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {GENEROS.map((g) => (
+                  {opcoesSub(e.categoria).map((g) => (
                     <button type="button" key={g} onClick={() => alternarGenero(g)} className={`chip py-1 text-xs ${e.generos.includes(g) ? 'chip-on' : ''}`}>{g}</button>
                   ))}
                 </div>
