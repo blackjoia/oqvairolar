@@ -261,3 +261,6 @@ h1, h2, h3 { text-wrap: balance; }
   .balao-conta.saindo { animation: none; opacity: 0; }
   .balao-conta-barra { display: none; }
 }
+
+/* Números grandes do "Em alta na semana": só o contorno, na cor da marca */
+.num-alta { -webkit-text-stroke: 3px var(--brand); paint-order: stroke; }

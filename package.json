@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "importar": "node scripts/importar.mjs",
     "previas": "node scripts/previas.mjs",
-    "lembretes": "node scripts/lembretes.mjs"
+    "lembretes": "node scripts/lembretes.mjs",
+    "contagens": "node scripts/contagens.mjs"
   },
   "dependencies": {
     "firebase": "^12.6.0",

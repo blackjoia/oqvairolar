@@ -5,12 +5,12 @@ import { collection, getCountFromServer, query, where, Timestamp } from 'firebas
 import { db } from '../../lib/firebase'
 import { listarTodos } from '../../lib/eventos'
 import { CATEGORIAS } from '../../lib/constantes'
-import { Users, UserPlus, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDays, Plus } from 'lucide-react'
+import { Users, UserPlus, Eye, Ticket, Share2, Send, MousePointerClick, Inbox, CalendarDays, Plus, Link2, Copy, Check } from 'lucide-react'
 
 const PERIODOS = [[7, '7 dias'], [30, '30 dias'], [90, '90 dias']]
 const SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-const ACOES = { ingresso: 'Comprar ingresso', agenda: 'Adicionar à agenda', compartilhar: 'Compartilhar', story: 'Arte para Story', rota: 'Como chegar', instagram: 'Abrir Instagram', 'divulgar-enviado': 'Evento enviado pelo formulário', 'instalar-app': 'Instalar app', 'eu-vou': 'Eu vou', interesse: 'Tenho interesse' }
-const ORIGENS = { direto: 'Direto / WhatsApp', instagram: 'Instagram', facebook: 'Facebook', google: 'Google', whatsapp: 'WhatsApp', compartilhado: 'Link compartilhado do site' }
+const ACOES = { ingresso: 'Comprar ingresso', agenda: 'Adicionar à agenda', compartilhar: 'Compartilhar', story: 'Arte para Story', rota: 'Como chegar', instagram: 'Abrir Instagram', 'divulgar-enviado': 'Evento enviado pelo formulário', 'instalar-app': 'Instalar app', 'eu-vou': 'Eu vou', interesse: 'Tenho interesse', 'hoje-a-noite': 'Cartaz do Hoje à noite', 'em-alta': 'Cartaz do Em alta', 'chamar-galera': 'Chamar a galera (WhatsApp)', lembrete: 'Me lembrar', seguir: 'Seguir bar ou banda', 'perto-de-mim': 'Perto de mim' }
+const ORIGENS = { direto: 'Direto / WhatsApp', instagram: 'Instagram', facebook: 'Facebook', google: 'Google', whatsapp: 'WhatsApp', compartilhado: 'Link compartilhado do site', galera: 'Chamar a galera (WhatsApp)', 'aviso-admin': 'Aviso do admin' }
 const FILTROS = { dia: 'Dia', categoria: 'Categoria', cidade: 'Cidade', genero: 'Gênero' }
 const fmt = (n) => n.toLocaleString('pt-BR')
 const chaveDia = (d) => d.toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' })
@@ -87,6 +87,16 @@ export default function Estatisticas() {
       enviados: cliques.filter((c) => c.acao === 'divulgar-enviado').length,
       serie, horas, semana, topEv,
       origem: contar([...sessoes.values()], (v) => v.origem),
+      // Rastreio por origem: cada link com ?o= (post, story, bio) vira uma linha
+      porOrigem: (() => {
+        const m = new Map()
+        const linha = (o) => { if (!m.has(o)) m.set(o, { o, acessos: 0, pessoas: new Set(), abriram: new Set(), vou: new Set() }); return m.get(o) }
+        sessoes.forEach((v) => linha(v.origem).acessos++)
+        paginas.forEach((v) => { const l = linha(v.origem); l.pessoas.add(v.visitante); if (v.eventoId) l.abriram.add(v.visitante) })
+        cliques.forEach((c) => { if (c.acao === 'eu-vou') linha(c.origem).vou.add(c.visitante) })
+        return [...m.values()].map((l) => ({ o: l.o, acessos: l.acessos, pessoas: l.pessoas.size, abriram: l.abriram.size, vou: l.vou.size }))
+          .sort((a, b) => b.acessos - a.acessos)
+      })(),
       disp: contar([...sessoes.values()], (v) => v.disp),
       acoes: contar(cliques, (c) => c.acao),
       filtros: contar(filtros, (f) => `${FILTROS[f.acao] || f.acao}: ${f.acao === 'categoria' ? (CATEGORIAS.find((c) => c.id === f.valor)?.nome || f.valor) : f.valor}`).slice(0, 10),
@@ -158,6 +168,25 @@ export default function Estatisticas() {
             </div>)}
         </Caixa>
 
+        <Caixa titulo="Rastreio por link" sub="Cada post, story ou bio com o seu link. Pessoas únicas, exceto acessos.">
+          <GerarLink />
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead><tr className="text-left text-xs uppercase tracking-wide text-muted">
+                <th className="py-2 pr-3">Origem</th><th className="py-2 text-right">Acessos</th><th className="py-2 text-right">Pessoas</th><th className="py-2 text-right">Abriram evento</th><th className="py-2 text-right">Eu vou</th><th className="py-2 text-right">Conversão</th>
+              </tr></thead>
+              <tbody>{r.porOrigem.map((l) => (
+                <tr key={l.o} className={`border-t border-line ${l.o.startsWith('ig') ? 'font-semibold' : ''}`}>
+                  <td className="py-2 pr-3">{ORIGENS[l.o] || l.o}</td>
+                  <td className="py-2 text-right tabular-nums">{fmt(l.acessos)}</td><td className="py-2 text-right tabular-nums">{fmt(l.pessoas)}</td>
+                  <td className="py-2 text-right tabular-nums">{fmt(l.abriram)}</td><td className="py-2 text-right tabular-nums">{fmt(l.vou)}</td>
+                  <td className="py-2 text-right tabular-nums">{l.pessoas ? Math.round((l.vou / l.pessoas) * 100) : 0}%</td>
+                </tr>))}</tbody>
+            </table>
+          </div>
+          <p className="mt-2 text-xs text-muted">Conversão = quantas das pessoas que chegaram por ali marcaram "Eu vou".</p>
+        </Caixa>
+
         <div className="grid gap-x-4 md:grid-cols-2">
           <Caixa titulo="De onde vieram" sub="Por visita">
             <Barras itens={r.origem.map(([k, v]) => [ORIGENS[k] || k, v])} />
@@ -184,6 +213,31 @@ export default function Estatisticas() {
 }
 
 // Topo do painel: o que precisa de atenção na agenda
+// Monta o link com ?o= para colar no Instagram (bio, story, post). O nome vira a linha do rastreio.
+const SUGESTOES = ['ig-bio', 'ig-story', 'ig-reels', 'ig-post-agenda', 'ig-collab']
+function GerarLink() {
+  const [nome, setNome] = useState('ig-story')
+  const [pagina, setPagina] = useState('')
+  const [copiado, setCopiado] = useState(false)
+  const limpo = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40)
+  const link = `https://oquevairolar.com.br/${pagina.replace(/^https?:\/\/[^/]+\/?/, '').replace(/^\//, '')}${pagina.includes('?') ? '&' : '?'}o=${limpo || 'ig'}`
+  const copiar = async () => { try { await navigator.clipboard.writeText(link); setCopiado(true); setTimeout(() => setCopiado(false), 1800) } catch {} }
+  return (
+    <div className="rounded-2xl border border-line bg-surface-2/50 p-3">
+      <p className="flex items-center gap-2 text-sm font-bold"><Link2 className="size-4 text-brand-ink" aria-hidden /> Criar link rastreado</p>
+      <div className="mt-2 flex flex-wrap gap-1.5">{SUGESTOES.map((x) => <button key={x} onClick={() => setNome(x)} className={`chip py-1 text-xs ${nome === x ? 'chip-on' : ''}`}>{x}</button>)}</div>
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+        <label className="text-xs font-semibold text-muted">Nome (aparece na tabela)<input value={nome} onChange={(x) => setNome(x.target.value)} className="campo mt-1" placeholder="ig-story-sexta" /></label>
+        <label className="text-xs font-semibold text-muted">Página (vazio = agenda)<input value={pagina} onChange={(x) => setPagina(x.target.value)} className="campo mt-1" placeholder="evento/abc ou semana" /></label>
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        <code className="min-w-0 flex-1 truncate rounded-lg bg-bg px-3 py-2 text-xs">{link}</code>
+        <button onClick={copiar} className="btn-brand h-10 px-3 text-sm">{copiado ? <><Check className="size-4" aria-hidden /> Copiado</> : <><Copy className="size-4" aria-hidden /> Copiar</>}</button>
+      </div>
+    </div>
+  )
+}
+
 function Resumo({ eventos }) {
   const agora = new Date()
   const pend = eventos.filter((e) => e.status === 'pendente').length

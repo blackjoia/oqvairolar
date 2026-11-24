@@ -33,6 +33,9 @@ jobs:
           printf '%s' "$CHAVE" > "$RUNNER_TEMP/chave.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
       - run: npm run previas
+      - name: Contar Eu vou, rostos e acessos dos eventos
+        run: npm run contagens
+        continue-on-error: true
       - name: Publicar a versão de teste
         id: canal
         run: |
