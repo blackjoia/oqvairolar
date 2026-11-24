@@ -9,13 +9,17 @@ import { RANKING_LIGADO } from '../lib/recursos'
 import Segmentado from '../components/Segmentado'
 import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
+import HojeANoite from '../components/HojeANoite'
+import EmAlta from '../components/EmAlta'
+import { PrimeiraCidade, SeletorCidade } from '../components/EscolherCidade'
+import { useCidadePreferida, definirCidade } from '../lib/cidade'
 import { listarPublicados } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub, FIXOS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
 import { km, useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
-import { SlidersHorizontal, X, CalendarX2, ChevronDown, Search, Navigation, LoaderCircle, ArrowRight, WifiOff } from 'lucide-react'
+import { X, CalendarX2, Search, Navigation, LoaderCircle, ArrowRight, WifiOff } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -31,7 +35,6 @@ export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
   const [semRede, setSemRede] = useState(false)
-  const [gaveta, setGaveta] = useState(false)
   const pos = useMinhaPosicao()
   const [buscandoLocal, setBuscandoLocal] = useState(false)
   const [erroLocal, setErroLocal] = useState('')
@@ -54,7 +57,14 @@ export default function Inicio() {
     return () => clearTimeout(t)
   }, [raioTela]) // eslint-disable-line react-hooks/exhaustive-deps
   const dia = params.get('dia') || 'todos'
-  const cidade = params.get('cidade') || ''
+  // Cidade: a da URL (link compartilhado) vence; senão, a preferida deste aparelho.
+  const pref = useCidadePreferida()
+  const cidadeUrl = params.get('cidade') || ''
+  const cidade = cidadeUrl ? (cidadeUrl === 'todas' ? '' : cidadeUrl) : (pref && pref !== 'todas' ? pref : '')
+  const escolherCidade = (v) => {
+    definirCidade(v); filtro('cidade', v)
+    const p = new URLSearchParams(params); p.delete('cidade'); setParams(p, { replace: true })
+  }
   const genero = params.get('genero') || ''
   const cat = params.get('categoria') || ''
   const busca = params.get('q') || ''
@@ -84,7 +94,12 @@ export default function Inicio() {
   const agora = new Date()
   const futuros = useMemo(() => (eventos || []).filter((e) => (e.fim || new Date(e.inicio.getTime() + 6 * 3600000)) > agora), [eventos])
 
-  const cidades = useMemo(() => [...new Set(futuros.map((e) => e.cidade).filter(Boolean))].sort(), [futuros])
+  // Cidades com rolê, as com mais eventos primeiro: [nome, quantidade]
+  const cidades = useMemo(() => {
+    const m = new Map(); futuros.forEach((e) => { if (e.cidade) m.set(e.cidade, (m.get(e.cidade) || 0) + 1) })
+    return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  }, [futuros])
+  const naCidade = useMemo(() => futuros.filter((e) => !cidade || e.cidade === cidade), [futuros, cidade])
 
   const termos = useMemo(() => normalizar(busca).split(/\s+/).filter(Boolean), [busca])
   const [textoBusca, setTextoBusca] = useState(busca)
@@ -115,10 +130,10 @@ export default function Inicio() {
     const [ini, fim] = faixaDia(d); const fimEv = e.fim || e.inicio
     return !(fimEv < ini || (fim && e.inicio >= fim))
   }
-  const contaDias = useMemo(() => Object.fromEntries(DIAS.map((d) => [d.id, futuros.filter((e) => noDia(e, d.id)).length])), [futuros]) // eslint-disable-line react-hooks/exhaustive-deps
+  const contaDias = useMemo(() => Object.fromEntries(DIAS.map((d) => [d.id, naCidade.filter((e) => noDia(e, d.id)).length])), [naCidade]) // eslint-disable-line react-hooks/exhaustive-deps
   const contaCat = useMemo(() => {
-    const m = {}; futuros.forEach((e) => { if (noDia(e, dia)) m[e.categoria] = (m[e.categoria] || 0) + 1 }); return m
-  }, [futuros, dia]) // eslint-disable-line react-hooks/exhaustive-deps
+    const m = {}; naCidade.forEach((e) => { if (noDia(e, dia)) m[e.categoria] = (m[e.categoria] || 0) + 1 }); return m
+  }, [naCidade, dia]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Subfiltros da categoria escolhida: só os que têm evento, os mais comuns primeiro.
   const subs = useMemo(() => {
@@ -149,22 +164,24 @@ export default function Inicio() {
     return [...m.values()]
   }, [filtrados])
 
-  const nExtras = [cidade, !cat && genero].filter(Boolean).length
+  const nExtras = [!cat && genero].filter(Boolean).length
   const nFiltros = nExtras + (cat ? 1 : 0)
   const temFiltro = dia !== 'todos' || nFiltros > 0 || !!busca || (!!pos && !!raio)
+  // Primeira vez no app: pergunta a cidade (só se tiver mais de uma com rolê e o link não escolheu uma)
+  const perguntarCidade = !pref && !cidadeUrl && cidades.length > 1
 
   return (
     <>
       <Topo />
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-5xl px-4 pb-24">
         <section className={`pb-4 pt-5 sm:pt-12 ${RANKING_LIGADO ? 'md:grid md:grid-cols-[minmax(0,1fr)_300px] md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_340px]' : ''}`}>
-          <p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Sudoeste do Paraná</p>
-          <h1 className="mt-2 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
+          <SeletorCidade cidade={cidade} cidades={cidades} onEscolher={escolherCidade} />
+          <h1 className="mt-4 font-display text-[clamp(2.6rem,9.5vw,6rem)] sm:mt-3 uppercase leading-[.9] tracking-[-.005em]">
             O que vai <span className="inline-block rounded-lg bg-accent px-2 leading-[1.05] text-on-accent">rolar</span>?
           </h1>
           <p className="mt-4 hidden max-w-xl text-muted md:block">Shows, festas, corridas e tudo o que tá rolando por aqui. Escolhe o rolê.{' '}
             <Link to="/semana" className="link-toque -my-2 whitespace-nowrap font-semibold text-brand-ink underline-offset-4 hover:underline">Ver a semana inteira <ArrowRight className="inline size-4 align-[-2px]" aria-hidden /></Link></p>
-          <Destaques semana={eventos ? eventos.filter((e) => e.inicio - Date.now() < 7 * 86400000).length : 0} />
+          {RANKING_LIGADO && <Destaques semana={eventos ? eventos.filter((e) => e.inicio - Date.now() < 7 * 86400000).length : 0} />}
           <label className="relative mt-4 block max-w-xl md:mt-5">
             <span className="sr-only">Buscar</span>
             <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden />
@@ -172,6 +189,12 @@ export default function Inicio() {
               className="campo rounded-full py-3 pl-12" enterKeyHint="search" />
           </label>
         </section>
+
+        {eventos && !temFiltro && (<>
+          <HojeANoite eventos={naCidade} />
+          <EmAlta eventos={naCidade} />
+        </>)}
+        {perguntarCidade && <PrimeiraCidade cidades={cidades} onEscolher={escolherCidade} />}
 
         <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
           <div className="flex items-center gap-2">
@@ -183,12 +206,6 @@ export default function Inicio() {
               className={`ferramenta ${pos ? 'ferramenta-on' : ''}`}>
               {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
               <span className="hidden sm:inline">Perto de mim</span>
-            </button>
-            <button onClick={() => setGaveta((g) => !g)} aria-expanded={gaveta} aria-label="Mais filtros: cidade"
-              className={`ferramenta relative ${gaveta || nExtras ? 'ferramenta-marcada' : ''}`}>
-              <SlidersHorizontal className="size-4" aria-hidden /><span className="hidden sm:inline">Filtros</span>
-              <ChevronDown className={`size-4 transition-transform ${gaveta ? 'rotate-180' : ''}`} aria-hidden />
-              {nExtras > 0 && <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-brand text-[11px] font-bold text-on-brand">{nExtras}</span>}
             </button>
           </div>
 
@@ -203,19 +220,6 @@ export default function Inicio() {
                 opcoes={[{ id: '', nome: 'Todos' }, ...subs]} />
             </Deslizar>
           )}
-
-          <div className={`grid transition-[grid-template-rows] duration-300 ${gaveta ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
-            <div className="overflow-hidden">
-              <div className="mt-3 rounded-2xl border border-line bg-surface p-4">
-                <Grupo titulo="Cidade" opcoes={cidades.map((c) => [c, c])} valor={cidade} onChange={(v) => setFiltro('cidade', v)} />
-                {!cidades.length && <p className="mb-3 text-sm text-muted">Mais filtros aparecem quando tiver eventos na agenda.</p>}
-                <div className="flex gap-2">
-                  <button onClick={() => { setRaioTela(RAIO_MAX); setParams(dia !== 'todos' ? { dia } : {}, { replace: true }) }} className="btn-ghost">Limpar</button>
-                  <button onClick={() => setGaveta(false)} className="btn-brand flex-1">Ver {filtrados.length} {filtrados.length === 1 ? 'evento' : 'eventos'}</button>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
           {pos && (
@@ -236,9 +240,9 @@ export default function Inicio() {
             </div>
           )}
 
-          {!gaveta && nExtras > 0 && (
+          {nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {[['cidade', cidade], ['genero', !cat && genero]].filter(([, v]) => v).map(([k, v]) => (
+              {[['genero', !cat && genero]].filter(([, v]) => v).map(([k, v]) => (
                 <button key={k} onClick={() => setFiltro(k, '')} className="chip chip-on flex items-center gap-1 py-1 text-xs">{v} <X className="size-3.5" aria-label="Tirar filtro" /></button>
               ))}
             </div>
@@ -261,10 +265,11 @@ export default function Inicio() {
         {eventos && grupos.length === 0 && (
           <div className="mt-10 rounded-2xl border border-dashed border-line p-8 text-center">
             <CalendarX2 className="mx-auto mb-2 size-10 text-brand-ink" aria-hidden />
-            <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : 'por enquanto'}</p>
+            <p className="font-display text-2xl uppercase">Nada rolando {temFiltro ? 'com esses filtros' : cidade ? `em ${cidade} por enquanto` : 'por enquanto'}</p>
             <p className="mt-1 text-muted">{temFiltro ? 'Tenta outro dia, outra categoria ou uma distância maior.' : 'Volta logo que a agenda enche.'}</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {temFiltro && <button onClick={() => { setRaioTela(RAIO_MAX); setTextoBusca(''); setParams({}, { replace: true }) }} className="btn-brand">Ver tudo</button>}
+              {cidade && <button onClick={() => escolherCidade('todas')} className="btn-ghost">Ver todas as cidades</button>}
               <Link to="/divulgar" className={temFiltro ? 'btn-ghost' : 'btn-accent'}>Divulgar um evento</Link>
             </div>
           </div>
@@ -286,20 +291,6 @@ export default function Inicio() {
       </main>
       <Rodape />
     </>
-  )
-}
-
-function Grupo({ titulo, opcoes, valor, onChange }) {
-  if (!opcoes.length) return null
-  return (
-    <div className="mb-5">
-      <p className="rotulo">{titulo}</p>
-      <div className="flex flex-wrap gap-2">
-        {opcoes.map(([v, nome]) => (
-          <button key={v} onClick={() => onChange(valor === v ? '' : v)} className={`chip ${valor === v ? 'chip-on' : ''}`}>{nome}</button>
-        ))}
-      </div>
-    </div>
   )
 }
 

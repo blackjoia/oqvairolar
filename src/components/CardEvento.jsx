@@ -3,6 +3,10 @@ import { MapPin } from 'lucide-react'
 import Cartaz from './Cartaz'
 import { diaMes, mesCurto, hora, horaDe, rotuloDia, situacao } from '../lib/datas'
 import { km, textoDistancia, useMinhaPosicao } from '../lib/distancia'
+import { useAuth } from '../lib/auth'
+import { bombando } from '../lib/alta'
+import Rostos, { textoQuemVai, veRostos } from './Rostos'
+import Bombando from './Bombando'
 
 // soHora: a lista já está agrupada por dia, então o card mostra só a hora.
 // grande: destaque do próximo evento, ocupa a largura toda com o cartaz em paisagem.
@@ -12,6 +16,10 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
   const dist = textoDistancia(km(pos, e))
   const preco = e.gratuito ? 'Grátis' : e.preco
   const agora = situacao(e)?.tipo === 'agora'
+  const { user } = useAuth() || {}
+  // Rostos só para quem entrou com a conta (o mesmo combinado da página do evento); sem conta, só o número.
+  const rostos = veRostos(user) ? (e.rostos || []) : []
+  const quemVai = textoQuemVai(e, rostos.length > 0)
   return (
     <Link to={`/evento/${e.id}`} style={style}
       className={`card-evento group flex overflow-hidden rounded-2xl border border-line bg-surface hover:border-brand/40 ${grande ? 'col-span-2 flex-col sm:flex-row md:col-span-3' : 'flex-col'} ${className}`}>
@@ -29,6 +37,7 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
       </div>
       <div className={`flex flex-1 flex-col ${grande ? 'p-4 sm:p-6' : 'p-3'}`}>
         {grande && !agora && <p className="text-xs font-bold uppercase tracking-widest text-muted">Próximo rolê</p>}
+        {bombando(e) && !agora && <Bombando className="mb-1 w-fit" />}
         <div className={`num font-bold uppercase tracking-wide text-brand-ink ${grande ? 'text-sm' : 'text-xs'}`}>{soHora ? horaDe(e) : `${rotuloDia(e.inicio)} · ${horaDe(e)}`}</div>
         <h3 className={`mt-0.5 font-display uppercase leading-tight tracking-wide group-hover:text-brand-ink ${grande ? 'text-2xl sm:text-4xl' : 'line-clamp-2 text-lg'} ${temImagem ? '' : 'sr-only'}`}>{e.titulo}</h3>
         <p className="mt-1 flex items-start gap-1 text-xs text-muted">
@@ -36,7 +45,12 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
           <span className="line-clamp-2">{[e.localNome, e.cidade].filter(Boolean).join(' · ')}</span>
         </p>
         {dist && <p className="mt-1 w-fit rounded-full bg-brand/10 px-2 py-0.5 text-xs font-bold text-brand-ink">{dist} de você</p>}
-        {e.vao >= 3 && <p className="num mt-1 text-xs font-bold text-ink">{e.vao} pessoas vão</p>}
+        {quemVai && (
+          <p className="num mt-1.5 flex items-center gap-1.5 text-xs font-bold text-ink">
+            {rostos.length > 0 && <Rostos lista={rostos} />}
+            <span className="line-clamp-1">{quemVai}</span>
+          </p>
+        )}
         {preco && <p className="num mt-auto pt-1.5 text-sm font-bold">{preco}</p>}
       </div>
     </Link>

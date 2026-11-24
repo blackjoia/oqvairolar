@@ -37,6 +37,9 @@ jobs:
       - run: npm run previas
       - name: Publicar no Firebase Hosting
         run: npx -y firebase-tools@14 deploy --only hosting --project oquevairolar-b0129 --non-interactive
+      - name: Contar Eu vou, rostos e acessos dos eventos
+        run: npm run contagens
+        continue-on-error: true
       - name: Enviar lembretes no celular
         run: npm run lembretes
         continue-on-error: true
