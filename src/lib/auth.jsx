@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
         meusPerfis(user.uid).catch(() => []),
         trazerMarcacoesDoAparelho(user.uid, usuario.publico).catch(() => 0),
       ])
+      import('./cidade').then((m) => m.sincronizarCidade(user.uid)).catch(() => {})
       return { usuario, perfis }
     } catch (e) { console.warn('conta', e); return { usuario: basico, perfis: [] } }
   }, [])

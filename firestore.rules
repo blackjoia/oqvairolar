@@ -118,6 +118,14 @@ service cloud.firestore {
     }
 
     // Conta do público: nome, foto e se aparece em "quem vai". Os outros só veem quem deixou público.
+    // Última cidade escolhida na agenda, por conta. Só a própria pessoa lê e grava (não fica no perfil público).
+    match /preferencias/{uid} {
+      allow read: if dono(uid);
+      allow create, update: if dono(uid)
+        && request.resource.data.keys().hasOnly(['cidade', 'em'])
+        && request.resource.data.cidade is string && request.resource.data.cidade.size() <= 60;
+    }
+
     match /usuarios/{uid} {
       allow read: if resource.data.publico == true || dono(uid) || isAdmin();
       allow create, update: if dono(uid)
