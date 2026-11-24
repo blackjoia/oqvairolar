@@ -16,10 +16,13 @@
         "Umuarama Futsal"
       ],
       "descricao": "Jogo de volta da final do Campeonato Paranaense de Futsal Série Ouro 2026, decidido em Pato Branco. O jogo de ida é na sexta, 27/11, às 20h, em Umuarama.\n\nIngressos no site do Pato Futsal e na Fato Store (Pato Branco Shopping), Loss Tecnologia e Farmácias Brava 24h e Norte.",
-      "rev": 2,
+      "rev": 3,
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/mtgcbh7vhfv3jefvz38e.jpg",
       "fonte": "https://www.instagram.com/patofutsaloficial/p/DgFwI9yEWbs/",
-      "ingressoUrl": "https://ingressos.patofutsal.com.br"
+      "ingressoUrl": "https://ingressos.patofutsal.com.br",
+      "generos": [
+        "Futsal"
+      ]
     }
   ]
 }

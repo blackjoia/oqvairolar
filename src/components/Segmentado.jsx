@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 
 // Seletor "um entre vários" com um destaque que desliza até a opção escolhida.
 // opcoes: [{ id, nome, curto?, n? }]
-export default function Segmentado({ opcoes, valor, onChange, rotulo }) {
+export default function Segmentado({ opcoes, valor, onChange, rotulo, cor, tinta }) {
   const trilho = useRef(null)
   const [ind, setInd] = useState(null)
   useLayoutEffect(() => {
@@ -20,12 +20,12 @@ export default function Segmentado({ opcoes, valor, onChange, rotulo }) {
       className="relative inline-flex shrink-0 items-center rounded-full bg-surface-2 p-1 ring-1 ring-inset ring-line">
       {ind && (
         <span aria-hidden className="segmento-ind absolute inset-y-1 left-0 rounded-full bg-brand shadow-[0_1px_2px_rgb(26_22_48/.2),0_6px_16px_-6px_var(--brand)]"
-          style={{ width: ind.w, transform: `translateX(${ind.x}px)` }} />
+          style={{ width: ind.w, transform: `translateX(${ind.x}px)`, ...(cor ? { background: cor, boxShadow: `0 1px 2px rgb(26 22 48/.2), 0 6px 16px -6px ${cor}` } : {}) }} />
       )}
       {opcoes.map((o) => {
         const on = o.id === valor
         return (
-          <button key={o.id} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} onClick={() => onChange(o.id)}
+          <button key={o.id} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} onClick={() => onChange(o.id)} style={on && tinta ? { color: tinta } : undefined}
             onKeyDown={(ev) => {
               const i = opcoes.findIndex((x) => x.id === valor)
               const d = ev.key === 'ArrowRight' || ev.key === 'ArrowDown' ? 1 : ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' ? -1 : 0
