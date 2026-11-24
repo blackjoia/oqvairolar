@@ -176,11 +176,12 @@
       "endereco": "Av. Tupi, 1509 · Brasília",
       "instagram": "krokodeckpb",
       "descricao": "Ingressos online pelo Cheers.",
-      "fonte": "https://www.instagram.com/krokodeckpb/",
+      "fonte": "https://www.instagram.com/krokodeckpb/p/Df0XmkJOVLw/",
       "semHora": true,
-      "rev": 4,
+      "rev": 5,
       "lat": -26.2186477,
-      "lng": -52.6728376
+      "lng": -52.6728376,
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/szoq1qzmnbotz2umersw.jpg"
     },
     {
       "id": "resenha-do-deck-kaique-e-felipe-pb-2026-12-05",
@@ -196,11 +197,12 @@
       "endereco": "Av. Tupi, 1509 · Brasília",
       "instagram": "krokodeckpb",
       "descricao": "Lote promocional liberado. Ingressos pelo Cheers.",
-      "fonte": "https://www.instagram.com/krokodeckpb/",
+      "fonte": "https://www.instagram.com/krokodeckpb/p/Df5mr0Ghojp/",
       "semHora": true,
-      "rev": 4,
+      "rev": 5,
       "lat": -26.2186477,
-      "lng": -52.6728376
+      "lng": -52.6728376,
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/lar9xbhtwc3dqh097uqp.jpg"
     }
   ]
 }
