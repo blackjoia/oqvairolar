@@ -59,12 +59,10 @@ export function SeletorCidade({ cidade, cidades, onEscolher }) {
   const [aberto, setAberto] = useState(false)
   return (
     <>
-      <button onClick={() => setAberto(true)} aria-haspopup="dialog"
-        className="inline-flex h-11 max-w-full items-center gap-2 rounded-full border-2 border-brand/30 bg-surface py-1 pl-3 pr-1.5 text-sm font-bold text-ink shadow-[var(--sombra-1)] hover:border-brand active:scale-[.98]">
-        <MapPin className="size-4 shrink-0 text-brand-ink" aria-hidden />
-        <span className="truncate uppercase tracking-wide">{cidade || 'Sudoeste do Paraná'}</span>
-        <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-brand px-2.5 py-1 text-xs font-extrabold text-on-brand">Trocar <ChevronDown className="size-3.5" aria-hidden /></span>
-        <span className="sr-only">: trocar de cidade</span>
+      <button onClick={() => setAberto(true)} aria-haspopup="dialog" className="link-toque -my-2 inline-flex max-w-full items-center gap-1.5 text-sm font-bold uppercase tracking-widest text-brand-ink">
+        <MapPin className="size-4 shrink-0" aria-hidden />
+        <span className="truncate">{cidade || 'Sudoeste do Paraná'}</span>
+        <span className="ml-1 inline-flex shrink-0 items-center gap-0.5 normal-case tracking-normal text-muted underline decoration-dotted underline-offset-4">Trocar cidade<ChevronDown className="size-3.5" aria-hidden /></span>
       </button>
       {aberto && (
         <Janela rotulo="Trocar de cidade" onFechar={() => setAberto(false)}>
