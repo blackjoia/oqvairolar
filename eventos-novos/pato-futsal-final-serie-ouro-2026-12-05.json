@@ -1,0 +1,19 @@
+{
+  "comum": {
+    "cidade": "Pato Branco",
+    "status": "publicado",
+    "origem": "importado",
+    "categoria": "esporte"
+  },
+  "eventos": [
+    {
+      "id": "pato-futsal-umuarama-final-serie-ouro-2026-12-05",
+      "titulo": "Final da Série Ouro: Pato Futsal x Umuarama",
+      "inicio": "2026-12-05T20:05:00-03:00",
+      "localNome": "Arena Cláudio Petrycoski",
+      "atracoes": ["Pato Futsal", "Umuarama Futsal"],
+      "descricao": "Jogo de volta da final do Campeonato Paranaense de Futsal Série Ouro 2026, decidido em Pato Branco. O jogo de ida é na sexta, 27/11, às 20h, em Umuarama.\n\nIngressos: confira os canais oficiais do Pato Futsal.",
+      "rev": 1
+    }
+  ]
+}
