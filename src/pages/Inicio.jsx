@@ -18,7 +18,8 @@ import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub, FIXOS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
 import { normalizar } from '../lib/parecidos'
-import { X, CalendarX2, Search, ArrowRight, WifiOff } from 'lucide-react'
+import { useMinhaPosicao, pedirLocalizacao, esquecerLocalizacao } from '../lib/distancia'
+import { X, CalendarX2, Search, Navigation, LoaderCircle, ArrowRight, WifiOff } from 'lucide-react'
 
 const DIAS = [
   { id: 'todos', nome: 'Tudo' },
@@ -33,6 +34,15 @@ export default function Inicio() {
   const [eventos, setEventos] = useState(null)
   const [erro, setErro] = useState('')
   const [semRede, setSemRede] = useState(false)
+  const pos = useMinhaPosicao()
+  const [buscandoLocal, setBuscandoLocal] = useState(false)
+  const [erroLocal, setErroLocal] = useState('')
+  async function pertoDeMim() {
+    setErroLocal('')
+    if (pos) { esquecerLocalizacao(); return }
+    setBuscandoLocal(true)
+    try { await pedirLocalizacao(); clique('perto-de-mim') } catch (x) { setErroLocal(x.message) } finally { setBuscandoLocal(false) }
+  }
   const [params, setParams] = useSearchParams()
   const dia = params.get('dia') || 'todos'
   // Cidade: a da URL (link compartilhado) vence; senão, a preferida deste aparelho.
@@ -179,6 +189,11 @@ export default function Inicio() {
               <Segmentado rotulo="Quando" valor={dia} onChange={(v) => setFiltro('dia', v)}
                 opcoes={DIAS.map((d) => ({ ...d, n: eventos ? contaDias[d.id] : null }))} />
             </Deslizar>
+            <button onClick={pertoDeMim} aria-pressed={!!pos} aria-label="Perto de mim: mostrar a distância até cada evento"
+              className={`ferramenta ${pos ? 'ferramenta-on' : ''}`}>
+              {buscandoLocal ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <Navigation className="size-4" aria-hidden />}
+              <span className="hidden sm:inline">Perto de mim</span>
+            </button>
           </div>
 
           <Deslizar className="mt-3 -mb-1">
@@ -193,6 +208,7 @@ export default function Inicio() {
             </Deslizar>
           )}
 
+          {erroLocal && <p className="mt-2 text-xs text-danger">{erroLocal}</p>}
 
           {nExtras > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
