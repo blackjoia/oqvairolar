@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { MapPin, PartyPopper, Check } from 'lucide-react'
 import { useMinhaPresencaNaLista, alternarEuVou, ajusteVao } from '../lib/presenca'
+import { exigirConta } from '../lib/conta'
+import { avisar } from './Aviso'
 import Cartaz from './Cartaz'
+import { useAuth } from '../lib/auth'
 import { diaMes, mesCurto, hora, horaDe, rotuloDia, situacao } from '../lib/datas'
 import { km, textoDistancia, useMinhaPosicao } from '../lib/distancia'
 import { bombando } from '../lib/alta'
@@ -17,13 +20,19 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
   const preco = e.gratuito ? 'Grátis' : e.preco
   const agora = situacao(e)?.tipo === 'agora'
   // Rostos só para quem entrou com a conta (o mesmo combinado da página do evento); sem conta, só o número.
-  const minha = useMinhaPresencaNaLista(e.id)
+  const { user } = useAuth() || {}
+  const minha = useMinhaPresencaNaLista(e.id, user?.uid)
   // O número do card vem do robô (a cada 10 min); soma a marcação feita agora para a pessoa ver na hora.
   const vaoTela = Math.max(0, (e.vao || 0) + ajusteVao(e.id))
   // Rosto e nome só de amigos; de quem não é amigo, só o número.
   const { rostos, texto: quemVai } = useQuemVai({ ...e, vao: vaoTela })
   const passou = situacao(e)?.tipo === 'passou'
-  const euVou = (x) => { x.preventDefault(); x.stopPropagation(); alternarEuVou(e.id) }
+  const euVou = async (x) => {
+    x.preventDefault(); x.stopPropagation()
+    // "Eu vou" só com conta: sem conta, abre o login do Google e marca em seguida.
+    try { if (await exigirConta()) { const r = await alternarEuVou(e.id); if (r.novo === 'vou') avisar('Marcado! Está nos seus rolês.') } }
+    catch (err) { avisar(err.message) }
+  }
   return (
     <Link to={`/evento/${e.id}`} style={style}
       className={`card-evento group flex overflow-hidden rounded-2xl border border-line bg-surface hover:border-brand/40 ${grande ? 'col-span-2 flex-col sm:flex-row md:col-span-3' : 'flex-col'} ${className}`}>

@@ -49,8 +49,8 @@ async function carregarMinhas() {
     mapa = new Map(s.docs.map((d) => [d.data().eventoId, d.data().tipo])); avisar()
   } catch { carregadoPara = null }
 }
-export function useMinhaPresencaNaLista(eventoId) {
-  useEffect(() => { carregarMinhas() }, [])
+export function useMinhaPresencaNaLista(eventoId, uid) {
+  useEffect(() => { carregarMinhas() }, [uid])
   return useSyncExternalStore((f) => { ouvintes.add(f); return () => ouvintes.delete(f) }, () => mapa.get(eventoId) || null)
 }
 export const ajusteVao = (eventoId) => ajuste.get(eventoId) || 0
