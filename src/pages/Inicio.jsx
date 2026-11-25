@@ -9,7 +9,7 @@ import { RANKING_LIGADO } from '../lib/recursos'
 import Segmentado from '../components/Segmentado'
 import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
-import HojeANoite from '../components/HojeANoite'
+// import HojeANoite from '../components/HojeANoite' // desativado por enquanto (25/11)
 import EmAlta from '../components/EmAlta'
 import { PrimeiraCidade, SeletorCidade } from '../components/EscolherCidade'
 import { useCidadePreferida, definirCidade } from '../lib/cidade'
@@ -178,7 +178,7 @@ export default function Inicio() {
         </section>
 
         {eventos && !temFiltro && (<>
-          <HojeANoite eventos={naCidade} />
+          {/* "Hoje à noite" desativado por enquanto (Luis, 25/11). Para voltar: <HojeANoite eventos={naCidade} /> */}
           <EmAlta eventos={naCidade} />
         </>)}
         {perguntarCidade && <PrimeiraCidade cidades={cidades} onEscolher={escolherCidade} />}
