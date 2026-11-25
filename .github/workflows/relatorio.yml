@@ -1,0 +1,32 @@
+name: relatorio
+on:
+  push:
+    branches: ['relatorio/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  relatorio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Chave do Firebase
+        env:
+          CHAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$CHAVE" > "$RUNNER_TEMP/chave.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
+      - run: node scripts/relatorio.mjs
+      - name: Publicar o relatório no commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api repos/${{ github.repository }}/commits/${{ github.sha }}/comments -F body=@relatorio.md
+      - name: Apagar a chave
+        if: always()
+        run: rm -f "$RUNNER_TEMP/chave.json"
