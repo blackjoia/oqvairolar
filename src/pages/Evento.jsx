@@ -60,11 +60,15 @@ export default function Evento() {
     else setRostos([])
   }, [id, user?.uid])
   const presenca = async (tipo) => {
+    // "Eu vou" só com conta (decisão do Luis, 25/11). "Tenho interesse" continua sem conta.
+    if (tipo === 'vou' && minha !== 'vou') {
+      try { if (!(await (await import('../lib/conta')).exigirConta())) return } catch (x) { setAviso(x.message); return }
+    }
     const novo = minha === tipo ? null : tipo
     setContagem((c) => ({ ...c, ...(minha ? { [minha]: Math.max(0, c[minha] - 1) } : {}), ...(novo ? { [novo]: (minha === novo ? c[novo] : c[novo] + 1) } : {}) }))
     setMinha(novo)
     try { await marcarPresenca(id, novo, usuario?.publico) } catch { /* sem internet: fica só local */ }
-    if (novo && !usuario) setAviso('Entre com o Google para guardar nos seus rolês e ver em qualquer aparelho.')
+    if (novo === 'interesse' && !usuario) setAviso('Entre com o Google para guardar nos seus rolês e ver em qualquer aparelho.')
     if (usuario?.publico) import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
   }
 
