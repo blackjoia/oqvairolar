@@ -4,8 +4,28 @@
       "collectionGroup": "eventos",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "inicio", "order": "ASCENDING" }
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "inicio",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "usuarios",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "busca",
+          "order": "ASCENDING"
+        }
       ]
     }
   ],

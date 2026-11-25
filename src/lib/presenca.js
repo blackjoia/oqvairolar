@@ -1,5 +1,5 @@
 // "Eu vou" e "Tenho interesse": sem conta, um registro por aparelho e evento.
-import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where, getCountFromServer, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where, serverTimestamp } from 'firebase/firestore'
 import { useEffect, useSyncExternalStore } from 'react'
 import { db, auth } from './firebase'
 import { clique } from './visitas'
@@ -17,11 +17,9 @@ export async function minhaPresenca(eventoId) {
   try { const s = await getDoc(r); return s.exists() ? s.data().tipo : null } catch { return null }
 }
 
-export async function contarPresencas(eventoId) {
-  const c = (tipo) => getCountFromServer(query(collection(db, 'presencas'), where('eventoId', '==', eventoId), where('tipo', '==', tipo)))
-    .then((s) => s.data().count).catch(() => 0)
-  const [vou, interesse] = await Promise.all([c('vou'), c('interesse')])
-  return { vou, interesse }
+// Os números vêm do robô (scripts/contagens.mjs), gravados no evento: as marcações de cada pessoa são privadas.
+export function contarPresencas(evento) {
+  return { vou: evento?.vao || 0, interesse: evento?.interesse || 0 }
 }
 
 // tipo: 'vou' | 'interesse' | null (desmarcar). publico: a pessoa aparece em "quem vai".
@@ -46,7 +44,8 @@ async function carregarMinhas() {
   carregadoPara = v
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return
   try {
-    const s = await getDocs(query(collection(db, 'presencas'), where('visitante', '==', v)))
+    // Com conta, busca pelo uid (as regras só liberam as marcações da própria conta e dos amigos).
+    const s = await getDocs(query(collection(db, 'presencas'), contaGoogle() ? where('uid', '==', v) : where('visitante', '==', v)))
     mapa = new Map(s.docs.map((d) => [d.data().eventoId, d.data().tipo])); avisar()
   } catch { carregadoPara = null }
 }

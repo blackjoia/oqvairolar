@@ -4,11 +4,11 @@ import { useMinhaPresencaNaLista, alternarEuVou, ajusteVao } from '../lib/presen
 import { exigirConta } from '../lib/conta'
 import { avisar } from './Aviso'
 import Cartaz from './Cartaz'
+import { useAuth } from '../lib/auth'
 import { diaMes, mesCurto, hora, horaDe, rotuloDia, situacao } from '../lib/datas'
 import { km, textoDistancia, useMinhaPosicao } from '../lib/distancia'
-import { useAuth } from '../lib/auth'
 import { bombando } from '../lib/alta'
-import Rostos, { textoQuemVai, veRostos } from './Rostos'
+import Rostos, { useQuemVai } from './Rostos'
 import Bombando from './Bombando'
 
 // soHora: a lista já está agrupada por dia, então o card mostra só a hora.
@@ -19,13 +19,13 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
   const dist = textoDistancia(km(pos, e))
   const preco = e.gratuito ? 'Grátis' : e.preco
   const agora = situacao(e)?.tipo === 'agora'
-  const { user } = useAuth() || {}
   // Rostos só para quem entrou com a conta (o mesmo combinado da página do evento); sem conta, só o número.
-  const rostos = veRostos(user) ? (e.rostos || []) : []
+  const { user } = useAuth() || {}
   const minha = useMinhaPresencaNaLista(e.id, user?.uid)
   // O número do card vem do robô (a cada 10 min); soma a marcação feita agora para a pessoa ver na hora.
   const vaoTela = Math.max(0, (e.vao || 0) + ajusteVao(e.id))
-  const quemVai = textoQuemVai({ ...e, vao: vaoTela }, rostos.length > 0)
+  // Rosto e nome só de amigos; de quem não é amigo, só o número.
+  const { rostos, texto: quemVai } = useQuemVai({ ...e, vao: vaoTela })
   const passou = situacao(e)?.tipo === 'passou'
   const euVou = async (x) => {
     x.preventDefault(); x.stopPropagation()

@@ -109,8 +109,18 @@ service cloud.firestore {
         && (d.get('perfil', null) == null || d.perfil is bool)
         && exists(/databases/$(database)/documents/eventos/$(d.eventoId));
     }
+    // Quem vai em qual rolê é privado: cada um vê as próprias marcações e as dos amigos.
+    // Marcações sem conta (código do aparelho, até 20 letras) continuam legíveis para trazer para a conta.
+    // As contagens dos eventos vêm do robô (scripts/contagens.mjs).
+    function amigoAceito(uid) {
+      return request.auth != null && uid is string
+        && get(/databases/$(database)/documents/amizades/$(par(request.auth.uid, uid))).data.status == 'aceita';
+    }
     match /presencas/{id} {
-      allow read: if true;
+      allow read: if resource.data.visitante.size() <= 20
+        || (request.auth != null && resource.data.get('uid', null) == request.auth.uid)
+        || amigoAceito(resource.data.get('uid', null))
+        || isAdmin();
       allow create: if presencaValida(id);
       allow update: if presencaValida(id)
         && (resource.data.get('uid', null) == null || dono(resource.data.uid));
@@ -126,13 +136,71 @@ service cloud.firestore {
         && request.resource.data.cidade is string && request.resource.data.cidade.size() <= 60;
     }
 
+    // Id da amizade entre duas contas: os dois uids em ordem, separados por _.
+    function par(a, b) {
+      return a < b ? a + '_' + b : b + '_' + a;
+    }
+    // Amigos (ou quem trocou pedido de amizade) se veem, mesmo com o perfil fechado.
+    function amigoOuPedido(uid) {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/amizades/$(par(request.auth.uid, uid)));
+    }
+
     match /usuarios/{uid} {
-      allow read: if resource.data.publico == true || dono(uid) || isAdmin();
+      allow read: if resource.data.publico == true || dono(uid) || isAdmin() || amigoOuPedido(uid);
       allow create, update: if dono(uid)
-        && request.resource.data.keys().hasOnly(['nome', 'foto', 'publico', 'criadoEm', 'atualizadoEm'])
+        && request.resource.data.keys().hasOnly(['nome', 'busca', 'foto', 'publico', 'criadoEm', 'atualizadoEm'])
+        && (!('busca' in request.resource.data) || (request.resource.data.busca is string && request.resource.data.busca.size() <= 60))
         && request.resource.data.nome is string && request.resource.data.nome.size() <= 60
         && request.resource.data.foto is string && request.resource.data.foto.size() <= 500
         && request.resource.data.publico is bool;
+    }
+
+    // Amizade entre duas contas (id = os dois uids em ordem). Quem pede cria como pendente;
+    // só quem recebeu aceita; qualquer um dos dois recusa, cancela ou desfaz (apaga).
+    match /amizades/{id} {
+      allow read: if request.auth != null && request.auth.uid in resource.data.uids;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['uids', 'de', 'para', 'status', 'em'])
+        && request.resource.data.de == request.auth.uid
+        && request.resource.data.para is string && request.resource.data.para.size() > 0 && request.resource.data.para.size() <= 128
+        && request.resource.data.para != request.auth.uid
+        && id == par(request.auth.uid, request.resource.data.para)
+        && request.resource.data.uids == (request.auth.uid < request.resource.data.para
+          ? [request.auth.uid, request.resource.data.para] : [request.resource.data.para, request.auth.uid])
+        && request.resource.data.status == 'pendente'
+        && request.resource.data.em == request.time
+        && exists(/databases/$(database)/documents/usuarios/$(request.resource.data.para));
+      allow update: if request.auth != null
+        && resource.data.status == 'pendente'
+        && resource.data.para == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'aceitaEm'])
+        && request.resource.data.status == 'aceita'
+        && request.resource.data.aceitaEm == request.time;
+      allow delete: if request.auth != null && request.auth.uid in resource.data.uids;
+    }
+
+    // "Bora?": convite de um amigo para um evento. id = eventoId_de_para.
+    // Só entre amigos (amizade aceita) e para evento publicado. Quem recebeu marca como visto.
+    match /convites/{id} {
+      allow read: if request.auth != null
+        && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['eventoId', 'de', 'para', 'visto', 'em'])
+        && request.resource.data.de == request.auth.uid
+        && request.resource.data.para is string && request.resource.data.para != request.auth.uid
+        && request.resource.data.eventoId is string && request.resource.data.eventoId.size() <= 120
+        && id == request.resource.data.eventoId + '_' + request.auth.uid + '_' + request.resource.data.para
+        && request.resource.data.visto == false
+        && request.resource.data.em == request.time
+        && get(/databases/$(database)/documents/eventos/$(request.resource.data.eventoId)).data.status == 'publicado'
+        && get(/databases/$(database)/documents/amizades/$(par(request.auth.uid, request.resource.data.para))).data.status == 'aceita';
+      allow update: if request.auth != null
+        && resource.data.para == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visto'])
+        && request.resource.data.visto == true;
+      allow delete: if request.auth != null
+        && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
     }
 
     // Página oficial de um bar ou banda: quem cuida dela (donos) é definido pelo admin.
@@ -189,6 +257,11 @@ service cloud.firestore {
       allow read, delete: if (request.auth != null && resource.data.uid == request.auth.uid) || isAdmin();
     }
     // Ranking do mês, montado pelo robô. Todo mundo lê, ninguém escreve pelo site.
+    // Sugestões de amigos ("Talvez você conheça"), montadas pelo robô. Só a própria pessoa lê.
+    match /sugestoes/{uid} {
+      allow read: if dono(uid);
+      allow write: if false;
+    }
     match /ranking/{mes} {
       allow read: if true;
       allow write: if false;
