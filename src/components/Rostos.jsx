@@ -15,14 +15,14 @@ export default function Rostos({ lista = [], max = 3, tamanho = 'size-6', anel =
   )
 }
 
-// Com amigos: "Ana vai" · "Ana e mais 4 vão". Sem amigos: só o número ("5 marcaram que vão").
+// Com amigos: "Ana vai" · "Ana e mais 4 vão". Sem amigos: só o número ("5 pessoas marcaram Eu vou").
 // Rosto e nome são só de amigos (Luis, 25/11): de quem não é amigo aparece só a contagem.
 export function textoQuemVai(e, comNomes) {
   const n = e.vao || 0
   if (!n) return ''
   const r = e.rostos || []
   if (comNomes && r.length) return n === 1 ? `${r[0].nome} vai` : `${r[0].nome} e mais ${n - 1} vão`
-  return n === 1 ? '1 pessoa marcou que vai' : `${n} marcaram que vão`
+  return n === 1 ? '1 pessoa marcou Eu vou' : `${n} pessoas marcaram Eu vou`
 }
 
 // Rostos e texto de "quem vai" de um card: só os amigos aparecem com rosto (anel limão).

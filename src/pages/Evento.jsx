@@ -60,7 +60,7 @@ export default function Evento() {
   }
   useEffect(() => {
     if (id.endsWith('-demo')) return
-    minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
+    minhaPresenca(id).then(setMinha)
     // "Quem vai" só aparece para quem entrou com a conta
   }, [id, user?.uid])
   const presenca = async (tipo) => {
@@ -72,7 +72,7 @@ export default function Evento() {
   }
 
   useEffect(() => {
-    buscarEvento(id).then(setE).catch(() => setE(null))
+    buscarEvento(id).then((ev) => { setE(ev); setContagem(contarPresencas(ev)) }).catch(() => setE(null))
   }, [id, isAdmin])
 
   useEffect(() => {

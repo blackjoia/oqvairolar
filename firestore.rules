@@ -109,8 +109,18 @@ service cloud.firestore {
         && (d.get('perfil', null) == null || d.perfil is bool)
         && exists(/databases/$(database)/documents/eventos/$(d.eventoId));
     }
+    // Quem vai em qual rolê é privado: cada um vê as próprias marcações e as dos amigos.
+    // Marcações sem conta (código do aparelho, até 20 letras) continuam legíveis para trazer para a conta.
+    // As contagens dos eventos vêm do robô (scripts/contagens.mjs).
+    function amigoAceito(uid) {
+      return request.auth != null && uid is string
+        && get(/databases/$(database)/documents/amizades/$(par(request.auth.uid, uid))).data.status == 'aceita';
+    }
     match /presencas/{id} {
-      allow read: if true;
+      allow read: if resource.data.visitante.size() <= 20
+        || (request.auth != null && resource.data.get('uid', null) == request.auth.uid)
+        || amigoAceito(resource.data.get('uid', null))
+        || isAdmin();
       allow create: if presencaValida(id);
       allow update: if presencaValida(id)
         && (resource.data.get('uid', null) == null || dono(resource.data.uid));
@@ -247,6 +257,11 @@ service cloud.firestore {
       allow read, delete: if (request.auth != null && resource.data.uid == request.auth.uid) || isAdmin();
     }
     // Ranking do mês, montado pelo robô. Todo mundo lê, ninguém escreve pelo site.
+    // Sugestões de amigos ("Talvez você conheça"), montadas pelo robô. Só a própria pessoa lê.
+    match /sugestoes/{uid} {
+      allow read: if dono(uid);
+      allow write: if false;
+    }
     match /ranking/{mes} {
       allow read: if true;
       allow write: if false;

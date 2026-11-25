@@ -85,15 +85,9 @@ export async function convitesRecebidos(eu) {
 export const marcarConviteVisto = (id) => updateDoc(doc(db, 'convites', id), { visto: true })
 export const apagarConvite = (id) => deleteDoc(doc(db, 'convites', id))
 
-// ---------- sugestões: quem marcou Eu vou nos mesmos eventos que eu ----------
+// ---------- sugestões: quem marcou Eu vou nos mesmos rolês (montado pelo robô em sugestoes/{uid}) ----------
 export async function sugestoes(eu, excluir = []) {
-  const minhas = await getDocs(query(collection(db, 'presencas'), where('uid', '==', eu), where('tipo', '==', 'vou'))).catch(() => null)
-  const evs = (minhas?.docs || []).map((d) => d.data().eventoId).slice(-30)
-  if (!evs.length) return []
-  const snap = await getDocs(query(collection(db, 'presencas'), where('eventoId', 'in', evs), where('tipo', '==', 'vou'), where('perfil', '==', true))).catch(() => null)
-  const fora = new Set([eu, ...excluir]), conta = {}
-  snap?.docs.forEach((d) => { const u = d.data().uid; if (u && !fora.has(u)) conta[u] = (conta[u] || 0) + 1 })
-  const top = Object.entries(conta).sort((a, b) => b[1] - a[1]).slice(0, 6)
-  const us = await Promise.all(top.map(async ([uid, n]) => { const u = await buscarUsuario(uid); return u?.publico ? { ...u, emComum: n } : null }))
-  return us.filter(Boolean)
+  const s = await getDoc(doc(db, 'sugestoes', eu)).catch(() => null)
+  const fora = new Set(excluir)
+  return (s?.exists() ? s.data().lista || [] : []).filter((u) => !fora.has(u.uid))
 }
