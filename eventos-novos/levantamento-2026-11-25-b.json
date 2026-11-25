@@ -1,0 +1,201 @@
+{
+  "comum": {
+    "status": "publicado",
+    "origem": "importado"
+  },
+  "remover": [
+    "casinha-papai-noel-natal-iluminado-dv-2026-11-30"
+  ],
+  "eventos": [
+    {
+      "id": "baile-linha-guarani-geracao-campeira-2026-11-28",
+      "titulo": "Baile de Casais e Família com Grupo Geração Campeira",
+      "atracoes": [
+        "Grupo Geração Campeira"
+      ],
+      "localNome": "Comunidade Linha Guarani (São João Batista)",
+      "inicio": "2026-11-28T22:00:00-03:00",
+      "fim": "2026-11-29T03:00:00-03:00",
+      "preco": "Casal: R$ 60 antecipado, R$ 80 na hora",
+      "ingressoUrl": "https://www.sympla.com.br/evento/baile-de-casais-e-familia-linha-guarani/3655723",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/y7jr2nqvgmbeaqaqsbe8.jpg",
+      "descricao": "Pela primeira vez na Comunidade Linha Guarani, o Grupo Geração Campeira, num baile para dançar juntinho. Realização JB Eventos e Maly Digital.",
+      "fonte": "https://www.sympla.com.br/evento/baile-de-casais-e-familia-linha-guarani/3655723",
+      "cidade": "Quedas do Iguaçu",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ]
+    },
+    {
+      "id": "domingao-grupo-festere-chacara-belusso-2026-11-29",
+      "titulo": "Domingão com Grupo Festerê",
+      "atracoes": [
+        "Grupo Festerê"
+      ],
+      "inicio": "2026-11-29T16:00:00-03:00",
+      "fim": "2026-11-29T20:00:00-03:00",
+      "preco": "Bistrô R$ 57 (reserva)",
+      "ingressoUrl": "https://www.sympla.com.br/evento/domingao-grupo-festerre/3655719",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/zl8flyeza5sd8j6pkfmb.jpg",
+      "descricao": "Domingão com o Grupo Festerê, das 16h às 20h. Reservas de bistrô pelo Sympla. Realização JB Eventos e Maly Digital.",
+      "fonte": "https://www.sympla.com.br/evento/domingao-grupo-festerre/3655719",
+      "localNome": "Clube Chácara Belusso",
+      "lat": -25.4673944,
+      "lng": -52.9074855,
+      "cidade": "Quedas do Iguaçu",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ]
+    },
+    {
+      "id": "bailao-da-jb-tramela-quedas-2026-12-12",
+      "titulo": "Bailão da JB com Tramela",
+      "atracoes": [
+        "Tramela"
+      ],
+      "localNome": "Associação dos Motoristas de Quedas do Iguaçu",
+      "lat": -25.4408598,
+      "lng": -52.8863166,
+      "inicio": "2026-12-12T22:30:00-03:00",
+      "fim": "2026-12-13T03:00:00-03:00",
+      "preco": "R$ 30 (mesa R$ 57)",
+      "ingressoUrl": "https://www.sympla.com.br/evento/bailao-da-jb-tramela/3655728",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/fxufmuacbc4tdhqoxyf6.jpg",
+      "descricao": "Bailão com a banda Tramela. Ingresso e mesas pelo Sympla. Realização JB Eventos e Maly Digital.",
+      "fonte": "https://www.sympla.com.br/evento/bailao-da-jb-tramela/3655728",
+      "cidade": "Quedas do Iguaçu",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ]
+    },
+    {
+      "id": "matine-de-natal-som-sete-chacara-belusso-2026-12-25",
+      "titulo": "Matinê de Natal com Som Sete",
+      "atracoes": [
+        "Som Sete"
+      ],
+      "inicio": "2026-12-25T16:00:00-03:00",
+      "fim": "2026-12-25T20:00:00-03:00",
+      "preco": "Bistrô R$ 57 (reserva)",
+      "ingressoUrl": "https://www.sympla.com.br/evento/matine-de-natal/3655732",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/ofwyixzz9mw2fukwlrdb.jpg",
+      "descricao": "Matinê de Natal com a banda Som Sete, das 16h às 20h. Antecipados no Posto Petrobras ou no site da JB; reservas de bistrô pelo Sympla.",
+      "fonte": "https://www.sympla.com.br/evento/matine-de-natal/3655732",
+      "localNome": "Clube Chácara Belusso",
+      "lat": -25.4673944,
+      "lng": -52.9074855,
+      "cidade": "Quedas do Iguaçu",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ]
+    },
+    {
+      "id": "varzeano-beltrao-semifinais-volta-2026-11-29",
+      "titulo": "Varzeano de Beltrão: semifinais (volta)",
+      "categoria": "esporte",
+      "generos": [
+        "Futebol"
+      ],
+      "atracoes": [
+        "Ipiranga do Jacaré",
+        "Novo Mundo",
+        "Vitral Sul",
+        "Gaúcha"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Estádio Anilado (Clube Esportivo União)",
+      "endereco": "R. Ponta Grossa · Alvorada",
+      "lat": -26.0822783,
+      "lng": -53.0591369,
+      "inicio": "2026-11-29T15:00:00-03:00",
+      "semHora": true,
+      "descricao": "Jogos de volta das semifinais da 1ª Divisão do Campeonato Varzeano de Francisco Beltrão: Ipiranga do Jacaré x Novo Mundo (ida 3 a 1 para o Ipiranga) e Vitral Sul x Gaúcha (ida 2 a 0 para a Vitral). Quem venceu a ida pode perder por até um gol; vitória por dois gols leva aos pênaltis.",
+      "fonte": "https://jornaldebeltrao.com.br/esporte/varzeano/ipiranga-do-jacare-e-vitral-abrem-vantagem-por-vaga-na-final-do-varzeano/"
+    },
+    {
+      "id": "night-run-ampere-2026-11-28",
+      "titulo": "1ª Night Run Ampére",
+      "categoria": "esporte",
+      "generos": [
+        "Corrida de rua",
+        "Caminhada"
+      ],
+      "cidade": "Ampére",
+      "localNome": "Praça Central",
+      "endereco": "R. XV de Novembro · Centro",
+      "inicio": "2026-11-28T19:30:00-03:00",
+      "preco": "Corrida a partir de R$ 89,90; caminhada grátis",
+      "descricao": "Corrida noturna de 5 km e caminhada de 2,5 km, com largada às 19h30 na Praça Central e premiação às 20h30. Entrega de kits no mesmo local, das 14h às 18h30. Organização Quedas Adventure; inscrições em quedasadventure.com.br.",
+      "fonte": "https://corridasnarua.com.br/corrida/1a-night-run-ampere-parana-2026/"
+    },
+    {
+      "id": "corrida-kids-jojoca-pato-branco-2026-11-28",
+      "titulo": "2ª Corrida Kids Jojoca",
+      "categoria": "esporte",
+      "generos": [
+        "Corrida de rua"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Pato Branco (local na página de inscrição)",
+      "inicio": "2026-11-28T15:30:00-03:00",
+      "preco": "Kit atleta R$ 49,90",
+      "ingressoUrl": "https://app.sprinta.com.br/e/2-corrida-kids-jojoca_223e",
+      "descricao": "Corrida do Projeto Jojoca para crianças de 1 a 13 anos, com percursos de 30 a 400 metros por faixa de idade. Largada às 15h30.",
+      "fonte": "https://corridasnarua.com.br/corrida/2o-corrida-kids-jojoca-pato-branco-2026/"
+    },
+    {
+      "id": "corrida-sicredi-sem-fronteiras-capanema-2026-11-29",
+      "titulo": "Corrida Sicredi sem Fronteiras",
+      "categoria": "esporte",
+      "generos": [
+        "Corrida de rua",
+        "Caminhada"
+      ],
+      "cidade": "Capanema",
+      "localNome": "Capanema (largada no regulamento)",
+      "inicio": "2026-11-29T07:00:00-03:00",
+      "ingressoUrl": "https://www.paguecorridas.com.br/inscricao-select/8258/corrida-sicredi-sem-fronteiras-capanema-2026",
+      "descricao": "Corrida de 5 e 10 km, caminhada de 3 km e corrida kids, com largada às 7h. Kits no sábado (28/11), das 10h às 17h, na sede da Sicredi Fronteiras (Rua Tamoios, 1567, Centro). Associados Sicredi Fronteiras têm 20% de desconto.",
+      "fonte": "https://roadrunners.run/evento/2026-corrida-sicredi-sem-fronteiras-capanema-2026/"
+    },
+    {
+      "id": "corrida-pela-vida-francisco-beltrao-2026-12-06",
+      "titulo": "2ª Corrida pela Vida",
+      "categoria": "esporte",
+      "generos": [
+        "Corrida de rua",
+        "Caminhada"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Acefb",
+      "endereco": "R. Peru, 1213 · Luther King",
+      "lat": -26.0693491,
+      "lng": -53.0376507,
+      "inicio": "2026-12-06T07:00:00-03:00",
+      "preco": "R$ 125 (solidária R$ 99 com cupom SOLIDARIO + brinquedo)",
+      "ingressoUrl": "https://quedasadventure.com.br",
+      "descricao": "Corrida de 5 km e caminhada de 3 km do Núcleo Vida da Acefb, a partir de 14 anos, com categoria PCD. Largada às 7h em frente à Acefb; 600 vagas, inscrições até 1º/12.\n\nNa inscrição solidária, use o cupom SOLIDARIO e entregue um brinquedo na retirada do kit. Kits no sábado (5/12), das 10h às 16h, no Parque de Exposições.",
+      "fonte": "https://diariodosudoeste.com.br/corrida-pela-vida-de-francisco-beltrao-segue-com-inscricoes/"
+    },
+    {
+      "id": "corrida-kids-pela-vida-francisco-beltrao-2026-12-05",
+      "pai": "corrida-pela-vida-francisco-beltrao-2026-12-06",
+      "titulo": "Corrida Kids da Corrida pela Vida",
+      "categoria": "esporte",
+      "generos": [
+        "Corrida de rua"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Francisco Beltrão (local a confirmar)",
+      "inicio": "2026-12-05T16:30:00-03:00",
+      "preco": "R$ 60 (quase esgotada)",
+      "ingressoUrl": "https://quedasadventure.com.br",
+      "descricao": "Corrida infantil com percursos por idade e 50 vagas. Inscrição com camiseta, número de peito e medalha.",
+      "fonte": "https://diariodosudoeste.com.br/corrida-pela-vida-de-francisco-beltrao-segue-com-inscricoes/"
+    }
+  ]
+}

@@ -21,7 +21,11 @@
       "instagram": "balkenbar",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
       "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
-      "categoria": "musica"
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
     },
     {
       "id": "natal-das-estrelas-francisco-beltrao-2026-11-27",
@@ -94,7 +98,11 @@
       "instagram": "balkenbar",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
       "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
-      "categoria": "musica"
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
     },
     {
       "id": "os-jardineiros-patio-barley-2026-11-28",
@@ -153,7 +161,11 @@
       "instagram": "balkenbar",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
       "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
-      "categoria": "musica"
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
     },
     {
       "id": "marreco-x-sao-lourenco-play-out-lnf-2026-11-29",
@@ -258,12 +270,14 @@
       ],
       "cidade": "Pato Branco",
       "localNome": "Praça Presidente Vargas",
-      "inicio": "2026-11-21T20:00:00-03:00",
+      "inicio": "2026-11-25T20:00:00-03:00",
       "fim": "2026-12-24T22:00:00-03:00",
       "gratuito": true,
       "preco": "Entrada gratuita",
-      "descricao": "O Natal da Prefeitura de Pato Branco: shows culturais na Praça Presidente Vargas de quarta a domingo, até 24/12.\n\nNatal Itinerante: Zona Sul (sáb, 5/12), Zona Norte (dom, 6/12), São Roque do Chopim (dom, 13/12) e Centro (seg, 14/12, aniversário da cidade, com a Banda da Polícia Militar).",
-      "fonte": "https://diariodosudoeste.com.br/programacao-de-natal-de-pato-branco-vai-ate-24-de-dezembro/"
+      "descricao": "O Natal da Prefeitura de Pato Branco: shows culturais na Praça Presidente Vargas de quarta a domingo, até 24/12. A abertura foi em 21/11.\n\nNatal Itinerante: Zona Sul (sáb, 5/12), Zona Norte (dom, 6/12), São Roque do Chopim (dom, 13/12) e Centro (seg, 14/12, aniversário da cidade, com a Banda da Polícia Militar).",
+      "fonte": "https://diariodosudoeste.com.br/programacao-de-natal-de-pato-branco-vai-ate-24-de-dezembro/",
+      "semHora": true,
+      "rev": 2
     },
     {
       "id": "banda-pm-aniversario-pato-branco-2026-12-14",
@@ -418,14 +432,17 @@
       ],
       "cidade": "Pato Branco",
       "localNome": "Palace",
-      "endereco": "R. Farrapos, 555",
+      "endereco": "R. Farrapos, 555 · Centro",
       "inicio": "2026-12-05T22:00:00-03:00",
       "fim": "2026-12-06T06:00:00-03:00",
       "preco": "Lote promocional R$ 30 + taxa",
       "ingressoUrl": "https://www.sympla.com.br/evento/electronic-sessions-devochka/3663453",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/pexrcywjvxgusdg8a1db.png",
       "descricao": "A Electronic Sessions recebe DEVOCHKA, DJ mineira que já tocou no Lollapalooza, no Rock in Rio e no LoveBase, em Berlim, e é autora de \"Aladin\". Produção Souch Artist.",
-      "fonte": "https://www.sympla.com.br/evento/electronic-sessions-devochka/3663453"
+      "fonte": "https://www.sympla.com.br/evento/electronic-sessions-devochka/3663453",
+      "lat": -26.221805,
+      "lng": -52.6793049,
+      "rev": 2
     },
     {
       "id": "fatsync-kroko-deck-pb-2026-12-13",
@@ -451,23 +468,6 @@
       "instagram": "krokodeckpb"
     },
     {
-      "id": "casinha-papai-noel-natal-iluminado-dv-2026-11-30",
-      "titulo": "Casinha do Papai Noel · Natal Iluminado",
-      "categoria": "outros",
-      "generos": [
-        "Natal",
-        "Infantil"
-      ],
-      "cidade": "Dois Vizinhos",
-      "localNome": "Praça da Imaculada (Matriz)",
-      "inicio": "2026-11-30T18:30:00-03:00",
-      "fim": "2026-12-23T22:00:00-03:00",
-      "gratuito": true,
-      "preco": "Entrada gratuita",
-      "descricao": "O Papai Noel recebe as famílias na casinha da praça todos os dias, das 18h30 às 22h, no \"Um Sonho de Natal\" da Prefeitura de Dois Vizinhos. A data de encerramento ainda não foi divulgada.",
-      "fonte": "https://diariodosudoeste.com.br/dois-vizinhos-abre-natal-iluminado-com-chegada-do-papai-noel/"
-    },
-    {
       "id": "perola-negra-leo-soares-estacao-caldeirao-dv-2026-12-05",
       "titulo": "Pérola Negra 24 anos + Léo Soares & Banda",
       "atracoes": [
@@ -485,7 +485,11 @@
       "categoria": "musica",
       "generos": [
         "Bailão"
-      ]
+      ],
+      "endereco": "Rua Celeste Mazurana · Santa Luzia (saída para a Linha Fazenda)",
+      "lat": -25.7501449,
+      "lng": -53.0749969,
+      "rev": 2
     },
     {
       "id": "vespera-de-natal-estacao-caldeirao-dv-2026-12-24",
@@ -505,7 +509,11 @@
       "categoria": "musica",
       "generos": [
         "Bailão"
-      ]
+      ],
+      "endereco": "Rua Celeste Mazurana · Santa Luzia (saída para a Linha Fazenda)",
+      "lat": -25.7501449,
+      "lng": -53.0749969,
+      "rev": 2
     },
     {
       "id": "fepart-realeza-2026-11-27",
