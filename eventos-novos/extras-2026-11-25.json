@@ -43,10 +43,11 @@
       "lng": -53.053133,
       "instagram": "formosapub",
       "inicio": "2026-12-05T20:30:00-03:00",
-      "semHora": true,
+      "semHora": false,
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/ajhs78c2mrgx3b7enj1v.jpg",
       "descricao": "O tradicional show de Natal da The Underdogs (@theunderdogs.fb), com o essencial da discografia dos Strokes (e talvez um pouco mais). Reservas no Formosa pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/theunderdogs.fb/p/Df9sxCdxISF/"
+      "fonte": "https://www.instagram.com/theunderdogs.fb/p/Df9sxCdxISF/",
+      "rev": 2
     },
     {
       "id": "especial-indie-rock-nana-hercules-2026-11-28",
