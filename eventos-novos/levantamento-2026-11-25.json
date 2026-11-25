@@ -218,9 +218,10 @@
       "instagram": "formosapub",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/w4shcbiasoewixwyta7a.jpg",
       "inicio": "2026-12-11T20:30:00-03:00",
-      "semHora": true,
+      "semHora": false,
       "descricao": "Save the date do Formosa: Morrisons faz tributo ao The Doors. Reservas pelo WhatsApp (46) 99103-7545.",
-      "fonte": "https://www.instagram.com/formosapub/"
+      "fonte": "https://www.instagram.com/formosapub/",
+      "rev": 2
     },
     {
       "id": "dj-arana-consulado-2026-12-11",
