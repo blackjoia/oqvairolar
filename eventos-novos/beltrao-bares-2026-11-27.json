@@ -160,32 +160,38 @@
       "fim": "2026-11-28T21:00:00-03:00",
       "localNome": "RanchoBon",
       "instagram": "schafbier",
-      "preco": "Ingresso com tudo incluso",
+      "preco": "2º lote R$ 110, só antecipado (bebidas à parte)",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/asoayu1wsvjcq02aht10.jpg",
-      "descricao": "8 estações: cordeiro, costela, chorizo, maminha, panceta, brisket defumado, hambúrguer de costela e sobremesas. Festival das 17h às 21h, tudo incluso no ingresso. Ingressos nos pontos de venda ou pelo WhatsApp da bio do @schafbier.",
+      "descricao": "Aniversário de 15 anos da Schaf Bier, a partir das 15h30, com shows de Medeiros and the Ranch, Diretoria do Pagode e Bisolo.\n\n8 estações: cordeiro, costela, chorizo, maminha, panceta, brisket defumado, hambúrguer de costela e sobremesas. Festival de carnes das 17h às 21h, comida inclusa no ingresso, bebidas à parte.\n\nIngresso só antecipado, na Schaf ou pelo WhatsApp da bio do @schafbier.",
       "fonte": "https://www.instagram.com/p/DgGUWOFM12l/",
-      "rev": 2,
+      "rev": 3,
       "generos": [
         "Churrasco e costelão",
         "Cerveja artesanal"
+      ],
+      "atracoes": [
+        "Medeiros and the Ranch",
+        "Diretoria do Pagode",
+        "Bisolo"
       ]
     },
     {
       "id": "quase-de-ferias-norole-piscina-dariva-2026-12-05",
       "titulo": "Quase de Férias · festa na piscina do noRolê",
       "categoria": "festa",
-      "inicio": "2026-12-05T14:00:00-03:00",
-      "semHora": true,
+      "inicio": "2026-12-05T18:00:00-03:00",
       "localNome": "Piscina do Dariva",
       "instagram": "noroleuni",
       "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/facdf7usavwlccat6fgj.jpg",
-      "descricao": "Piscina, sol e copão para fechar o semestre. Ingressos à venda pelo link na bio do @noroleuni.",
+      "descricao": "Piscina, sol e copão para fechar o semestre, das 18h às 4h. Lugares limitados: ingressos pelo link na bio do @noroleuni.",
       "fonte": "https://www.instagram.com/p/DgDXbOYSFUG/",
-      "rev": 2,
+      "rev": 3,
       "generos": [
         "Na piscina",
         "Universitária"
-      ]
+      ],
+      "fim": "2026-12-06T04:00:00-03:00",
+      "semHora": false
     },
     {
       "id": "moving-illusionize-rancho-dariva-2027-01-23",
