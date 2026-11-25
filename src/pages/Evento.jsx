@@ -64,15 +64,14 @@ export default function Evento() {
     // "Quem vai" só aparece para quem entrou com a conta
   }, [id, user?.uid])
   const presenca = async (tipo) => {
-    // "Eu vou" só com conta (decisão do Luis, 25/11). "Tenho interesse" continua sem conta.
-    if (tipo === 'vou' && minha !== 'vou') {
+    // "Eu vou" e "Tenho interesse" só com conta (decisão do Luis, 25/11). Desmarcar continua livre.
+    if (minha !== tipo) {
       try { if (!(await (await import('../lib/conta')).exigirConta())) return } catch (x) { setAviso(x.message); return }
     }
     const novo = minha === tipo ? null : tipo
     setContagem((c) => ({ ...c, ...(minha ? { [minha]: Math.max(0, c[minha] - 1) } : {}), ...(novo ? { [novo]: (minha === novo ? c[novo] : c[novo] + 1) } : {}) }))
     setMinha(novo)
     try { await marcarPresenca(id, novo, usuario?.publico) } catch { /* sem internet: fica só local */ }
-    if (novo === 'interesse' && !usuario) setAviso('Entre com o Google para guardar nos seus rolês e ver em qualquer aparelho.')
   }
 
   useEffect(() => {
