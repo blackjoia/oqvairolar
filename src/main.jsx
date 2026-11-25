@@ -15,6 +15,7 @@ const Lista = lazy(() => import('./pages/admin/Lista'))
 const FormEvento = lazy(() => import('./pages/admin/FormEvento'))
 import InstalarApp from './components/InstalarApp'
 import AbrirNoNavegador from './components/AbrirNoNavegador'
+import Aviso from './components/Aviso'
 const Artes = lazy(() => import('./pages/admin/Artes'))
 const Pedidos = lazy(() => import('./pages/admin/Pedidos'))
 const MeusRoles = lazy(() => import('./pages/MeusRoles'))
@@ -86,6 +87,7 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <ContarVisitas />
         <AbrirNoNavegador />
+        <Aviso />
         <InstalarApp />
         {RANKING_LIGADO && <Conquistas />}
         <Suspense fallback={null}>
