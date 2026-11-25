@@ -264,3 +264,8 @@ h1, h2, h3 { text-wrap: balance; }
 
 /* Números grandes do "Em alta na semana": só o contorno, na cor da marca */
 .num-alta { -webkit-text-stroke: 3px var(--brand); paint-order: stroke; }
+
+/* Botão Eu vou no card: pulinho ao marcar */
+.eu-vou-card[aria-pressed=true] { animation: eu-vou .32s var(--ease-mola, ease-out) }
+@keyframes eu-vou { 40% { transform: scale(1.12) } }
+@media (prefers-reduced-motion: reduce) { .eu-vou-card[aria-pressed=true] { animation: none } }
