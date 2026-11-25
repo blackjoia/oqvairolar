@@ -1,0 +1,590 @@
+{
+  "comum": {
+    "status": "publicado",
+    "origem": "importado"
+  },
+  "eventos": [
+    {
+      "id": "julio-ambrosini-balken-2026-11-25",
+      "titulo": "Julio Ambrosini acústico no Balken",
+      "generos": [
+        "Acústico"
+      ],
+      "atracoes": [
+        "Julio Ambrosini"
+      ],
+      "inicio": "2026-11-25T20:00:00-03:00",
+      "semHora": true,
+      "descricao": "Música ao vivo com Julio Ambrosini, acústico. O Balken abre de terça a domingo.",
+      "cidade": "Francisco Beltrão",
+      "localNome": "Balken Bar",
+      "instagram": "balkenbar",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
+      "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
+    },
+    {
+      "id": "natal-das-estrelas-francisco-beltrao-2026-11-27",
+      "titulo": "Natal das Estrelas 2026",
+      "categoria": "outros",
+      "generos": [
+        "Natal"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Calçadão Central",
+      "inicio": "2026-11-27T20:00:00-03:00",
+      "fim": "2026-12-23T22:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "O Natal da Prefeitura de Francisco Beltrão no Calçadão, de 27/11 a 23/12.\n\nRoda-gigante, carrossel e trenzinho de graça todas as noites, de segunda a domingo, e casinha do Papai Noel. Apresentações de dança e arte de terça a domingo no espaço coberto do Calçadão.\n\nAbertura na sexta, 27/11, às 20h, com acendimento das luzes, chegada do Papai Noel, espetáculo \"Quando o Céu Tocou a Terra\" (Grupo Sou Arte) e fogos.",
+      "fonte": "https://jornaldebeltrao.com.br/"
+    },
+    {
+      "id": "eduardo-menezes-patio-barley-2026-11-27",
+      "titulo": "Eduardo Menezes no Pátio Barley",
+      "atracoes": [
+        "Eduardo Menezes"
+      ],
+      "inicio": "2026-11-27T21:00:00-03:00",
+      "semHora": true,
+      "descricao": "Música ao vivo com Eduardo Menezes, da programação da semana do Pátio Barley.",
+      "cidade": "Francisco Beltrão",
+      "localNome": "Pátio Barley",
+      "endereco": "Av. Júlio Assis Cavalheiro · Industrial",
+      "lat": -26.0916709,
+      "lng": -53.0374324,
+      "instagram": "patiobarley",
+      "fonte": "https://www.instagram.com/patiobarley/",
+      "categoria": "musica"
+    },
+    {
+      "id": "antony-e-willian-balken-2026-11-27",
+      "titulo": "Antony e Willian no Balken",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Antony e Willian"
+      ],
+      "inicio": "2026-11-27T21:00:00-03:00",
+      "semHora": true,
+      "descricao": "Música ao vivo: muito sertanejo com Antony e Willian.",
+      "cidade": "Francisco Beltrão",
+      "localNome": "Balken Bar",
+      "instagram": "balkenbar",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
+      "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
+    },
+    {
+      "id": "os-jardineiros-patio-barley-2026-11-28",
+      "titulo": "Os Jardineiros no Pátio Barley",
+      "atracoes": [
+        "Os Jardineiros"
+      ],
+      "inicio": "2026-11-28T21:00:00-03:00",
+      "semHora": true,
+      "descricao": "Música ao vivo com Os Jardineiros, da programação da semana do Pátio Barley.",
+      "cidade": "Francisco Beltrão",
+      "localNome": "Pátio Barley",
+      "endereco": "Av. Júlio Assis Cavalheiro · Industrial",
+      "lat": -26.0916709,
+      "lng": -53.0374324,
+      "instagram": "patiobarley",
+      "fonte": "https://www.instagram.com/patiobarley/",
+      "categoria": "musica"
+    },
+    {
+      "id": "fran-soares-brahzan-burger-2026-11-28",
+      "titulo": "Fran Soares no Brahzan Burger",
+      "categoria": "musica",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Fran Soares"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Brahzan Burger",
+      "endereco": "Rua Londrina, 1080 · Vila Nova",
+      "lat": -26.0795434,
+      "lng": -53.0458615,
+      "instagram": "brahzanburger",
+      "inicio": "2026-11-28T20:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "Música ao vivo com a cantora Fran Soares (@fran_soares_cantora). Entrada gratuita.",
+      "fonte": "https://www.instagram.com/brahzanburger/"
+    },
+    {
+      "id": "digao-cantor-balken-2026-11-28",
+      "titulo": "Digão Cantor no Balken",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Digão Cantor"
+      ],
+      "inicio": "2026-11-28T21:00:00-03:00",
+      "semHora": true,
+      "descricao": "Música ao vivo: muito modão e sertanejo com Digão Cantor.",
+      "cidade": "Francisco Beltrão",
+      "localNome": "Balken Bar",
+      "instagram": "balkenbar",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/timoidcnfirhdpv7reni.webp",
+      "fonte": "https://www.instagram.com/balkenbar/p/DgIEtELxpNI/",
+      "categoria": "musica",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2439 · Centro",
+      "lat": -26.0893235,
+      "lng": -53.0405054,
+      "rev": 2
+    },
+    {
+      "id": "marreco-x-sao-lourenco-play-out-lnf-2026-11-29",
+      "titulo": "Marreco x São Lourenço: decisão do Play-out da LNF",
+      "categoria": "esporte",
+      "generos": [
+        "Futsal"
+      ],
+      "atracoes": [
+        "Marreco Futsal",
+        "Futsal São Lourenço"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Ginásio Arrudão",
+      "inicio": "2026-11-29T14:00:00-03:00",
+      "preco": "1º lote R$ 20 (até quinta, 26/11, 12h)",
+      "descricao": "Jogo de volta do Play-out da Liga Nacional de Futsal. A ida, em Santa Catarina, terminou 2 a 2: quem vencer garante a vaga na LNF.\n\nIngressos na sede do Marreco Futsal, ao lado do Arrudão, e pela internet no site Ingresso Nacional.",
+      "fonte": "https://rbj.com.br/marreco-inicia-venda-de-ingressos-para-jogo-decisivo-contra-o-futsal-sao-lourenco-pelo-play-out-da-lnf/"
+    },
+    {
+      "id": "radartech-unipar-2026-12-01",
+      "titulo": "RADARTECH na Unipar",
+      "categoria": "outros",
+      "generos": [
+        "Curso e oficina"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Unipar Francisco Beltrão",
+      "endereco": "Av. Júlio Assis Cavalheiro, 2000 · Centro",
+      "inicio": "2026-12-01T17:30:00-03:00",
+      "fim": "2026-12-04T17:30:00-03:00",
+      "preco": "R$ 40 + taxa (sem camisa)",
+      "ingressoUrl": "https://www.sympla.com.br/evento/radartech/3645556",
+      "descricao": "Evento de tecnologia do curso de ADS da Unipar, com talks, palestras e ideathon.",
+      "fonte": "https://www.sympla.com.br/evento/radartech/3645556"
+    },
+    {
+      "id": "natal-na-cresol-baser-2026-12-04",
+      "titulo": "Natal na Cresol",
+      "categoria": "outros",
+      "generos": [
+        "Natal",
+        "Infantil"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Cresol Baser",
+      "endereco": "Prolongamento da Av. Júlio Assis Cavalheiro",
+      "inicio": "2026-12-04T19:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita (leve 1 kg de alimento)",
+      "descricao": "Apresentação de Natal, praça de alimentação gratuita e chegada do Papai Noel. Pedem 1 kg de alimento.",
+      "fonte": "https://www.instagram.com/dicasbeltrao/reel/DgIqEM4vZQn/"
+    },
+    {
+      "id": "morrisons-tributo-the-doors-formosa-pub-2026-12-11",
+      "titulo": "Morrisons: tributo ao The Doors",
+      "categoria": "musica",
+      "generos": [
+        "Rock",
+        "Cover"
+      ],
+      "atracoes": [
+        "Morrisons"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Formosa Pub",
+      "endereco": "Rua Ponta Grossa, 2080 · Centro",
+      "lat": -26.0758613,
+      "lng": -53.053133,
+      "instagram": "formosapub",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/w4shcbiasoewixwyta7a.jpg",
+      "inicio": "2026-12-11T20:30:00-03:00",
+      "semHora": true,
+      "descricao": "Save the date do Formosa: Morrisons faz tributo ao The Doors. Reservas pelo WhatsApp (46) 99103-7545.",
+      "fonte": "https://www.instagram.com/formosapub/"
+    },
+    {
+      "id": "dj-arana-consulado-2026-12-11",
+      "titulo": "DJ Arana no Consulado",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "DJ Arana"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Consulado",
+      "endereco": "Rua Brasília, 627",
+      "instagram": "consuladopubbar",
+      "inicio": "2026-12-11T23:00:00-03:00",
+      "semHora": true,
+      "descricao": "DJ Arana no Consulado, anunciado na bio do @consuladopubbar.",
+      "fonte": "https://www.instagram.com/consuladopubbar/"
+    },
+    {
+      "id": "encantos-de-natal-pato-branco-2026-11-21",
+      "titulo": "Encantos de Natal",
+      "categoria": "outros",
+      "generos": [
+        "Natal"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Praça Presidente Vargas",
+      "inicio": "2026-11-25T20:00:00-03:00",
+      "fim": "2026-12-24T22:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "O Natal da Prefeitura de Pato Branco: shows culturais na Praça Presidente Vargas de quarta a domingo, até 24/12. A abertura foi em 21/11.\n\nNatal Itinerante: Zona Sul (sáb, 5/12), Zona Norte (dom, 6/12), São Roque do Chopim (dom, 13/12) e Centro (seg, 14/12, aniversário da cidade, com a Banda da Polícia Militar).",
+      "fonte": "https://diariodosudoeste.com.br/programacao-de-natal-de-pato-branco-vai-ate-24-de-dezembro/",
+      "semHora": true,
+      "rev": 2
+    },
+    {
+      "id": "banda-pm-aniversario-pato-branco-2026-12-14",
+      "pai": "encantos-de-natal-pato-branco-2026-11-21",
+      "titulo": "Aniversário de Pato Branco: Banda da Polícia Militar",
+      "categoria": "musica",
+      "atracoes": [
+        "Banda da Polícia Militar"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Praça Presidente Vargas",
+      "inicio": "2026-12-14T20:00:00-03:00",
+      "semHora": true,
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "Natal Itinerante no Centro, no aniversário de Pato Branco, com apresentação especial da Banda da Polícia Militar.",
+      "fonte": "https://diariodosudoeste.com.br/programacao-de-natal-de-pato-branco-vai-ate-24-de-dezembro/"
+    },
+    {
+      "id": "quintaneja-murilo-e-santini-nobar-pb-2026-11-26",
+      "titulo": "QuintaNeja com Murilo e Santini",
+      "categoria": "musica",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Murilo e Santini"
+      ],
+      "inicio": "2026-11-26T21:00:00-03:00",
+      "semHora": true,
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/e1azpv8euxtqa7jzxibn.jpg",
+      "descricao": "QuintaNeja Universitária com Murilo e Santini (@murilo_e_santini). Entrada grátis. Às 20h tem São Paulo x Remo no telão.",
+      "fonte": "https://www.instagram.com/nobarunipb/p/DgIz8BYkg7L/",
+      "cidade": "Pato Branco",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571 · Centro",
+      "lat": -26.2191327,
+      "lng": -52.6726768,
+      "instagram": "nobarunipb"
+    },
+    {
+      "id": "sirenaco-nobar-pb-2026-11-27",
+      "titulo": "Sirenaço no noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica",
+        "Universitária"
+      ],
+      "atracoes": [
+        "Josué Marques",
+        "DJ Pepo"
+      ],
+      "inicio": "2026-11-27T22:00:00-03:00",
+      "semHora": true,
+      "preco": "Uni: grátis · Clube: R$ 30",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/e1azpv8euxtqa7jzxibn.jpg",
+      "descricao": "Josué Marques (@josuemarquesdj) e DJ Pepo (@pepodj_). Tocou a sirene e acendeu o vermelho, vai rolar bebida. Às 20h tem Fluminense x Cruzeiro no telão.",
+      "fonte": "https://www.instagram.com/nobarunipb/reel/DgIvN5VyBG0/",
+      "cidade": "Pato Branco",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571 · Centro",
+      "lat": -26.2191327,
+      "lng": -52.6726768,
+      "instagram": "nobarunipb"
+    },
+    {
+      "id": "antepasto-nobar-pb-2026-11-28",
+      "titulo": "Antepasto no noBar!",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "Vitolla",
+        "A.MRE",
+        "Napa",
+        "Gaab",
+        "Rocha",
+        "Nayla",
+        "Stelmas"
+      ],
+      "inicio": "2026-11-28T22:00:00-03:00",
+      "semHora": true,
+      "preco": "Ingressos antecipados no app Cheers",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/uj5avluhfevnxba4ttfx.jpg",
+      "descricao": "Noite de música eletrônica da @antepasto__ com Vitolla, A.MRE, Napa, Gaab, Rocha, Nayla e Stelmas. Ingressos limitados, vendidos antes pelo link na bio do @antepasto__.",
+      "fonte": "https://www.instagram.com/nobarunipb/p/DgIz8BYkg7L/",
+      "cidade": "Pato Branco",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571 · Centro",
+      "lat": -26.2191327,
+      "lng": -52.6726768,
+      "instagram": "nobarunipb"
+    },
+    {
+      "id": "vivy-lyra-classicos-do-rock-avenida-bombar-2026-11-28",
+      "titulo": "Vivy Lyra & Banda: clássicos do rock",
+      "categoria": "musica",
+      "generos": [
+        "Rock",
+        "Pop"
+      ],
+      "atracoes": [
+        "Vivy Lyra & Banda"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Avenida Bombar",
+      "endereco": "Av. Tupi, 1529 · Brasília",
+      "lat": -26.2188857,
+      "lng": -52.672888,
+      "instagram": "avenidabombar",
+      "inicio": "2026-11-28T23:00:00-03:00",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/b7pjm7xc2fzjemzrcde9.jpg",
+      "descricao": "Rock e pop rock nacional e internacional dos anos 70, 80, 90 e 2000 com Vivy Lyra e banda.",
+      "fonte": "https://www.instagram.com/vivylyraa/p/DgGtUs1MA0J/"
+    },
+    {
+      "id": "domingao-do-modao-augusto-e-davi-nobar-pb-2026-11-29",
+      "titulo": "Domingão do Modão com Augusto e Davi",
+      "categoria": "musica",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Augusto e Davi"
+      ],
+      "inicio": "2026-11-29T19:00:00-03:00",
+      "semHora": true,
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/e1azpv8euxtqa7jzxibn.jpg",
+      "descricao": "Augusto e Davi trazem o modão no domingo, com entrada grátis.",
+      "fonte": "https://www.instagram.com/nobarunipb/p/DgIz8BYkg7L/",
+      "cidade": "Pato Branco",
+      "localNome": "noBar! Pato Branco",
+      "endereco": "Av. Tupi, 1571 · Centro",
+      "lat": -26.2191327,
+      "lng": -52.6726768,
+      "instagram": "nobarunipb"
+    },
+    {
+      "id": "electronic-sessions-devochka-palace-pb-2026-12-05",
+      "titulo": "Electronic Sessions com DEVOCHKA",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "DEVOCHKA"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Palace",
+      "endereco": "R. Farrapos, 555 · Centro",
+      "inicio": "2026-12-05T22:00:00-03:00",
+      "fim": "2026-12-06T06:00:00-03:00",
+      "preco": "Lote promocional R$ 30 + taxa",
+      "ingressoUrl": "https://www.sympla.com.br/evento/electronic-sessions-devochka/3663453",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/pexrcywjvxgusdg8a1db.png",
+      "descricao": "A Electronic Sessions recebe DEVOCHKA, DJ mineira que já tocou no Lollapalooza, no Rock in Rio e no LoveBase, em Berlim, e é autora de \"Aladin\". Produção Souch Artist.",
+      "fonte": "https://www.sympla.com.br/evento/electronic-sessions-devochka/3663453",
+      "lat": -26.221805,
+      "lng": -52.6793049,
+      "rev": 2
+    },
+    {
+      "id": "fatsync-kroko-deck-pb-2026-12-13",
+      "titulo": "Fatsync no Kroko Deck",
+      "categoria": "festa",
+      "generos": [
+        "Eletrônica"
+      ],
+      "atracoes": [
+        "Fatsync"
+      ],
+      "inicio": "2026-12-13T22:00:00-03:00",
+      "semHora": true,
+      "preco": "Ingressos no app Cheers",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/eijnrsx8cz60trkfsebu.jpg",
+      "descricao": "Fatsync comanda a pista do Kroko Deck no domingo, véspera do feriado de aniversário de Pato Branco.",
+      "fonte": "https://www.instagram.com/krokodeckpb/p/DgDfZN2TciH/",
+      "cidade": "Pato Branco",
+      "localNome": "Kroko Deck Pato Branco",
+      "endereco": "Av. Tupi, 1509 · Brasília",
+      "lat": -26.2186477,
+      "lng": -52.6728376,
+      "instagram": "krokodeckpb"
+    },
+    {
+      "id": "perola-negra-leo-soares-estacao-caldeirao-dv-2026-12-05",
+      "titulo": "Pérola Negra 24 anos + Léo Soares & Banda",
+      "atracoes": [
+        "Pérola Negra",
+        "Léo Soares & Banda"
+      ],
+      "inicio": "2026-12-05T23:00:00-03:00",
+      "preco": "Elas R$ 10 até 23h (na bilheteria)",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/og4p41ldczhgghc2t31r.jpg",
+      "descricao": "Pérola Negra comemora 24 anos, pontualmente às 23h, e Léo Soares & Banda fecham a festa. Promoção para elas: R$ 10 em dinheiro até 23h na bilheteria.",
+      "fonte": "https://www.instagram.com/caldeiraocasasdeshows/p/DgGZAcGObUW/",
+      "cidade": "Dois Vizinhos",
+      "localNome": "Estação Caldeirão",
+      "instagram": "caldeiraocasasdeshows",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ],
+      "endereco": "Rua Celeste Mazurana · Santa Luzia (saída para a Linha Fazenda)",
+      "lat": -25.7501449,
+      "lng": -53.0749969,
+      "rev": 2
+    },
+    {
+      "id": "vespera-de-natal-estacao-caldeirao-dv-2026-12-24",
+      "titulo": "Véspera de Natal na Estação Caldeirão",
+      "atracoes": [
+        "Wagner Schneider",
+        "Banda San Marino",
+        "Banda DNA"
+      ],
+      "inicio": "2026-12-24T23:00:00-03:00",
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/cjqyi7z1m3kycqh9atvn.jpg",
+      "descricao": "Show de véspera de Natal com Wagner Schneider, Banda San Marino e Banda DNA, pontualmente às 23h.",
+      "fonte": "https://www.instagram.com/caldeiraocasasdeshows/p/DgC9ESIRVXS/",
+      "cidade": "Dois Vizinhos",
+      "localNome": "Estação Caldeirão",
+      "instagram": "caldeiraocasasdeshows",
+      "categoria": "musica",
+      "generos": [
+        "Bailão"
+      ],
+      "endereco": "Rua Celeste Mazurana · Santa Luzia (saída para a Linha Fazenda)",
+      "lat": -25.7501449,
+      "lng": -53.0749969,
+      "rev": 2
+    },
+    {
+      "id": "fepart-realeza-2026-11-27",
+      "titulo": "35º Fepart: Festival Paranaense de Arte e Tradição",
+      "categoria": "cultura",
+      "generos": [
+        "Tradicionalista (CTG)",
+        "Dança"
+      ],
+      "cidade": "Realeza",
+      "localNome": "Centro de Eventos de Realeza",
+      "inicio": "2026-11-27T14:00:00-03:00",
+      "fim": "2026-11-29T20:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "O maior evento artístico gaúcho do Paraná, do MTG-PR com o CTG Sinuelo da Saudade. Mais de 1.300 participantes de 40 CTGs em sete palcos: danças tradicionais e de salão, intérpretes vocais e instrumentais, chula, trova, declamação e causo.\n\nSexta a partir das 14h; sábado e domingo a partir das 8h. Praça de alimentação, feira de artesãs e mostra cultural tradicionalista.",
+      "fonte": "https://jornaldebeltrao.com.br/geral/regional/festival-de-arte-tradicionalista-espera-pelo-menos-6-mil-pessoas-em-realeza/"
+    },
+    {
+      "id": "aniversario-marmeleiro-bison-e-comassetto-2026-11-25",
+      "titulo": "65 anos de Marmeleiro: Bison e Comassetto",
+      "categoria": "musica",
+      "generos": [
+        "Sertanejo"
+      ],
+      "atracoes": [
+        "Gean e Flávio",
+        "Bison e Comassetto"
+      ],
+      "cidade": "Marmeleiro",
+      "localNome": "Praça da Independência",
+      "inicio": "2026-11-25T20:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "Gean e Flávio às 20h e Bison e Comassetto às 21h, com a abertura do \"Um Natal para Brilhar\" e a chegada do Papai Noel.\n\nO show foi adiado de terça para quarta por causa da chuva, e a prefeitura avisou que só acontece se o tempo deixar.",
+      "fonte": "https://jornaldebeltrao.com.br/geral/marmeleiro/em-marmeleiro-prefeito-jander-loss-anuncia-adiamento-de-show-de-aniversario/"
+    },
+    {
+      "id": "verdadeira-historia-do-natal-vitorino-2026-11-28",
+      "titulo": "Espetáculo \"A Verdadeira História do Natal\"",
+      "categoria": "cultura",
+      "generos": [
+        "Teatro",
+        "Infantil"
+      ],
+      "atracoes": [
+        "Espaço Sou Arte",
+        "Natal Mix"
+      ],
+      "cidade": "Vitorino",
+      "localNome": "Ginásio Municipal Ademir Zílio",
+      "inicio": "2026-11-28T19:30:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "Espetáculo de Natal com personagens e música, do Espaço Sou Arte e do Natal Mix. No domingo (29), tem de novo às 19h na Praça de Areia do Araucária Park II.",
+      "fonte": "https://diariodosudoeste.com.br/vitorino-tera-espetaculo-de-natal-gratuito-nos-dias-28-e-29/"
+    },
+    {
+      "id": "verdadeira-historia-do-natal-vitorino-2026-11-29",
+      "titulo": "Espetáculo \"A Verdadeira História do Natal\" ao ar livre",
+      "categoria": "cultura",
+      "generos": [
+        "Teatro",
+        "Infantil"
+      ],
+      "atracoes": [
+        "Espaço Sou Arte",
+        "Natal Mix"
+      ],
+      "cidade": "Vitorino",
+      "localNome": "Praça de Areia, Araucária Park II",
+      "inicio": "2026-11-29T19:00:00-03:00",
+      "gratuito": true,
+      "preco": "Entrada gratuita",
+      "descricao": "Espetáculo de Natal ao ar livre, ao lado da árvore de Natal do Araucária Park II.",
+      "fonte": "https://diariodosudoeste.com.br/vitorino-tera-espetaculo-de-natal-gratuito-nos-dias-28-e-29/"
+    },
+    {
+      "id": "festa-frutos-da-nossa-terra-chopinzinho-2026-12-12",
+      "titulo": "5ª Festa Frutos da Nossa Terra",
+      "categoria": "gastronomia",
+      "generos": [
+        "Festa de comunidade"
+      ],
+      "cidade": "Chopinzinho",
+      "localNome": "Centro Comunitário São Francisco de Assis",
+      "inicio": "2026-12-12T20:00:00-03:00",
+      "semHora": true,
+      "preco": "Ingressos com as associações organizadoras",
+      "descricao": "Jantar com alimentos produzidos por agricultores de Chopinzinho e baile, nos 71 anos da cidade. Organização da ACFRUT e associações rurais.",
+      "fonte": "https://rbj.com.br/festa-frutos-da-nossa-terra-e-lancada-em-chopinzinho-e-chega-a-5a-edicao/"
+    }
+  ]
+}
