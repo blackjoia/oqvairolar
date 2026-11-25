@@ -48,13 +48,17 @@ export default function Usuario() {
           </section>
         )}
         {u && (<>
-          <section className="mt-5 flex items-center gap-4">
-            {u.foto ? <img src={u.foto} alt="" referrerPolicy="no-referrer" className="size-20 rounded-3xl object-cover" /> : <span className="grid size-20 place-items-center rounded-3xl bg-surface-2 font-display text-4xl">{u.nome?.[0]}</span>}
-            <div><p className="text-sm font-bold uppercase tracking-widest text-brand-ink">Vai rolar com</p>
-              <h1 className="font-display text-5xl uppercase leading-none">{u.nome.split(' ')[0]}</h1></div>
+          <section className="mt-5 rounded-2xl border border-line bg-surface p-4">
+            <div className="flex items-center gap-3">
+              {u.foto ? <img src={u.foto} alt="" referrerPolicy="no-referrer" className="size-14 shrink-0 rounded-full object-cover" /> : <span className="grid size-14 shrink-0 place-items-center rounded-full bg-surface-2 text-xl font-bold">{u.nome?.[0]}</span>}
+              <div className="min-w-0">
+                <h1 className="truncate text-xl font-bold leading-tight">{u.nome}</h1>
+                <p className="text-sm text-muted">{eventos ? (eventos.length === 1 ? '1 rolê marcado' : `${eventos.length} rolês marcados`) : '\u00a0'}</p>
+              </div>
+            </div>
+            <BotaoAmizade uid={uid} nome={u.nome} className="mt-3" />
           </section>
-          <BotaoAmizade uid={uid} nome={u.nome} className="mt-4" />
-          <h2 className="mt-8 font-display text-2xl uppercase">Vai em</h2>
+          <h2 className="mt-8 font-display text-2xl uppercase">Próximos rolês</h2>
           {!eventos ? <div className="esqueleto mt-3 h-32 rounded-2xl" />
             : eventos.length ? <div className="mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{eventos.map((e) => <CardEvento key={e.id} evento={e} />)}</div>
             : <p className="mt-2 text-muted">Nenhum evento marcado por enquanto.</p>}

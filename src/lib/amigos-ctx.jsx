@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { useAuth } from './auth'
 
 // Amigos da conta, carregados uma vez por sessão: quem são, pedidos e em quais eventos eles vão.
-const vazio = { amigos: [], recebidos: [], enviados: [], pessoas: {}, vao: {}, pronto: false }
+const vazio = { amigos: [], recebidos: [], enviados: [], pessoas: {}, vao: {}, convites: [], pronto: false }
 const Ctx = createContext({ ...vazio, recarregar: () => {} })
 
 export function AmigosProvider({ children }) {
@@ -14,10 +14,11 @@ export function AmigosProvider({ children }) {
       const m = await import('./amigos')
       const a = await m.minhasAmizades(uid)
       const todos = [...new Set([...a.amigos, ...a.recebidos, ...a.enviados])]
-      const [perfis, vaoUids] = await Promise.all([m.perfisDe(todos), m.eventosDosAmigos(a.amigos)])
+      const [perfis, vaoUids, convites] = await Promise.all([m.perfisDe(todos), m.eventosDosAmigos(a.amigos), m.convitesRecebidos(uid).catch(() => [])])
       const pessoas = Object.fromEntries(perfis.map((p) => [p.uid, p]))
       const vao = Object.fromEntries(Object.entries(vaoUids).map(([ev, us]) => [ev, us.map((u) => pessoas[u]).filter(Boolean)]))
-      setEstado({ ...a, pessoas, vao, pronto: true })
+      // Convites ("Bora?") só de quem ainda é amigo.
+      setEstado({ ...a, pessoas, vao, convites: convites.filter((c) => a.amigos.includes(c.de)), pronto: true })
     } catch (e) { console.warn('amigos', e); setEstado({ ...vazio, pronto: true }) }
   }, [])
   useEffect(() => { carregar(usuario?.uid) }, [usuario?.uid, carregar])

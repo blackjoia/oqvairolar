@@ -15,26 +15,27 @@ export default function Rostos({ lista = [], max = 3, tamanho = 'size-6', anel =
   )
 }
 
-// "Ana vai" · "Ana e mais 4 vão" · "5 pessoas vão"
+// Com amigos: "Ana vai" · "Ana e mais 4 vão". Sem amigos: só o número ("5 marcaram que vão").
+// Rosto e nome são só de amigos (Luis, 25/11): de quem não é amigo aparece só a contagem.
 export function textoQuemVai(e, comNomes) {
   const n = e.vao || 0
   if (!n) return ''
   const r = e.rostos || []
   if (comNomes && r.length) return n === 1 ? `${r[0].nome} vai` : `${r[0].nome} e mais ${n - 1} vão`
-  return n === 1 ? '1 pessoa vai' : `${n} pessoas vão`
+  return n === 1 ? '1 pessoa marcou que vai' : `${n} marcaram que vão`
 }
 
-// Rostos e texto de "quem vai" de um card, com os amigos sempre na frente (anel limão).
+// Rostos e texto de "quem vai" de um card: só os amigos aparecem com rosto (anel limão).
 export function useQuemVai(e) {
   const { user } = useAuth() || {}
   const { vao } = useAmigos()
   return quemVaiDe(e, user, vao)
 }
 export function quemVaiDe(e, user, vao = {}) {
-  if (!veRostos(user)) return { rostos: [], texto: textoQuemVai(e, false), amigos: 0 }
-  const { amigos, rostos } = rostosComAmigos(e, vao)
+  if (!user) return { rostos: [], texto: textoQuemVai(e, false), amigos: 0 }
+  const { amigos } = rostosComAmigos(e, vao)
   const n = Math.max(e.vao || 0, amigos.length)
-  return { rostos, amigos: amigos.length, texto: textoQuemVai({ ...e, vao: n, rostos }, rostos.length > 0) }
+  return { rostos: amigos, amigos: amigos.length, texto: textoQuemVai({ ...e, vao: n, rostos: amigos }, amigos.length > 0) }
 }
 
 // Rostos só aparecem para quem entrou com a conta. Em desenvolvimento, ?demo&rostos simula alguém logado.

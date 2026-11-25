@@ -20,13 +20,17 @@ import { abrirInstalar } from '../components/InstalarApp'
 import { km, textoDistancia, useMinhaPosicao, pedirLocalizacao } from '../lib/distancia'
 import { minhaPresenca, contarPresencas, marcarPresenca } from '../lib/presenca'
 import { useAmigos } from '../lib/amigos-ctx'
-import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck } from 'lucide-react'
+import Bora from '../components/Bora'
+import { marcarConviteVisto } from '../lib/amigos'
+import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck, Hand } from 'lucide-react'
 
 export default function Evento() {
   const { id } = useParams()
   const { isAdmin, user, usuario } = useAuth()
-  const [rostos, setRostos] = useState([])
-  const amigosVao = useAmigos().vao[id] || []
+  const amg = useAmigos()
+  const amigosVao = amg.vao[id] || []
+  const meChamaram = amg.convites.filter((c) => c.eventoId === id)
+  useEffect(() => { meChamaram.filter((c) => !c.visto).forEach((c) => { c.visto = true; marcarConviteVisto(c.id).catch(() => {}) }) }, [meChamaram.length]) // eslint-disable-line react-hooks/exhaustive-deps
   const [aviso, setAviso] = useState('')
   const [e, setE] = useState(undefined)
   const pos = useMinhaPosicao()
@@ -58,8 +62,6 @@ export default function Evento() {
     if (id.endsWith('-demo')) return
     minhaPresenca(id).then(setMinha); contarPresencas(id).then(setContagem)
     // "Quem vai" só aparece para quem entrou com a conta
-    if (user) import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
-    else setRostos([])
   }, [id, user?.uid])
   const presenca = async (tipo) => {
     const novo = minha === tipo ? null : tipo
@@ -67,7 +69,6 @@ export default function Evento() {
     setMinha(novo)
     try { await marcarPresenca(id, novo, usuario?.publico) } catch { /* sem internet: fica só local */ }
     if (novo && !usuario) setAviso('Entre com o Google para guardar nos seus rolês e ver em qualquer aparelho.')
-    if (usuario?.publico) import('../lib/social').then((m) => m.quemVai(id)).then(setRostos).catch(() => {})
   }
 
   useEffect(() => {
@@ -156,6 +157,12 @@ export default function Evento() {
               )}
             </dl>
 
+            {meChamaram.length > 0 && minha !== 'vou' && (
+              <div className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-brand bg-brand/10 p-3">
+                <Hand className="size-6 shrink-0 text-brand-ink" aria-hidden />
+                <p className="text-sm"><b>{meChamaram.map((c) => amg.pessoas[c.de]?.nome?.split(' ')[0]).filter(Boolean).join(' e ')} {meChamaram.length === 1 ? 'te chamou' : 'te chamaram'} para esse rolê.</b> Bora? Toque em Eu vou.</p>
+              </div>
+            )}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button onClick={() => presenca('vou')} aria-pressed={minha === 'vou'}
                 className={`btn h-12 text-sm ${minha === 'vou' ? 'bg-accent text-on-accent' : 'border border-line bg-surface text-ink hover:bg-surface-2'}`}>
@@ -178,22 +185,6 @@ export default function Evento() {
                 </>)}
               </div>
             )}
-            {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
-              <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
-                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} ${asHora(e)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
-                className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
-                <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
-              </a>
-            )}
-            {aviso && (
-              <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
-                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
-            )}
-            {!user && !aviso && (
-              <p className="mt-3 text-sm text-muted">
-                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Faça login</button> para conferir quem vai no evento.
-              </p>
-            )}
             {user && amigosVao.length > 0 && (
               <div className="mt-3 flex items-center gap-2 rounded-2xl bg-accent/15 p-2 pr-3">
                 <div className="flex -space-x-2">
@@ -209,17 +200,22 @@ export default function Evento() {
                 })()}</span></span>
               </div>
             )}
-            {user && rostos.length > 0 && (
-              <div className="mt-3 flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {rostos.slice(0, 8).map((u) => (
-                    <Link key={u.uid} to={`/u/${u.uid}`} title={u.nome} className="relative block size-8 overflow-hidden rounded-full bg-surface-2 ring-2 ring-bg hover:z-10">
-                      {u.foto ? <img src={u.foto} alt={u.nome} referrerPolicy="no-referrer" className="size-full object-cover" /> : <span className="grid size-full place-items-center text-xs font-bold">{u.nome?.[0]}</span>}
-                    </Link>
-                  ))}
-                </div>
-                <span className="text-sm text-muted">{rostos.length === 1 ? `${rostos[0].nome.split(' ')[0]} vai` : `${rostos[0].nome.split(' ')[0]} e mais ${rostos.length - 1} vão`}</span>
-              </div>
+            {e.inicio > new Date(Date.now() - 4 * 3600000) && <Bora evento={e} />}
+            {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
+              <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
+                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} ${asHora(e)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
+                className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
+                <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
+              </a>
+            )}
+            {aviso && (
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted">{aviso}
+                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).then(() => setAviso('')).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Entrar</button></p>
+            )}
+            {!user && !aviso && (
+              <p className="mt-3 text-sm text-muted">
+                <button onClick={() => import('../lib/auth').then((m) => m.entrarComGoogle()).catch((x) => setAviso(x.message))} className="font-semibold text-brand-ink underline underline-offset-2">Faça login</button> para ver quais amigos vão.
+              </p>
             )}
             {lembrete.suporte && lembrete.suporte !== 'nao-suporta' && e.inicio > new Date() && (
               <>

@@ -5,7 +5,7 @@ import { Rodape } from './Inicio'
 import { BotaoGoogle } from './MeusRoles'
 import { useAuth } from '../lib/auth'
 import { useAmigos } from '../lib/amigos-ctx'
-import { buscarPessoas, aceitarAmizade, desfazerAmizade, pedirAmizade } from '../lib/amigos'
+import { buscarPessoas, aceitarAmizade, desfazerAmizade, pedirAmizade, sugestoes } from '../lib/amigos'
 import { clique } from '../lib/visitas'
 import { ArrowLeft, Search, Share2, Check, X, UserPlus, Clock, LoaderCircle, Users } from 'lucide-react'
 
@@ -35,6 +35,11 @@ export default function Amigos() {
   const [ocupado, setOcupado] = useState('')
   const [erro, setErro] = useState('')
   const [copiado, setCopiado] = useState(false)
+  const [sugeridos, setSugeridos] = useState([])
+  useEffect(() => {
+    if (!usuario || !pronto) return
+    sugestoes(usuario.uid, [...amigos, ...recebidos, ...enviados]).then(setSugeridos).catch(() => {})
+  }, [usuario?.uid, pronto]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!usuario || busca.trim().length < 2) { setAchados(null); return }
@@ -75,14 +80,14 @@ export default function Amigos() {
       <main id="conteudo" tabIndex={-1} className="mx-auto max-w-3xl px-4 pb-20 pt-4">
         <Link to="/meus-roles" className="link-toque -my-2 gap-1 text-sm font-semibold text-brand-ink"><ArrowLeft className="size-4" aria-hidden /> Meus rolês</Link>
         <h1 className="mt-4 font-display text-5xl uppercase leading-none">Amigos</h1>
-        <p className="mt-2 max-w-md text-muted">Veja em quais rolês seus amigos vão. Eles aparecem primeiro nos eventos e nos cards da agenda.</p>
+        <p className="mt-2 max-w-md text-muted">Veja em quais rolês seus amigos vão. Só os amigos aparecem com foto nos eventos.</p>
 
         {recebidos.length > 0 && (
           <section className="mt-6">
             <h2 className="font-display text-2xl uppercase">Pedidos para você <span className="ml-1 rounded-full bg-accent px-2 align-middle font-sans text-sm font-bold text-on-accent">{recebidos.length}</span></h2>
             <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2">
               {recebidos.map((uid) => pessoas[uid] && (
-                <Linha key={uid} p={pessoas[uid]} sub="pedido de amizade">
+                <Linha key={uid} p={pessoas[uid]} sub="pediu amizade">
                   <button onClick={() => agir(uid, aceitarAmizade)} disabled={!!ocupado} className="btn-brand px-3 py-2 text-sm">{giro(uid) || <Check className="size-4" aria-hidden />} Aceitar</button>
                   <button onClick={() => agir(uid, desfazerAmizade)} disabled={!!ocupado} aria-label="Recusar" className="btn-ghost size-10 p-0"><X className="size-4" aria-hidden /></button>
                 </Linha>
@@ -118,6 +123,20 @@ export default function Amigos() {
         )}
         {erro && <p className="mt-2 text-sm text-danger" role="alert">{erro}</p>}
 
+        {sugeridos.filter((p) => !naLista(p.uid)).length > 0 && (
+          <section className="mt-8">
+            <h2 className="font-display text-2xl uppercase">Talvez você conheça</h2>
+            <p className="text-sm text-muted">Pessoas que marcaram Eu vou nos mesmos rolês que você.</p>
+            <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
+              {sugeridos.filter((p) => !naLista(p.uid)).map((p) => (
+                <Linha key={p.uid} p={p} sub={p.emComum === 1 ? '1 rolê em comum' : `${p.emComum} rolês em comum`}>
+                  <button onClick={() => agir(p.uid, pedirAmizade)} disabled={!!ocupado} className="btn-brand px-3 py-2 text-sm">{giro(p.uid) || <UserPlus className="size-4" aria-hidden />} Adicionar</button>
+                </Linha>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="mt-8">
           <h2 className="font-display text-2xl uppercase">Meus amigos{amigos.length > 0 && <span className="ml-2 font-sans text-base text-muted">{amigos.length}</span>}</h2>
           {!pronto ? <div className="esqueleto mt-3 h-20 rounded-2xl" />
@@ -126,7 +145,7 @@ export default function Amigos() {
                 {amigos.map((uid) => pessoas[uid] && <Linha key={uid} p={pessoas[uid]} sub={quantos(uid) ? `vai em ${quantos(uid)} ${quantos(uid) === 1 ? 'rolê' : 'rolês'}` : 'nenhum rolê marcado'} />)}
               </ul>)
             : <div className="mt-3 flex items-start gap-3 rounded-2xl border border-dashed border-line p-4 text-sm text-muted"><Users className="mt-0.5 size-5 shrink-0" aria-hidden />
-                <p>Ainda sem amigos por aqui. Procure pelo nome, toque num rostinho em “quem vai” de um evento ou mande o convite pelo WhatsApp.</p></div>}
+                <p>Ainda sem amigos por aqui. Procure pelo nome ou mande o convite pelo WhatsApp.</p></div>}
         </section>
 
         {enviados.length > 0 && (

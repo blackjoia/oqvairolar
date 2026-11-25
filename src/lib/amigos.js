@@ -65,3 +65,35 @@ export async function eventosDosAmigos(amigos) {
   }
   return mapa
 }
+
+// ---------- "Bora?": convidar amigos para um evento ----------
+const idConvite = (eventoId, de, para) => `${eventoId}_${de}_${para}`
+export async function convidar(eventoId, eu, amigos) {
+  await Promise.all(amigos.map((uid) => setDoc(doc(db, 'convites', idConvite(eventoId, eu, uid)), { eventoId, de: eu, para: uid, visto: false, em: serverTimestamp() })))
+  clique('bora', eventoId)
+}
+// Quem eu já chamei para este evento.
+export async function jaConvidei(eventoId, eu) {
+  const snap = await getDocs(query(collection(db, 'convites'), where('de', '==', eu), where('eventoId', '==', eventoId))).catch(() => null)
+  return (snap?.docs || []).map((d) => d.data().para)
+}
+// Convites que recebi: [{ eventoId, de, visto, id }]
+export async function convitesRecebidos(eu) {
+  const snap = await getDocs(query(collection(db, 'convites'), where('para', '==', eu)))
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+}
+export const marcarConviteVisto = (id) => updateDoc(doc(db, 'convites', id), { visto: true })
+export const apagarConvite = (id) => deleteDoc(doc(db, 'convites', id))
+
+// ---------- sugestões: quem marcou Eu vou nos mesmos eventos que eu ----------
+export async function sugestoes(eu, excluir = []) {
+  const minhas = await getDocs(query(collection(db, 'presencas'), where('uid', '==', eu), where('tipo', '==', 'vou'))).catch(() => null)
+  const evs = (minhas?.docs || []).map((d) => d.data().eventoId).slice(-30)
+  if (!evs.length) return []
+  const snap = await getDocs(query(collection(db, 'presencas'), where('eventoId', 'in', evs), where('tipo', '==', 'vou'), where('perfil', '==', true))).catch(() => null)
+  const fora = new Set([eu, ...excluir]), conta = {}
+  snap?.docs.forEach((d) => { const u = d.data().uid; if (u && !fora.has(u)) conta[u] = (conta[u] || 0) + 1 })
+  const top = Object.entries(conta).sort((a, b) => b[1] - a[1]).slice(0, 6)
+  const us = await Promise.all(top.map(async ([uid, n]) => { const u = await buscarUsuario(uid); return u?.publico ? { ...u, emComum: n } : null }))
+  return us.filter(Boolean)
+}

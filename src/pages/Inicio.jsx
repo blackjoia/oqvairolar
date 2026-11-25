@@ -11,6 +11,7 @@ import AbasCategoria from '../components/AbasCategoria'
 import { abrirInstalar } from '../components/InstalarApp'
 // import HojeANoite from '../components/HojeANoite' // desativado por enquanto (25/11)
 import EmAlta from '../components/EmAlta'
+import AmigosVao from '../components/AmigosVao'
 import { PrimeiraCidade, SeletorCidade } from '../components/EscolherCidade'
 import { useCidadePreferida, definirCidade } from '../lib/cidade'
 import { listarPublicados } from '../lib/eventos'
@@ -179,6 +180,7 @@ export default function Inicio() {
 
         {eventos && !temFiltro && (<>
           {/* "Hoje à noite" desativado por enquanto (Luis, 25/11). Para voltar: <HojeANoite eventos={naCidade} /> */}
+          <AmigosVao eventos={eventos} />
           <EmAlta eventos={naCidade} />
         </>)}
         {perguntarCidade && <PrimeiraCidade cidades={cidades} onEscolher={escolherCidade} />}

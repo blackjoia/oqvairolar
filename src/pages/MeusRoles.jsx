@@ -8,7 +8,7 @@ import { buscarEvento } from '../lib/eventos'
 import { useAmigos } from '../lib/amigos-ctx'
 import Rostos from '../components/Rostos'
 import { minhasPresencas, quemSigo, salvarUsuario, atualizarVisibilidade, registrarAparelho } from '../lib/social'
-import { CalendarHeart, Bell, BadgeCheck, LogOut, Users, Store, LoaderCircle, Star, PartyPopper, UserPlus, ChevronRight } from 'lucide-react'
+import { CalendarHeart, Bell, BadgeCheck, LogOut, Users, Store, LoaderCircle, Star, PartyPopper, UserPlus, ChevronRight, Hand } from 'lucide-react'
 
 function Google() {
   return (
@@ -37,6 +37,16 @@ export default function MeusRoles() {
   const [avisos, setAvisos] = useState({ estado: '', erro: '' })
   const [salvando, setSalvando] = useState(false)
   const [erroPublico, setErroPublico] = useState('')
+  // Convites "Bora?" para rolês que ainda vão rolar e que a pessoa não marcou Eu vou.
+  const [chamados, setChamados] = useState([])
+  useEffect(() => {
+    if (!eventos) return
+    const ja = new Set(eventos.filter((e) => e.minha === 'vou').map((e) => e.id))
+    const porEvento = {}
+    amg.convites.forEach((c) => { if (!ja.has(c.eventoId)) (porEvento[c.eventoId] ||= []).push(amg.pessoas[c.de]?.nome?.split(' ')[0]) })
+    Promise.all(Object.entries(porEvento).map(async ([id, nomes]) => { const e = await buscarEvento(id).catch(() => null); return e && (e.fim || e.inicio).getTime() > Date.now() ? { ...e, quem: nomes.filter(Boolean).join(' e ') } : null }))
+      .then((l) => setChamados(l.filter(Boolean).sort((a, b) => a.inicio - b.inicio)))
+  }, [eventos, amg.convites]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!usuario) return
@@ -95,7 +105,7 @@ export default function MeusRoles() {
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface p-4">
             <input type="checkbox" checked={!!usuario.publico} onChange={alternarPublico} disabled={salvando} className="mt-1 size-5" />
-            <span><b className="text-sm">Aparecer em “quem vai”</b><span className="block text-sm text-muted">Sua foto e seu primeiro nome aparecem nos eventos em que você marcou Eu vou. Seus amigos sempre veem seus rolês{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span>{erroPublico && <span className="mt-1 block text-sm font-semibold text-danger" role="alert">{erroPublico}</span>}</span>
+            <span><b className="text-sm">Perfil aberto</b><span className="block text-sm text-muted">Qualquer pessoa te acha pelo nome em Amigos e vê seus rolês. Desligado, só os amigos veem{usuario.publico && <> · <Link className="font-semibold text-brand-ink" to={`/u/${usuario.uid}`}>ver meu perfil</Link></>}.</span>{erroPublico && <span className="mt-1 block text-sm font-semibold text-danger" role="alert">{erroPublico}</span>}</span>
           </label>
           <div className="rounded-2xl border border-line bg-surface p-4">
             <b className="text-sm">Avisos no celular</b>
@@ -129,6 +139,15 @@ export default function MeusRoles() {
                 </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {chamados.length > 0 && (
+          <section className="mt-8">
+            <h2 className="flex items-center gap-2 font-display text-2xl uppercase"><Hand className="size-5 text-brand-ink" aria-hidden /> Te chamaram</h2>
+            <div className="mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">{chamados.map((e) => (
+              <div key={e.id}><p className="mb-1 line-clamp-1 text-sm font-bold text-brand-ink">{e.quem} te chamou</p><CardEvento evento={e} /></div>
+            ))}</div>
           </section>
         )}
 

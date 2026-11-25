@@ -170,6 +170,29 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.uid in resource.data.uids;
     }
 
+    // "Bora?": convite de um amigo para um evento. id = eventoId_de_para.
+    // Só entre amigos (amizade aceita) e para evento publicado. Quem recebeu marca como visto.
+    match /convites/{id} {
+      allow read: if request.auth != null
+        && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['eventoId', 'de', 'para', 'visto', 'em'])
+        && request.resource.data.de == request.auth.uid
+        && request.resource.data.para is string && request.resource.data.para != request.auth.uid
+        && request.resource.data.eventoId is string && request.resource.data.eventoId.size() <= 120
+        && id == request.resource.data.eventoId + '_' + request.auth.uid + '_' + request.resource.data.para
+        && request.resource.data.visto == false
+        && request.resource.data.em == request.time
+        && get(/databases/$(database)/documents/eventos/$(request.resource.data.eventoId)).data.status == 'publicado'
+        && get(/databases/$(database)/documents/amizades/$(par(request.auth.uid, request.resource.data.para))).data.status == 'aceita';
+      allow update: if request.auth != null
+        && resource.data.para == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visto'])
+        && request.resource.data.visto == true;
+      allow delete: if request.auth != null
+        && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
+    }
+
     // Página oficial de um bar ou banda: quem cuida dela (donos) é definido pelo admin.
     match /perfis/{slug} {
       allow read: if true;
