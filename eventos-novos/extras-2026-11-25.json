@@ -1,0 +1,72 @@
+{
+  "comum": {
+    "status": "publicado",
+    "origem": "importado"
+  },
+  "eventos": [
+    {
+      "id": "game-over-open-wave-beach-sports-2026-12-04",
+      "titulo": "Game Over Open 2026",
+      "categoria": "esporte",
+      "generos": [
+        "Vôlei e beach tennis"
+      ],
+      "cidade": "Pato Branco",
+      "localNome": "Wave Beach Sports",
+      "endereco": "R. Elaine Caldato Amadori, 140 · Bortot",
+      "lat": -26.2080125,
+      "lng": -52.6799696,
+      "instagram": "wavebeachsports",
+      "inicio": "2026-12-04T08:00:00-03:00",
+      "fim": "2026-12-06T20:00:00-03:00",
+      "semHora": true,
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/km0sujp6pwas6ubrtzmx.jpg",
+      "descricao": "O torneio de beach tennis que fecha a temporada da Wave ganha uma edição Open em 2026, de sexta (4/12) a domingo (6/12). Horários e inscrições a confirmar no @wavebeachsports.",
+      "fonte": "https://www.instagram.com/wavebeachsports/p/DgIUmUXy0Hu/"
+    },
+    {
+      "id": "the-underdogs-strokes-formosa-pub-2026-12-05",
+      "titulo": "The Underdogs: show de Natal com Strokes",
+      "categoria": "musica",
+      "generos": [
+        "Rock",
+        "Indie",
+        "Cover"
+      ],
+      "atracoes": [
+        "The Underdogs"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Formosa Pub",
+      "endereco": "Rua Ponta Grossa, 2080 · Centro",
+      "lat": -26.0758613,
+      "lng": -53.053133,
+      "instagram": "formosapub",
+      "inicio": "2026-12-05T20:30:00-03:00",
+      "semHora": true,
+      "cartazUrl": "https://res.cloudinary.com/i0bvq9gc/image/upload/f_auto,q_auto,w_1200/cartazes/ajhs78c2mrgx3b7enj1v.jpg",
+      "descricao": "O tradicional show de Natal da The Underdogs (@theunderdogs.fb), com o essencial da discografia dos Strokes (e talvez um pouco mais). Reservas no Formosa pelo WhatsApp (46) 99103-7545.",
+      "fonte": "https://www.instagram.com/theunderdogs.fb/p/Df9sxCdxISF/"
+    },
+    {
+      "id": "especial-indie-rock-nana-hercules-2026-11-28",
+      "titulo": "Especial Indie Rock com a seletora Nana",
+      "categoria": "musica",
+      "generos": [
+        "Indie",
+        "Rock"
+      ],
+      "atracoes": [
+        "Nana"
+      ],
+      "cidade": "Francisco Beltrão",
+      "localNome": "Hercules",
+      "endereco": "Rua Rio Grande do Sul, 1015 · Alvorada",
+      "instagram": "obarhercules",
+      "inicio": "2026-11-28T19:00:00-03:00",
+      "cartazUrl": "https://oquevairolar.com.br/cartazes/indie-rock-nana-hercules.jpg",
+      "descricao": "Discotecagem especial de indie rock com a seletora Nana, no bar de coquetéis Hercules.",
+      "fonte": "https://www.instagram.com/obarhercules/"
+    }
+  ]
+}
