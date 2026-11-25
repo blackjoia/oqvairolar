@@ -1,5 +1,6 @@
 // "Eu vou" e "Tenho interesse": sem conta, um registro por aparelho e evento.
-import { doc, getDoc, setDoc, deleteDoc, collection, query, where, getCountFromServer, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where, getCountFromServer, serverTimestamp } from 'firebase/firestore'
+import { useEffect, useSyncExternalStore } from 'react'
 import { db, auth } from './firebase'
 import { clique } from './visitas'
 
@@ -32,4 +33,34 @@ export async function marcarPresenca(eventoId, tipo, publico = true) {
   return setDoc(r, u
     ? { eventoId, visitante: u.uid, uid: u.uid, perfil: !!publico, tipo, em: serverTimestamp() }
     : { eventoId, visitante: visitante(), tipo, em: serverTimestamp() })
+}
+
+// ---------- "Eu vou" direto na lista ----------
+// Carrega uma vez todas as marcações deste aparelho/conta e mantém um mapa eventoId -> tipo para os cards.
+let mapa = new Map(), carregadoPara = null
+const ajuste = new Map() // mudanças feitas nesta visita, para somar ao número do robô
+const ouvintes = new Set()
+const avisar = () => ouvintes.forEach((f) => f())
+async function carregarMinhas() {
+  const v = quem(); if (!v || carregadoPara === v) return
+  carregadoPara = v
+  if (import.meta.env.DEV && new URLSearchParams(location.search).has('demo')) return
+  try {
+    const s = await getDocs(query(collection(db, 'presencas'), where('visitante', '==', v)))
+    mapa = new Map(s.docs.map((d) => [d.data().eventoId, d.data().tipo])); avisar()
+  } catch { carregadoPara = null }
+}
+export function useMinhaPresencaNaLista(eventoId) {
+  useEffect(() => { carregarMinhas() }, [])
+  return useSyncExternalStore((f) => { ouvintes.add(f); return () => ouvintes.delete(f) }, () => mapa.get(eventoId) || null)
+}
+export const ajusteVao = (eventoId) => ajuste.get(eventoId) || 0
+export async function alternarEuVou(eventoId) {
+  const antes = mapa.get(eventoId) || null
+  const novo = antes === 'vou' ? null : 'vou'
+  ajuste.set(eventoId, (ajuste.get(eventoId) || 0) + (novo === 'vou' ? 1 : antes === 'vou' ? -1 : 0))
+  mapa = new Map(mapa); if (novo) mapa.set(eventoId, novo); else mapa.delete(eventoId); avisar()
+  if (import.meta.env.DEV && eventoId.endsWith('-demo')) return { antes, novo }
+  try { await marcarPresenca(eventoId, novo) } catch { mapa = new Map(mapa); if (antes) mapa.set(eventoId, antes); else mapa.delete(eventoId); avisar() }
+  return { antes, novo }
 }
