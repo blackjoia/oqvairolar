@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { MapPin } from 'lucide-react'
+import { MapPin, PartyPopper, Check } from 'lucide-react'
+import { useMinhaPresencaNaLista, alternarEuVou, ajusteVao } from '../lib/presenca'
 import Cartaz from './Cartaz'
 import { diaMes, mesCurto, hora, horaDe, rotuloDia, situacao } from '../lib/datas'
 import { km, textoDistancia, useMinhaPosicao } from '../lib/distancia'
@@ -19,7 +20,12 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
   const { user } = useAuth() || {}
   // Rostos só para quem entrou com a conta (o mesmo combinado da página do evento); sem conta, só o número.
   const rostos = veRostos(user) ? (e.rostos || []) : []
-  const quemVai = textoQuemVai(e, rostos.length > 0)
+  const minha = useMinhaPresencaNaLista(e.id)
+  // O número do card vem do robô (a cada 10 min); soma a marcação feita agora para a pessoa ver na hora.
+  const vaoTela = Math.max(0, (e.vao || 0) + ajusteVao(e.id))
+  const quemVai = textoQuemVai({ ...e, vao: vaoTela }, rostos.length > 0)
+  const passou = situacao(e)?.tipo === 'passou'
+  const euVou = (x) => { x.preventDefault(); x.stopPropagation(); alternarEuVou(e.id) }
   return (
     <Link to={`/evento/${e.id}`} style={style}
       className={`card-evento group flex overflow-hidden rounded-2xl border border-line bg-surface hover:border-brand/40 ${grande ? 'col-span-2 flex-col sm:flex-row md:col-span-3' : 'flex-col'} ${className}`}>
@@ -51,7 +57,16 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
             <span className="line-clamp-1">{quemVai}</span>
           </p>
         )}
-        {preco && <p className="num mt-auto pt-1.5 text-sm font-bold">{preco}</p>}
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+          {preco ? <p className="num min-w-0 truncate text-sm font-bold">{preco}</p> : <span />}
+          {!passou && (
+            <button type="button" onClick={euVou} aria-pressed={minha === 'vou'} aria-label={minha === 'vou' ? `Você vai em ${e.titulo}. Tocar para desmarcar` : `Eu vou em ${e.titulo}`}
+              className={`eu-vou-card inline-flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-xs font-extrabold ${minha === 'vou' ? 'bg-accent text-on-accent' : 'border border-line bg-surface text-ink hover:border-brand hover:text-brand-ink'}`}>
+              {minha === 'vou' ? <Check className="size-4" aria-hidden /> : <PartyPopper className="size-4" aria-hidden />}
+              {minha === 'vou' ? 'Vou' : 'Eu vou'}
+            </button>
+          )}
+        </div>
       </div>
     </Link>
   )
