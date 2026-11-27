@@ -31,7 +31,7 @@ export default function AmigosVao({ eventos }) {
                 <div className="card-evento relative aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-surface">
                   <Cartaz evento={e} comData={!e.cartazUrl} marca={false} sizes="(min-width: 768px) 180px, 42vw" className="card-img absolute inset-0 size-full" />
                 </div>
-                <div className="num mt-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-ink">{rotuloDia(e.inicio)} · {horaDe(e)}</div>
+                <div className="num mt-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-ink">{[rotuloDia(e.inicio), horaDe(e)].filter(Boolean).join(' · ')}</div>
                 <div className="line-clamp-1 text-sm font-bold group-hover:text-brand-ink">{e.titulo}</div>
                 <div className="mt-1 flex items-center gap-1.5 text-xs font-bold"><Rostos lista={fs} tamanho="size-5" /><span className="line-clamp-1">{texto}</span></div>
               </Link>
