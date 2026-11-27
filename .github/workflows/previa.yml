@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -39,7 +39,7 @@ jobs:
       - name: Publicar a versão de teste
         id: canal
         run: |
-          npx -y firebase-tools@14 hosting:channel:deploy teste --expires 14d --project oquevairolar-b0129 --non-interactive --json > saida.json
+          npx -y firebase-tools@14.27.0 hosting:channel:deploy teste --expires 14d --project oquevairolar-b0129 --non-interactive --json > saida.json
           URL=$(node -e "const r=require('./saida.json').result;console.log(Object.values(r)[0].url)")
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Versão de teste: $URL" >> "$GITHUB_STEP_SUMMARY"

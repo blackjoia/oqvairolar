@@ -1,6 +1,6 @@
 import {
   collection, doc, getDoc, getDocs, query, where, orderBy, setDoc, updateDoc,
-  deleteDoc, serverTimestamp, Timestamp,
+  deleteDoc, serverTimestamp, Timestamp, deleteField, arrayUnion,
 } from 'firebase/firestore'
 import { db } from './firebase'
 import { toDate } from './datas'
@@ -67,13 +67,43 @@ export async function criarEvento(e) {
   return id
 }
 
+// Nome e contato de quem mandou pelo formulário não podem ficar no evento publicado
+// (o evento publicado é aberto para todo mundo ler). Na publicação eles vão para
+// contatosEnvio/{id}, que só o admin lê.
+async function guardarContatos(id, enviadoPor, outrosEnvios) {
+  const envios = [...(enviadoPor ? [enviadoPor] : []), ...(outrosEnvios || [])]
+  if (!envios.length) return
+  await setDoc(doc(db, 'contatosEnvio', id), { envios: arrayUnion(...envios), em: serverTimestamp() }, { merge: true })
+}
+const semContatos = { enviadoPor: deleteField(), outrosEnvios: deleteField() }
+
+export async function buscarContatos(id) {
+  const s = await getDoc(doc(db, 'contatosEnvio', id)).catch(() => null)
+  return s?.exists() ? s.data().envios || [] : []
+}
+
 export async function salvarEvento(id, e) {
   const { id: _ignora, criadoEm: _c, ...dados } = e
+  if (dados.status === 'publicado' && (dados.enviadoPor || dados.outrosEnvios?.length)) {
+    await guardarContatos(id, dados.enviadoPor, dados.outrosEnvios)
+    delete dados.enviadoPor; delete dados.outrosEnvios
+    await updateDoc(doc(db, 'eventos', id), { ...paraFirestore(dados), ...semContatos, atualizadoEm: serverTimestamp() })
+    return
+  }
   await updateDoc(doc(db, 'eventos', id), { ...paraFirestore(dados), atualizadoEm: serverTimestamp() })
 }
 
-export const mudarStatus = (id, status) =>
-  updateDoc(doc(db, 'eventos', id), { status, atualizadoEm: serverTimestamp() })
+export async function mudarStatus(id, status) {
+  if (status === 'publicado') {
+    const s = await getDoc(doc(db, 'eventos', id))
+    const d = s.exists() ? s.data() : {}
+    if (d.enviadoPor || d.outrosEnvios?.length) {
+      await guardarContatos(id, d.enviadoPor, d.outrosEnvios)
+      return updateDoc(doc(db, 'eventos', id), { status, ...semContatos, atualizadoEm: serverTimestamp() })
+    }
+  }
+  return updateDoc(doc(db, 'eventos', id), { status, atualizadoEm: serverTimestamp() })
+}
 
 export const apagarEvento = (id) => deleteDoc(doc(db, 'eventos', id))
 

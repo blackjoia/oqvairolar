@@ -10,7 +10,8 @@
     "importar": "node scripts/importar.mjs",
     "previas": "node scripts/previas.mjs",
     "lembretes": "node scripts/lembretes.mjs",
-    "contagens": "node scripts/contagens.mjs"
+    "contagens": "node scripts/contagens.mjs",
+    "limpar-contatos": "node scripts/limpar-contatos.mjs"
   },
   "dependencies": {
     "firebase": "^12.6.0",

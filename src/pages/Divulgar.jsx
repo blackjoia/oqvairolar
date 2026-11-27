@@ -13,6 +13,14 @@ import { rotuloDia, hora } from '../lib/datas'
 import { paraInputLocal } from '../lib/datas'
 import { CATEGORIAS, CIDADES, opcoesSub, rotuloSub } from '../lib/constantes'
 
+// Só aceita link de site (http/https). "sympla.com.br/x" vira "https://sympla.com.br/x"; o resto é descartado.
+const linkSeguro = (u) => {
+  const t = (u || '').trim().slice(0, 500)
+  if (!t) return ''
+  const comEsquema = /^https?:\/\//i.test(t) ? t : /^[\w-]+(\.[\w-]+)+(\/|$)/.test(t) ? 'https://' + t : ''
+  return comEsquema
+}
+
 const VAZIO = {
   titulo: '', categoria: 'musica', generos: [], inicio: null, fim: null,
   localNome: '', endereco: '', cidade: 'Francisco Beltrão', lat: null, lng: null,
@@ -61,6 +69,7 @@ export default function Divulgar() {
         descricao: e.descricao.trim().slice(0, 2000),
         instagram: e.instagram.trim().replace(/^@/, '').slice(0, 60),
         preco: e.gratuito ? '' : e.preco.trim().slice(0, 80),
+        ingressoUrl: linkSeguro(e.ingressoUrl), cartazUrl: linkSeguro(e.cartazUrl),
         lat: e.lat == null ? null : Number(e.lat), lng: e.lng == null ? null : Number(e.lng),
         enviadoPor: { nome: e.quemNome.trim().slice(0, 80), contato: e.quemContato.trim().slice(0, 120) },
       }

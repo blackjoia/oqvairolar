@@ -1,0 +1,7 @@
+# Avisa (com um PR) quando sai correção de segurança nas peças do robô de publicação.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

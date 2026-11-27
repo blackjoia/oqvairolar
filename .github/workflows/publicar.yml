@@ -9,6 +9,10 @@ on:
     - cron: '*/10 * * * *'
   workflow_dispatch:
 
+# O robô só lê o código; o que ele publica vai pela chave do Firebase.
+permissions:
+  contents: read
+
 concurrency:
   group: publicar
   cancel-in-progress: false
@@ -18,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -34,9 +38,12 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/chave.json" >> "$GITHUB_ENV"
       - name: Cadastrar eventos novos (pasta eventos-novos)
         run: npm run importar
+      - name: Tirar contato de quem enviou dos eventos publicados
+        run: npm run limpar-contatos
+        continue-on-error: true
       - run: npm run previas
       - name: Publicar no Firebase Hosting
-        run: npx -y firebase-tools@14 deploy --only hosting --project oquevairolar-b0129 --non-interactive
+        run: npx -y firebase-tools@14.27.0 deploy --only hosting --project oquevairolar-b0129 --non-interactive
       - name: Contar Eu vou, rostos e acessos dos eventos
         run: npm run contagens
         continue-on-error: true

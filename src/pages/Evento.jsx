@@ -232,7 +232,7 @@ export default function Evento() {
               </>
             )}
 
-            {e.ingressoUrl && (
+            {/^https?:\/\//i.test(e.ingressoUrl || '') && (
               <a onClick={() => clique('ingresso', e.id)} href={e.ingressoUrl} target="_blank" rel="noreferrer" className="btn-accent mt-4 w-full py-3.5 text-lg"><Ticket className="size-5" /> Comprar ingresso</a>
             )}
             <div className="mt-3 grid grid-cols-3 gap-2">

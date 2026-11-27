@@ -73,6 +73,12 @@ function Conquistas() {
   return c ? <Suspense fallback={null}><Conquista c={c} fechar={() => setC(null)} /></Suspense> : null
 }
 
+// O painel admin só abre no endereço cru do Firebase (oquevairolar-b0129.web.app/admin),
+// nos endereços de teste e no computador. Em oquevairolar.com.br/admin aparece "página não existe".
+// Isso só esconde a porta: quem protege de verdade é o login + as regras do Firestore.
+const PAINEL_LIBERADO = /^oquevairolar-b0129(--[\w-]+)?\.(web\.app|firebaseapp\.com)$/.test(location.hostname)
+  || ['localhost', '127.0.0.1'].includes(location.hostname)
+
 function NaoEncontrado() {
   return (
     <main className="mx-auto max-w-md px-4 py-20 text-center">
@@ -104,14 +110,14 @@ createRoot(document.getElementById('root')).render(
           <Route path="/amigos" element={<Amigos />} />
           <Route path="/semana" element={<Semana />} />
           <Route path="/ranking" element={RANKING_LIGADO ? <Ranking /> : <Navigate to="/" replace />} />
-          <Route path="/admin" element={<Admin />}>
+          {PAINEL_LIBERADO && <Route path="/admin" element={<Admin />}>
             <Route index element={<Estatisticas />} />
             <Route path="eventos" element={<Lista />} />
             <Route path="artes" element={<Artes />} />
             <Route path="pedidos" element={<Pedidos />} />
             <Route path="estatisticas" element={<Navigate to="/admin" replace />} />
             <Route path="evento/:id" element={<FormEvento />} />
-          </Route>
+          </Route>}
           {import.meta.env.DEV && <Route path="/dev-form/:id" element={<main className="mx-auto max-w-5xl px-4 py-4"><FormEvento /></main>} />}
           {import.meta.env.DEV && <Route path="/dev-artes" element={<main className="mx-auto max-w-5xl px-4 py-4"><Artes /></main>} />}
           {import.meta.env.DEV && <Route path="/dev-estatisticas" element={<main className="mx-auto max-w-5xl px-4 py-4"><Estatisticas /></main>} />}

@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check'
 import { getAuth, connectAuthEmulator, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 
@@ -13,6 +14,14 @@ const firebaseConfig = {
 }
 
 export const app = initializeApp(firebaseConfig)
+
+// App Check: prova para o Firebase que o pedido vem do site de verdade, e não de um robô.
+// Só liga quando a chave do reCAPTCHA Enterprise estiver em .env.production (VITE_APPCHECK_KEY).
+// Tem que ligar antes do primeiro pedido ao banco, senão os primeiros pedidos saem sem a prova.
+const CHAVE_APPCHECK = import.meta.env.VITE_APPCHECK_KEY
+if (CHAVE_APPCHECK && !import.meta.env.DEV) {
+  initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(CHAVE_APPCHECK), isTokenAutoRefreshEnabled: true })
+}
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 
