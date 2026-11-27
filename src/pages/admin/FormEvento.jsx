@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import Cartaz from '../../components/Cartaz'
 import MapaEditor from '../../components/MapaEditor'
 import CampoCartaz from '../../components/CampoCartaz'
-import { buscarEvento, criarEvento, salvarEvento, listarTodos, apagarEvento } from '../../lib/eventos'
+import { buscarEvento, criarEvento, salvarEvento, listarTodos, apagarEvento, buscarContatos } from '../../lib/eventos'
 import { acharParecidos, juntar } from '../../lib/parecidos'
 import { diaSemana, diaMes, mesCurto, hora } from '../../lib/datas'
 import { Copy, Star, Repeat, X } from 'lucide-react'
@@ -39,6 +39,8 @@ export default function FormEvento() {
   const [repetir, setRepetir] = useState('')
   const [vezes, setVezes] = useState(4)
   const [atracaoExtra, setAtracaoExtra] = useState('')
+  const [contatos, setContatos] = useState([])
+  useEffect(() => { if (!novo) buscarContatos(id).then(setContatos) }, [id, novo])
   useEffect(() => { listarTodos().then(setTodos).catch(() => {}) }, [])
   const parecidos = useMemo(() => (e && e.titulo && e.inicio ? acharParecidos({ ...e, id: novo ? '' : id }, todos).slice(0, 3) : []), [e, todos, id, novo])
 
@@ -128,10 +130,11 @@ export default function FormEvento() {
           </div>
         )}
 
-        {e.enviadoPor && (
+        {(e.enviadoPor || contatos.length > 0) && (
           <div className="rounded-2xl border border-amber-400 bg-amber-400/10 p-4 text-sm">
             <p className="font-bold">Enviado pelo formulário</p>
-            <p>{e.enviadoPor.nome} · {e.enviadoPor.contato}</p>
+            {[...(e.enviadoPor ? [e.enviadoPor] : []), ...contatos].map((c, i) => <p key={i}>{c.nome} · {c.contato}</p>)}
+            <p className="mt-1 text-xs text-muted">Só você vê. Ao publicar, o contato sai do evento e fica guardado no painel.</p>
           </div>
         )}
         <Bloco titulo="O quê">

@@ -16,6 +16,14 @@ service cloud.firestore {
         || (request.resource.data[campo] is string && request.resource.data[campo].size() <= max);
     }
 
+    // Link de site: vazio ou começando com http:// ou https:// (bloqueia "javascript:" e afins).
+    function link(campo) {
+      return !(campo in request.resource.data) || request.resource.data[campo] == null
+        || request.resource.data[campo] == ''
+        || (request.resource.data[campo] is string && request.resource.data[campo].size() <= 500
+          && request.resource.data[campo].matches('^https?://.+'));
+    }
+
     // Envio do formulário público: só cria, sempre como pendente, com campos limitados.
     function envioPublicoValido() {
       let d = request.resource.data;
@@ -28,7 +36,7 @@ service cloud.firestore {
         && d.inicio is timestamp && d.inicio > request.time - duration.value(1, 'd')
         && d.criadoEm == request.time
         && texto('categoria', 30) && texto('localNome', 120) && texto('endereco', 200) && texto('cidade', 80)
-        && texto('descricao', 2000) && texto('cartazUrl', 500) && texto('ingressoUrl', 500)
+        && texto('descricao', 2000) && link('cartazUrl') && link('ingressoUrl')
         && texto('preco', 80) && texto('instagram', 60)
         && (d.generos == null || (d.generos is list && d.generos.size() <= 10))
         && d.enviadoPor is map && d.enviadoPor.keys().hasOnly(['nome', 'contato'])
@@ -53,7 +61,7 @@ service cloud.firestore {
         && d.inicio is timestamp && d.inicio > request.time - duration.value(1, 'd')
         && d.criadoEm == request.time
         && texto('categoria', 30) && texto('localNome', 120) && texto('endereco', 200) && texto('cidade', 80)
-        && texto('descricao', 2000) && texto('cartazUrl', 500) && texto('ingressoUrl', 500)
+        && texto('descricao', 2000) && link('cartazUrl') && link('ingressoUrl')
         && texto('preco', 80) && texto('instagram', 60)
         && (d.generos == null || (d.generos is list && d.generos.size() <= 10));
     }
@@ -70,8 +78,16 @@ service cloud.firestore {
         && request.resource.data.titulo is string
         && request.resource.data.titulo.size() > 0
         && request.resource.data.inicio is timestamp
-        && request.resource.data.status in ['publicado', 'pendente', 'rascunho', 'rejeitado'];
+        && request.resource.data.status in ['publicado', 'pendente', 'rascunho', 'rejeitado']
+        // Evento publicado é aberto a todos: nome e contato de quem enviou ficam em contatosEnvio.
+        && (request.resource.data.status != 'publicado'
+          || (!('enviadoPor' in request.resource.data) && !('outrosEnvios' in request.resource.data)));
       allow delete: if isAdmin();
+    }
+
+    // Nome e contato de quem mandou o evento pelo formulário (tirado do evento ao publicar). Só o admin.
+    match /contatosEnvio/{id} {
+      allow read, write: if isAdmin();
     }
 
     // Contador de visitas: qualquer um registra (só cria, campos fixos); só o admin lê.
