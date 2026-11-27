@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listarVisitas } from '../../lib/visitas'
-import { collection, getCountFromServer, query, where, Timestamp } from 'firebase/firestore'
+import { collection, getCount, query, where, Timestamp } from 'firebase/firestore/lite'
 import { db } from '../../lib/firebase'
 import { listarTodos } from '../../lib/eventos'
 import { CATEGORIAS } from '../../lib/constantes'
@@ -40,7 +40,7 @@ export default function Estatisticas() {
   useEffect(() => {
     const col = collection(db, 'usuarios')
     const desde = Timestamp.fromDate(new Date(Date.now() - dias * 86400000))
-    Promise.all([getCountFromServer(col), getCountFromServer(query(col, where('criadoEm', '>=', desde)))])
+    Promise.all([getCount(col), getCount(query(col, where('criadoEm', '>=', desde)))])
       .then(([t, p]) => setContas({ total: t.data().count, periodo: p.data().count }))
       .catch((e) => { console.error(e); setContas({ total: null, periodo: null }) })
   }, [dias])

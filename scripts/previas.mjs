@@ -98,6 +98,20 @@ async function carregarEventos() {
 }
 
 const base = readFileSync(new URL('index.html', DIST), 'utf8')
+
+// Só o que a tela usa: nada de quem enviou (contato), quem criou ou datas internas.
+const PRIVADOS = new Set(['enviadoPor', 'outrosEnvios', 'criadoPor', 'criadoEm', 'atualizadoEm', 'origem', 'fonte', 'rev', 'status'])
+function publico(e) {
+  const o = {}
+  for (const [k, v] of Object.entries(e)) {
+    if (PRIVADOS.has(k) || v === undefined) continue
+    o[k] = v?.toDate ? v.toDate().toISOString() : v instanceof Date ? v.toISOString() : v
+  }
+  return o
+}
+// JSON seguro dentro de <script> (não deixa fechar a tag).
+const jsonNoHtml = (x) => JSON.stringify(x).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
+
 function pagina(e, temImagem) {
   const titulo = `${e.titulo} · O Que Vai Rolar?`
   const desc = [dataLonga(e.inicio), [e.localNome, e.cidade].filter(Boolean).join(', '), e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
@@ -112,7 +126,9 @@ function pagina(e, temImagem) {
   h = troca(h, /<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
   h = troca(h, /<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
   h = troca(h, /<meta property="og:type" content="[^"]*"/, `<meta property="og:type" content="article"`)
-  return h.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`)
+  h = h.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`)
+  // Os dados do evento já vêm na página: quem abre o link do Instagram/WhatsApp vê o evento sem esperar o banco.
+  return h.replace('<div id="root"></div>', `<div id="root"></div>\n    <script id="dados-evento" type="application/json">${jsonNoHtml(publico(e))}</script>`)
 }
 
 const eventos = await carregarEventos()
@@ -127,6 +143,11 @@ for (const e of eventos) {
 }
 // Mapa do site para o Google (só eventos que ainda não passaram)
 const futuros = eventos.filter((e) => (e.fim || e.inicio).getTime() > agora - 86400000)
+// Cópia da agenda para a primeira visita abrir na hora (o app troca pela do banco assim que ela chega).
+writeFileSync(new URL('agenda.json', DIST), JSON.stringify({
+  geradoEm: new Date().toISOString(),
+  eventos: eventos.filter((e) => e.inicio.getTime() > agora - 2 * 86400000).sort((a, b) => a.inicio - b.inicio).map(publico),
+}))
 // Páginas de locais e atrações (bares, bandas): prévia com o nome e quantos eventos vêm aí
 const slug = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)
 const locais = new Map()

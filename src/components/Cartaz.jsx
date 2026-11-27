@@ -1,11 +1,15 @@
 import { categoria } from '../lib/constantes'
 import { diaMes, mesCurto, diaSemana, hora } from '../lib/datas'
+import { tamanho, srcSet, TAM_CARD, TAM_LARGO } from '../lib/imagem'
 
 // Cartaz do evento. Sem imagem, monta um cartaz automático com o nome,
 // a data e a cor do tipo de evento.
-export default function Cartaz({ evento: e, className = '', comData = true, marca = true, largo = false }) {
+// sizes: quanto o cartaz ocupa na tela (escolhe o arquivo certo). prioridade: está no topo da tela, baixa primeiro.
+export default function Cartaz({ evento: e, className = '', comData = true, marca = true, largo = false, sizes, prioridade = false }) {
   if (e.cartazUrl) {
-    return <img src={e.cartazUrl} alt={`Cartaz: ${e.titulo}`} loading="lazy" className={`object-cover ${className}`} />
+    return <img src={tamanho(e.cartazUrl, 720)} srcSet={srcSet(e.cartazUrl)} sizes={sizes || (largo ? TAM_LARGO : TAM_CARD)}
+      alt={`Cartaz: ${e.titulo}`} loading={prioridade ? 'eager' : 'lazy'} fetchPriority={prioridade ? 'high' : undefined} decoding="async"
+      className={`object-cover ${className}`} />
   }
   const cat = categoria(e.categoria)
   const { Icone } = cat

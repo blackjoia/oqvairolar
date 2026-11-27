@@ -1,6 +1,6 @@
 // Contador de visitas próprio (grava no Firestore, coleção "visitas").
 // Não guarda nome, IP nem nada pessoal: só um código aleatório do aparelho.
-import { addDoc, collection, serverTimestamp, query, where, orderBy, limit, getDocs, startAfter, Timestamp } from 'firebase/firestore'
+import { addDoc, collection, serverTimestamp, query, where, orderBy, limit, getDocs, startAfter, Timestamp } from 'firebase/firestore/lite'
 import { db, auth, ehAdmin } from './firebase'
 
 const aleatorio = () => Math.random().toString(36).slice(2, 12)

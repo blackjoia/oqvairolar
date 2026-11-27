@@ -34,7 +34,7 @@ export default function EmAlta({ eventos }) {
                 <div className="flex items-end">
                   <span className="num-alta -mr-3 w-[30%] shrink-0 text-center font-display text-[7rem] leading-[.75] text-transparent" aria-hidden>{i + 1}</span>
                   <div className="card-evento relative aspect-[4/5] flex-1 overflow-hidden rounded-2xl border border-line bg-surface">
-                    <Cartaz evento={e} comData={!e.cartazUrl} marca={false} className="card-img absolute inset-0 size-full" />
+                    <Cartaz evento={e} comData={!e.cartazUrl} marca={false} sizes="(min-width: 768px) 180px, 42vw" className="card-img absolute inset-0 size-full" />
                   </div>
                 </div>
                 <div className="pl-[27%]">

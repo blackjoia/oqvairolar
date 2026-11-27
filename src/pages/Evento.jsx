@@ -2,8 +2,9 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import Cartaz from '../components/Cartaz'
+import { TAM_PAGINA } from '../lib/imagem'
 import { Rodape } from './Inicio'
-import { buscarEvento, slugify } from '../lib/eventos'
+import { buscarEvento, eventoNaMemoria, slugify } from '../lib/eventos'
 import { rotuloDia, hora, asHora, situacao } from '../lib/datas'
 import { categoria } from '../lib/constantes'
 import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
@@ -24,6 +25,15 @@ import Bora from '../components/Bora'
 import { marcarConviteVisto } from '../lib/amigos'
 import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck, Hand } from 'lucide-react'
 
+// Link aberto direto (Instagram, WhatsApp): a página /evento/<id> já vem com os dados do evento (scripts/previas.mjs).
+function eventoDaPagina(id) {
+  try {
+    const el = document.getElementById('dados-evento'); if (!el) return null
+    const x = JSON.parse(el.textContent)
+    return x?.id === id ? { ...x, inicio: new Date(x.inicio), fim: x.fim ? new Date(x.fim) : null } : null
+  } catch { return null }
+}
+
 export default function Evento() {
   const { id } = useParams()
   const { isAdmin, user, usuario } = useAuth()
@@ -32,7 +42,8 @@ export default function Evento() {
   const meChamaram = amg.convites.filter((c) => c.eventoId === id)
   useEffect(() => { meChamaram.filter((c) => !c.visto).forEach((c) => { c.visto = true; marcarConviteVisto(c.id).catch(() => {}) }) }, [meChamaram.length]) // eslint-disable-line react-hooks/exhaustive-deps
   const [aviso, setAviso] = useState('')
-  const [e, setE] = useState(undefined)
+  // Vindo da lista, o evento já está na memória: a página abre na hora e depois confere no banco.
+  const [e, setE] = useState(() => eventoNaMemoria(id) || eventoDaPagina(id) || undefined)
   const pos = useMinhaPosicao()
   const [erroLocal, setErroLocal] = useState('')
   const [lembrete, setLembrete] = useState({ suporte: null, ligado: false, carregando: false, erro: '' })
@@ -75,7 +86,9 @@ export default function Evento() {
   }
 
   useEffect(() => {
-    buscarEvento(id).then((ev) => { setE(ev); setContagem(contarPresencas(ev)) }).catch(() => setE(null))
+    const rapido = eventoNaMemoria(id) || eventoDaPagina(id)
+    if (rapido) { setE(rapido); setContagem(contarPresencas(rapido)) } else setE((x) => (x?.id === id ? x : undefined))
+    buscarEvento(id).then((ev) => { setE(ev); setContagem(contarPresencas(ev)) }).catch((err) => { if (!rapido || err?.code === 'permission-denied') setE(null) })
   }, [id, isAdmin])
 
   useEffect(() => {
@@ -113,7 +126,7 @@ export default function Evento() {
         )}
         <div className="mt-4 grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           {e.cartazUrl ? (
-            <Cartaz evento={e} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
+            <Cartaz evento={e} prioridade sizes={TAM_PAGINA} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
           ) : (<>
             {/* Sem cartaz de verdade: no celular, faixa baixa para data, local e botões aparecerem sem rolar */}
             <Cartaz evento={e} largo className="aspect-[16/9] w-full rounded-2xl border border-line md:hidden" />

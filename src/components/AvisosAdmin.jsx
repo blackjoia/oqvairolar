@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { doc, setDoc, serverTimestamp, arrayUnion } from 'firebase/firestore'
+import { doc, setDoc, serverTimestamp, arrayUnion } from 'firebase/firestore/lite'
 import { db } from '../lib/firebase'
 import { BellRing, Check, Download, Share, X } from 'lucide-react'
 import { podeInstalarDireto, instalarDireto, appInstalado, aparelhoIOS } from './InstalarApp'

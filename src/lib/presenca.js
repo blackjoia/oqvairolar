@@ -1,5 +1,5 @@
 // "Eu vou" e "Tenho interesse": sem conta, um registro por aparelho e evento.
-import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, query, where, serverTimestamp } from 'firebase/firestore/lite'
 import { useEffect, useSyncExternalStore } from 'react'
 import { db, auth } from './firebase'
 import { clique } from './visitas'

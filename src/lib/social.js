@@ -1,8 +1,8 @@
 // Contas do público: perfil, "Meus rolês", quem vai, páginas oficiais de bares e bandas, seguir.
 import {
-  doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, limit, getCountFromServer,
+  doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, limit, getCount,
   serverTimestamp, arrayUnion, writeBatch,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 import { db } from './firebase'
 import { clique } from './visitas'
 
@@ -116,7 +116,7 @@ export async function sigo(slug, uid) {
   return !!s?.exists()
 }
 export async function contarSeguidores(slug) {
-  return getCountFromServer(query(collection(db, 'seguidores'), where('slug', '==', slug))).then((s) => s.data().count).catch(() => 0)
+  return getCount(query(collection(db, 'seguidores'), where('slug', '==', slug))).then((s) => s.data().count).catch(() => 0)
 }
 export async function seguir(slug, uid, nome) {
   await setDoc(doc(db, 'seguidores', idSeg(slug, uid)), { slug, uid, nome: (nome || slug).slice(0, 120), em: serverTimestamp() })

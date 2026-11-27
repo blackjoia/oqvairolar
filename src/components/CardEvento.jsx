@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, PartyPopper, Check } from 'lucide-react'
 import { useMinhaPresencaNaLista, alternarEuVou, ajusteVao } from '../lib/presenca'
@@ -13,7 +14,9 @@ import Bombando from './Bombando'
 
 // soHora: a lista já está agrupada por dia, então o card mostra só a hora.
 // grande: destaque do próximo evento, ocupa a largura toda com o cartaz em paisagem.
-export default function CardEvento({ evento: e, soHora = false, grande = false, className = '', style }) {
+// memo: ao digitar na busca ou trocar filtro, só redesenha os cards que mudaram.
+export default memo(CardEvento)
+function CardEvento({ evento: e, soHora = false, grande = false, prioridade = false, ordem, className = '', style }) {
   const temImagem = !!e.cartazUrl
   const pos = useMinhaPosicao()
   const dist = textoDistancia(km(pos, e))
@@ -34,10 +37,10 @@ export default function CardEvento({ evento: e, soHora = false, grande = false, 
     catch (err) { avisar(err.message) }
   }
   return (
-    <Link to={`/evento/${e.id}`} style={style}
+    <Link to={`/evento/${e.id}`} style={ordem != null ? { '--i': ordem, ...style } : style}
       className={`card-evento group flex overflow-hidden rounded-2xl border border-line bg-surface hover:border-brand/40 ${grande ? 'col-span-2 flex-col sm:flex-row md:col-span-3' : 'flex-col'} ${className}`}>
       <div className={`relative overflow-hidden ${grande ? 'aspect-[16/9] sm:aspect-auto sm:w-3/5' : 'aspect-[4/5]'}`}>
-        <Cartaz evento={e} comData={!temImagem} marca={grande} largo={grande} className="card-img absolute inset-0 size-full" />
+        <Cartaz evento={e} comData={!temImagem} marca={grande} largo={grande} prioridade={prioridade} className="card-img absolute inset-0 size-full" />
         {temImagem && (
           <div className="absolute left-2 top-2 rounded-lg bg-accent px-2 py-1 text-center leading-none text-on-accent shadow">
             <div className="font-display text-xl">{diaMes(e.inicio)}</div>
