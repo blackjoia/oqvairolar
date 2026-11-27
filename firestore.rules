@@ -156,10 +156,12 @@ service cloud.firestore {
     function par(a, b) {
       return a < b ? a + '_' + b : b + '_' + a;
     }
-    // Amigos (ou quem trocou pedido de amizade) se veem, mesmo com o perfil fechado.
+    // Perfil fechado: amigos se veem; num pedido pendente, só quem RECEBEU vê quem pediu.
+    // (Mandar um pedido não abre o perfil fechado de ninguém.)
     function amigoOuPedido(uid) {
-      return request.auth != null
-        && exists(/databases/$(database)/documents/amizades/$(par(request.auth.uid, uid)));
+      let caminho = /databases/$(database)/documents/amizades/$(par(request.auth.uid, uid));
+      return request.auth != null && exists(caminho)
+        && (get(caminho).data.status == 'aceita' || get(caminho).data.de == uid);
     }
 
     match /usuarios/{uid} {

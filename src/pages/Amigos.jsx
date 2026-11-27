@@ -152,8 +152,8 @@ export default function Amigos() {
           <section className="mt-8">
             <h2 className="font-display text-xl uppercase text-muted">Pedidos enviados</h2>
             <ul className="mt-3 grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
-              {enviados.map((uid) => pessoas[uid] && (
-                <Linha key={uid} p={pessoas[uid]} sub="esperando aceitar">
+              {enviados.map((uid) => (
+                <Linha key={uid} p={pessoas[uid] || { uid, nome: 'Perfil fechado', foto: '' }} sub="esperando aceitar">
                   <button onClick={() => agir(uid, desfazerAmizade)} disabled={!!ocupado} className="text-sm font-semibold text-muted underline underline-offset-2">{giro(uid) || 'Cancelar'}</button>
                 </Linha>
               ))}
