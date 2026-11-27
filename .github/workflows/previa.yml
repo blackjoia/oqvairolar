@@ -6,12 +6,17 @@ on:
   push:
     branches: ['teste/**']
   workflow_dispatch:
+    inputs:
+      canal:
+        description: 'Nome do site de teste (para duas versões de teste ao mesmo tempo)'
+        required: false
+        default: 'teste'
 
 permissions:
   contents: write
 
 concurrency:
-  group: previa
+  group: previa-${{ inputs.canal || 'teste' }}
   cancel-in-progress: true
 
 jobs:
@@ -38,8 +43,10 @@ jobs:
         continue-on-error: true
       - name: Publicar a versão de teste
         id: canal
+        env:
+          CANAL: ${{ inputs.canal || 'teste' }}
         run: |
-          npx -y firebase-tools@14 hosting:channel:deploy teste --expires 14d --project oquevairolar-b0129 --non-interactive --json > saida.json
+          npx -y firebase-tools@14 hosting:channel:deploy "${CANAL}" --expires 14d --project oquevairolar-b0129 --non-interactive --json > saida.json
           URL=$(node -e "const r=require('./saida.json').result;console.log(Object.values(r)[0].url)")
           echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Versão de teste: $URL" >> "$GITHUB_STEP_SUMMARY"
