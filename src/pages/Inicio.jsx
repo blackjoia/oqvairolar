@@ -14,7 +14,7 @@ import EmAlta from '../components/EmAlta'
 import AmigosVao from '../components/AmigosVao'
 import { PrimeiraCidade, SeletorCidade } from '../components/EscolherCidade'
 import { useCidadePreferida, definirCidade } from '../lib/cidade'
-import { listarPublicados } from '../lib/eventos'
+import { listarPublicados, agendaNaMemoria, agendaRapida, agendaDoAparelho, guardarAgenda } from '../lib/eventos'
 import { faixaDia, rotuloDia, chaveDia } from '../lib/datas'
 import { CATEGORIAS, categoria as dadosCat, subfiltros, casaSub, FIXOS } from '../lib/constantes'
 import { filtro, clique } from '../lib/visitas'
@@ -32,7 +32,8 @@ const DIAS = [
 
 
 export default function Inicio() {
-  const [eventos, setEventos] = useState(null)
+  // Abre já com a agenda da memória ou a última vista neste aparelho; a do banco chega e substitui.
+  const [eventos, setEventos] = useState(() => agendaNaMemoria() || agendaDoAparelho())
   const [erro, setErro] = useState('')
   const [semRede, setSemRede] = useState(false)
   const pos = useMinhaPosicao()
@@ -65,20 +66,21 @@ export default function Inicio() {
   }
 
   useEffect(() => {
+    let doBanco = false
+    // Primeira visita (nada guardado): mostra a cópia de /agenda.json enquanto o banco responde.
+    if (!eventos) agendaRapida().then((l) => { if (!doBanco && l?.length) setEventos((atual) => atual || l) })
     listarPublicados().then((lista) => {
+      doBanco = true
       setEventos(lista); setSemRede(false)
-      try { localStorage.setItem('agenda-cache', JSON.stringify(lista)) } catch {}
+      guardarAgenda(lista)
     }).catch((e) => {
       console.error(e)
-      // Sem internet: mostra a última agenda carregada neste aparelho.
-      let cache = null
-      try { cache = JSON.parse(localStorage.getItem('agenda-cache') || 'null') } catch {}
-      if (cache?.length) {
-        setEventos(cache.map((x) => ({ ...x, inicio: new Date(x.inicio), fim: x.fim ? new Date(x.fim) : null })))
-        setSemRede(true)
-      } else setErro(navigator.onLine === false ? 'Sem internet agora. Assim que voltar, a agenda aparece aqui.' : 'Não deu para carregar a agenda agora. Tente de novo em instantes.')
+      // Sem internet: mostra a última agenda carregada neste aparelho (mesmo antiga).
+      const cache = agendaDoAparelho(0)
+      if (cache?.length) { setEventos((atual) => atual || cache); setSemRede(true) }
+      else setErro(navigator.onLine === false ? 'Sem internet agora. Assim que voltar, a agenda aparece aqui.' : 'Não deu para carregar a agenda agora. Tente de novo em instantes.')
     })
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const agora = new Date()
   const futuros = useMemo(() => (eventos || []).filter((e) => (e.fim || new Date(e.inicio.getTime() + 6 * 3600000)) > agora), [eventos])
@@ -185,7 +187,7 @@ export default function Inicio() {
         </>)}
         {perguntarCidade && <PrimeiraCidade cidades={cidades} onEscolher={escolherCidade} />}
 
-        <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
+        <div className="sticky top-[61px] z-20 -mx-4 border-b border-line bg-bg/[.97] px-4 py-3 md:bg-bg/90 md:backdrop-blur">
           <div className="flex items-center gap-2">
             <Deslizar className="flex-1">
               <Segmentado rotulo="Quando" valor={dia} onChange={(v) => setFiltro('dia', v)}
@@ -249,14 +251,14 @@ export default function Inicio() {
 
         <h2 className="sr-only">Eventos</h2>
         {(() => { let i = 0; return grupos.map((g, gi) => (
-          <section key={g.k} aria-labelledby={`dia-${g.k}`} className="mt-7 first-of-type:mt-5">
+          <section key={g.k} aria-labelledby={`dia-${g.k}`} className={`mt-7 first-of-type:mt-5 ${gi > 0 ? 'secao-dia' : ''}`}>
             <h3 id={`dia-${g.k}`} className="flex items-baseline gap-2 border-b border-line pb-2 font-display text-3xl uppercase leading-none sm:text-4xl">
               {g.titulo}
               {!/\d/.test(g.titulo) && <span className="num font-sans text-sm font-semibold normal-case text-muted">{g.data.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', '')}</span>}
               <span className="num ml-auto font-sans text-sm font-semibold normal-case text-muted">{g.itens.length} {g.itens.length === 1 ? 'evento' : 'eventos'}</span>
             </h3>
             <div className="cascata mt-3 grid grid-cols-2 gap-3 min-[540px]:grid-cols-3 md:grid-cols-4">
-              {g.itens.map((e, j) => <CardEvento key={e.id} evento={e} soHora grande={dia === 'todos' && !busca && (g.titulo === 'Hoje' || (gi === 0 && j === 0))} style={{ '--i': i++ }} />)}
+              {g.itens.map((e, j) => <CardEvento key={e.id} evento={e} soHora grande={dia === 'todos' && !busca && (g.titulo === 'Hoje' || (gi === 0 && j === 0))} prioridade={gi === 0 && j < 2} ordem={i++} />)}
             </div>
           </section>
         )) })()}

@@ -3,7 +3,7 @@
 import {
   doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, getDocs, limit, orderBy, startAt, endAt,
   serverTimestamp,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 import { db } from './firebase'
 import { clique } from './visitas'
 import { buscarUsuario, normalizar } from './social'

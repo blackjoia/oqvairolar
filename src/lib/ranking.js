@@ -1,6 +1,6 @@
 // Ranking do mês (estilo GymRats): pessoas contam rolês em que fizeram "Tô aqui" no local;
 // bares somam os "Tô aqui" feitos neles. "Eu vou" sozinho não conta. A conta é feita pelo robô a cada 10 minutos.
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore/lite'
 import { db, auth } from './firebase'
 import { km } from './distancia'
 import { clique } from './visitas'

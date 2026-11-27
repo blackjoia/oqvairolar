@@ -15,14 +15,14 @@ const CORES = {
 const TZ = 'America/Sao_Paulo'
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-const dataLonga = (d) => {
+const dataLonga = (d, semHora = false) => {
   const dia = d.toLocaleDateString('pt-BR', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'short' }).replace('.', '')
   const h = d.toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).replace(':00', 'h').replace(':', 'h')
-  return `${dia} · ${h}`
+  return semHora ? dia : `${dia} · ${h}`
 }
-const dataCurta = (d) => {
+const dataCurta = (d, semHora = false) => {
   const p = (o) => d.toLocaleString('pt-BR', { timeZone: TZ, ...o }).replace('.', '')
-  return `${p({ weekday: 'short' })} ${p({ day: 'numeric' })} ${p({ month: 'short' })} · ${dataLonga(d).split(' · ')[1]}`.toUpperCase()
+  return `${p({ weekday: 'short' })} ${p({ day: 'numeric' })} ${p({ month: 'short' })}${semHora ? '' : ` · ${dataLonga(d).split(' · ')[1]}`}`.toUpperCase()
 }
 
 // Quebra o título em linhas pelo tamanho aproximado das letras da Anton
@@ -59,7 +59,7 @@ function imagem(e, cartaz) {
   const yTitulo = 150 + (380 - bloco) / 2 + tam * 0.86
   const yBadge = yTitulo + (linhas.length - 1) * lh + 34
   const local = [e.localNome, e.cidade].filter(Boolean).join(' · ').toUpperCase()
-  const badge = dataCurta(e.inicio)
+  const badge = dataCurta(e.inicio, e.semHora)
   const wBadge = badge.length * 14.5 + 44
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
@@ -98,9 +98,23 @@ async function carregarEventos() {
 }
 
 const base = readFileSync(new URL('index.html', DIST), 'utf8')
+
+// Só o que a tela usa: nada de quem enviou (contato), quem criou ou datas internas.
+const PRIVADOS = new Set(['enviadoPor', 'outrosEnvios', 'criadoPor', 'criadoEm', 'atualizadoEm', 'origem', 'fonte', 'rev', 'status'])
+function publico(e) {
+  const o = {}
+  for (const [k, v] of Object.entries(e)) {
+    if (PRIVADOS.has(k) || v === undefined) continue
+    o[k] = v?.toDate ? v.toDate().toISOString() : v instanceof Date ? v.toISOString() : v
+  }
+  return o
+}
+// JSON seguro dentro de <script> (não deixa fechar a tag).
+const jsonNoHtml = (x) => JSON.stringify(x).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
+
 function pagina(e, temImagem) {
   const titulo = `${e.titulo} · O Que Vai Rolar?`
-  const desc = [dataLonga(e.inicio), [e.localNome, e.cidade].filter(Boolean).join(', '), e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
+  const desc = [dataLonga(e.inicio, e.semHora), [e.localNome, e.cidade].filter(Boolean).join(', '), e.gratuito ? 'Grátis' : e.preco].filter(Boolean).join(' · ')
   const url = `${SITE}/evento/${e.id}`
   const img = temImagem ? `${SITE}/og/${e.id}.jpg` : `${SITE}/og.jpg`
   const troca = (html, re, valor) => { if (!re.test(html)) throw new Error('marcação não encontrada: ' + re); return html.replace(re, valor) }
@@ -112,7 +126,9 @@ function pagina(e, temImagem) {
   h = troca(h, /<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
   h = troca(h, /<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
   h = troca(h, /<meta property="og:type" content="[^"]*"/, `<meta property="og:type" content="article"`)
-  return h.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`)
+  h = h.replace('</head>', `    <link rel="canonical" href="${url}" />\n  </head>`)
+  // Os dados do evento já vêm na página: quem abre o link do Instagram/WhatsApp vê o evento sem esperar o banco.
+  return h.replace('<div id="root"></div>', `<div id="root"></div>\n    <script id="dados-evento" type="application/json">${jsonNoHtml(publico(e))}</script>`)
 }
 
 const eventos = await carregarEventos()
@@ -127,6 +143,11 @@ for (const e of eventos) {
 }
 // Mapa do site para o Google (só eventos que ainda não passaram)
 const futuros = eventos.filter((e) => (e.fim || e.inicio).getTime() > agora - 86400000)
+// Cópia da agenda para a primeira visita abrir na hora (o app troca pela do banco assim que ela chega).
+writeFileSync(new URL('agenda.json', DIST), JSON.stringify({
+  geradoEm: new Date().toISOString(),
+  eventos: eventos.filter((e) => e.inicio.getTime() > agora - 2 * 86400000).sort((a, b) => a.inicio - b.inicio).map(publico),
+}))
 // Páginas de locais e atrações (bares, bandas): prévia com o nome e quantos eventos vêm aí
 const slug = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60)
 const locais = new Map()
@@ -139,7 +160,7 @@ for (const [k, l] of locais) {
   const ev = l.eventos.sort((a, b) => a.inicio - b.inicio)[0]
   const fake = { ...ev, titulo: l.nome, id: ev.id }
   let h = pagina(fake, true)
-  const desc = `${l.eventos.length} ${l.eventos.length === 1 ? 'evento' : 'eventos'} na agenda. Próximo: ${ev.titulo}, ${dataLonga(ev.inicio)}.`
+  const desc = `${l.eventos.length} ${l.eventos.length === 1 ? 'evento' : 'eventos'} na agenda. Próximo: ${ev.titulo}, ${dataLonga(ev.inicio, ev.semHora)}.`
   h = h.replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${esc(desc)}"`)
     .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${esc(desc)}"`)
     .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${SITE}/local/${k}"`)

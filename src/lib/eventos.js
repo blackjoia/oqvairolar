@@ -1,7 +1,7 @@
 import {
   collection, doc, getDoc, getDocs, query, where, orderBy, setDoc, updateDoc,
   deleteDoc, serverTimestamp, Timestamp,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 import { db } from './firebase'
 import { toDate } from './datas'
 
@@ -15,12 +15,47 @@ const normaliza = (snap) => {
 // Público: só eventos publicados que ainda não acabaram.
 const modoDemo = () => import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 
-export async function listarPublicados() {
-  if (modoDemo()) return (await import('./demo')).DEMO
+// A agenda é lida uma vez e reaproveitada por 2 minutos: voltar do evento para a lista (ou abrir a semana,
+// o local etc.) fica instantâneo e não lê os ~60 eventos do banco de novo a cada tela.
+let memo = null // { em, promessa, lista }
+export function listarPublicados({ fresco = false } = {}) {
+  if (modoDemo()) return import('./demo').then((m) => m.DEMO)
+  if (!fresco && memo && Date.now() - memo.em < 120000) return memo.promessa
   const ontem = new Date(); ontem.setHours(0, 0, 0, 0)
   const q = query(col, where('status', '==', 'publicado'), where('inicio', '>=', Timestamp.fromDate(ontem)), orderBy('inicio'))
-  const snap = await getDocs(q)
-  return snap.docs.map(normaliza)
+  const atual = { em: Date.now(), lista: null }
+  atual.promessa = getDocs(q).then((snap) => { atual.lista = snap.docs.map(normaliza); return atual.lista })
+  atual.promessa.catch(() => { if (memo === atual) memo = null })
+  memo = atual
+  return atual.promessa
+}
+// A agenda que já está na memória (sem esperar nada), ou null.
+export const agendaNaMemoria = () => memo?.lista || null
+
+const datas = (x) => ({ ...x, inicio: new Date(x.inicio), fim: x.fim ? new Date(x.fim) : null })
+// Primeira visita: cópia da agenda que o site gera de hora em hora (/agenda.json, já pedida pelo index.html
+// enquanto o app carrega). Aparece na hora; a lista do banco chega logo depois e substitui.
+export function agendaRapida() {
+  const p = typeof window !== 'undefined' && window.__agenda
+  if (!p || modoDemo()) return Promise.resolve(null)
+  return p.then((j) => (Array.isArray(j?.eventos) ? j.eventos.map(datas) : null)).catch(() => null)
+}
+// Última agenda vista neste aparelho (até 1 dia), para a tela abrir já com eventos.
+export function agendaDoAparelho(maxIdade = 86400000) {
+  try {
+    const em = Number(localStorage.getItem('agenda-cache-em') || 0)
+    if (maxIdade && Date.now() - em > maxIdade) return null
+    const l = JSON.parse(localStorage.getItem('agenda-cache') || 'null')
+    return Array.isArray(l) && l.length ? l.map(datas) : null
+  } catch { return null }
+}
+export function guardarAgenda(lista) {
+  try { localStorage.setItem('agenda-cache', JSON.stringify(lista)); localStorage.setItem('agenda-cache-em', String(Date.now())) } catch {}
+}
+
+// Evento que já veio junto com a agenda (abrir pela lista não espera o banco).
+export function eventoNaMemoria(id) {
+  return agendaNaMemoria()?.find((e) => e.id === id) || null
 }
 
 export async function buscarEvento(id) {

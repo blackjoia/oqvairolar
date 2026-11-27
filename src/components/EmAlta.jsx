@@ -34,12 +34,12 @@ export default function EmAlta({ eventos }) {
                 <div className="flex items-end">
                   <span className="num-alta -mr-3 w-[30%] shrink-0 text-center font-display text-[7rem] leading-[.75] text-transparent" aria-hidden>{i + 1}</span>
                   <div className="card-evento relative aspect-[4/5] flex-1 overflow-hidden rounded-2xl border border-line bg-surface">
-                    <Cartaz evento={e} comData={!e.cartazUrl} marca={false} className="card-img absolute inset-0 size-full" />
+                    <Cartaz evento={e} comData={!e.cartazUrl} marca={false} sizes="(min-width: 768px) 180px, 42vw" className="card-img absolute inset-0 size-full" />
                   </div>
                 </div>
                 <div className="pl-[27%]">
                   {bombando(e) && <Bombando className="mt-1.5" />}
-                  <div className="num mt-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-ink">{rotuloDia(e.inicio)} · {horaDe(e)}</div>
+                  <div className="num mt-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-ink">{[rotuloDia(e.inicio), horaDe(e)].filter(Boolean).join(' · ')}</div>
                   <div className="line-clamp-1 text-sm font-bold group-hover:text-brand-ink"><span className="sr-only">{i + 1}º: </span>{e.titulo}</div>
                   <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted">{rostos.length > 0 && <Rostos lista={rostos} tamanho="size-5" anel="ring-bg" />}<span className="line-clamp-1">{quem}</span></div>
                 </div>

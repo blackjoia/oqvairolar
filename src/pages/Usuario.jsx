@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs } from 'firebase/firestore/lite'
 import { db } from '../lib/firebase'
 import Topo from '../components/Topo'
 import CardEvento from '../components/CardEvento'

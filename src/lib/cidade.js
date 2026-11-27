@@ -1,7 +1,7 @@
 // Cidade preferida: escolhida na primeira vez que a pessoa abre o app e lembrada neste aparelho.
 // '' = ainda não escolheu · 'todas' = quer ver tudo · nome da cidade
 import { useSyncExternalStore } from 'react'
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore/lite'
 import { db, auth } from './firebase'
 
 // Com conta Google, a cidade também fica guardada na conta (preferencias/{uid}) e volta em qualquer aparelho.

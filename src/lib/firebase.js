@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth, connectAuthEmulator, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, connectAuthEmulator, signInWithCredential, GoogleAuthProvider } from 'firebase/auth'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore/lite'
 
 // Configuração pública do app web (não é segredo; a proteção está em firestore.rules).
 const firebaseConfig = {
@@ -13,7 +13,9 @@ const firebaseConfig = {
 }
 
 export const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
+// Sem o "popupRedirectResolver" aqui: o getAuth() padrão já baixa, no celular, a janela escondida do Google
+// (iframe + scripts) ao abrir o site, mesmo para quem nunca vai entrar. Ela só carrega quando a pessoa toca em "Entrar".
+export const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] })
 export const db = getFirestore(app)
 
 // UID da conta admin (Firebase > Authentication > Users). Mesmo valor de firestore.rules.

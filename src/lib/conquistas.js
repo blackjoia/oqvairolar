@@ -1,6 +1,6 @@
 // Decide se mostra a comemoração do ranking quando a pessoa abre o app:
 // 1) resultado do mês que fechou (uma vez por mês); 2) entrou ou subiu no pódio (1º, 2º ou 3º) no geral ou num bar.
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore/lite'
 import { db } from './firebase'
 import { mesAtual } from './ranking'
 

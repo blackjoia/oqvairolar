@@ -21,14 +21,17 @@
     <meta name="application-name" content="Oq vai rolar?" />
     <link rel="apple-touch-icon" href="/icons/icon-192-v2.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" href="/fonts/inter-latin-v5.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/anton-latin-v5.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://res.cloudinary.com" />
     <script>
       try {
         var t = localStorage.getItem('tema');
         if (t === 'escuro' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
       } catch (e) {}
+      // Na tela inicial, já pede a cópia da agenda enquanto o app carrega (ver agendaRapida em src/lib/eventos.js).
+      if (location.pathname === '/' && window.fetch) window.__agenda = fetch('/agenda.json').then(function (r) { return r.ok ? r.json() : null }).catch(function () { return null });
     </script>
   </head>
   <body>

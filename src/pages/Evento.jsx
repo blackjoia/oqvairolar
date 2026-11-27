@@ -2,8 +2,9 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Topo from '../components/Topo'
 import Cartaz from '../components/Cartaz'
+import { TAM_PAGINA } from '../lib/imagem'
 import { Rodape } from './Inicio'
-import { buscarEvento, slugify } from '../lib/eventos'
+import { buscarEvento, eventoNaMemoria, slugify } from '../lib/eventos'
 import { rotuloDia, hora, asHora, situacao } from '../lib/datas'
 import { categoria } from '../lib/constantes'
 import { linkGoogleAgenda, baixarIcs, linkComoChegar } from '../lib/agenda'
@@ -24,6 +25,15 @@ import Bora from '../components/Bora'
 import { marcarConviteVisto } from '../lib/amigos'
 import { CalendarDays, MapPin, Ticket, Instagram, CalendarPlus, Share2, Check, Navigation, ImageDown, ArrowLeft, PartyPopper, Star, Bell, BellRing, LoaderCircle, MessageCircle, MapPinCheck, Hand } from 'lucide-react'
 
+// Link aberto direto (Instagram, WhatsApp): a página /evento/<id> já vem com os dados do evento (scripts/previas.mjs).
+function eventoDaPagina(id) {
+  try {
+    const el = document.getElementById('dados-evento'); if (!el) return null
+    const x = JSON.parse(el.textContent)
+    return x?.id === id ? { ...x, inicio: new Date(x.inicio), fim: x.fim ? new Date(x.fim) : null } : null
+  } catch { return null }
+}
+
 export default function Evento() {
   const { id } = useParams()
   const { isAdmin, user, usuario } = useAuth()
@@ -32,7 +42,8 @@ export default function Evento() {
   const meChamaram = amg.convites.filter((c) => c.eventoId === id)
   useEffect(() => { meChamaram.filter((c) => !c.visto).forEach((c) => { c.visto = true; marcarConviteVisto(c.id).catch(() => {}) }) }, [meChamaram.length]) // eslint-disable-line react-hooks/exhaustive-deps
   const [aviso, setAviso] = useState('')
-  const [e, setE] = useState(undefined)
+  // Vindo da lista, o evento já está na memória: a página abre na hora e depois confere no banco.
+  const [e, setE] = useState(() => eventoNaMemoria(id) || eventoDaPagina(id) || undefined)
   const pos = useMinhaPosicao()
   const [erroLocal, setErroLocal] = useState('')
   const [lembrete, setLembrete] = useState({ suporte: null, ligado: false, carregando: false, erro: '' })
@@ -75,7 +86,9 @@ export default function Evento() {
   }
 
   useEffect(() => {
-    buscarEvento(id).then((ev) => { setE(ev); setContagem(contarPresencas(ev)) }).catch(() => setE(null))
+    const rapido = eventoNaMemoria(id) || eventoDaPagina(id)
+    if (rapido) { setE(rapido); setContagem(contarPresencas(rapido)) } else setE((x) => (x?.id === id ? x : undefined))
+    buscarEvento(id).then((ev) => { setE(ev); setContagem(contarPresencas(ev)) }).catch((err) => { if (!rapido || err?.code === 'permission-denied') setE(null) })
   }, [id, isAdmin])
 
   useEffect(() => {
@@ -97,7 +110,7 @@ export default function Evento() {
   const cat = categoria(e.categoria)
   const compartilhar = async () => {
     clique('compartilhar', e.id)
-    const dados = { title: e.titulo, text: `${e.titulo}\n${rotuloDia(e.inicio)} ${asHora(e)} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url: url + '?o=compartilhado' }
+    const dados = { title: e.titulo, text: `${e.titulo}\n${[rotuloDia(e.inicio), asHora(e)].filter(Boolean).join(' ')} · ${[e.localNome, e.cidade].filter(Boolean).join(', ')}`, url: url + '?o=compartilhado' }
     if (navigator.share) { try { await navigator.share(dados) } catch {} return }
     await navigator.clipboard.writeText(url + '?o=compartilhado'); setCopiado(true); setTimeout(() => setCopiado(false), 2000)
   }
@@ -113,7 +126,7 @@ export default function Evento() {
         )}
         <div className="mt-4 grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           {e.cartazUrl ? (
-            <Cartaz evento={e} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
+            <Cartaz evento={e} prioridade sizes={TAM_PAGINA} className="aspect-[4/5] w-full rounded-2xl border border-line md:sticky md:top-24" />
           ) : (<>
             {/* Sem cartaz de verdade: no celular, faixa baixa para data, local e botões aparecerem sem rolar */}
             <Cartaz evento={e} largo className="aspect-[16/9] w-full rounded-2xl border border-line md:hidden" />
@@ -142,7 +155,7 @@ export default function Evento() {
 
             <dl className="mt-5 space-y-3 rounded-2xl border border-line bg-surface p-4">
               <div className="flex gap-3"><dt aria-label="Quando"><CalendarDays className="size-5 text-brand-ink" /></dt>
-                <dd><b>{rotuloDia(e.inicio)}</b>, {asHora(e).replace(/[()]/g, '')}{e.fim && !e.semHora ? ` até ${e.fim - e.inicio > 24 * 3600000 ? rotuloDia(e.fim).toLowerCase() + ', ' : ''}${hora(e.fim)}` : ''}
+                <dd><b>{rotuloDia(e.inicio)}</b>{e.semHora ? '' : `, ${asHora(e)}`}{e.fim && !e.semHora ? ` até ${e.fim - e.inicio > 24 * 3600000 ? rotuloDia(e.fim).toLowerCase() + ', ' : ''}${hora(e.fim)}` : ''}
                   {(() => { const s = situacao(e); return s && <div className={`mt-1 flex w-fit items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-bold ${s.tipo === 'passou' ? 'bg-surface-2 text-muted' : 'bg-accent text-on-accent'}`}>{s.tipo === 'agora' && <span className="ao-vivo size-2 rounded-full bg-on-accent" aria-hidden />}{s.texto}</div> })()}</dd></div>
               <div className="flex gap-3"><dt aria-label="Onde"><MapPin className="size-5 text-brand-ink" /></dt>
                 <dd>{e.localNome ? <Link to={`/local/${slugify(e.localNome)}`} className="font-bold hover:text-brand-ink">{e.localNome}</Link> : <b>Local a confirmar</b>}
@@ -206,7 +219,7 @@ export default function Evento() {
             {e.inicio > new Date(Date.now() - 4 * 3600000) && <Bora evento={e} />}
             {minha === 'vou' && e.inicio > new Date(Date.now() - 4 * 3600000) && (
               <a onClick={() => clique('chamar-galera', e.id)} target="_blank" rel="noreferrer"
-                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${rotuloDia(e.inicio).toLowerCase().replace(' · ', ', ')} ${asHora(e)}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`Bora? Eu vou no ${e.titulo}, ${[rotuloDia(e.inicio).toLowerCase().replace(' · ', ', '), asHora(e)].filter(Boolean).join(' ')}${e.localNome ? ` no ${e.localNome}` : ''}.\n${url}?o=galera`)}`}
                 className="btn mt-2 w-full border-2 border-accent bg-accent/15 py-3 text-ink hover:bg-accent/25">
                 <MessageCircle className="size-5" aria-hidden /> Chamar a galera no WhatsApp
               </a>

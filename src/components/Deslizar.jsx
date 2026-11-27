@@ -8,7 +8,11 @@ export default function Deslizar({ children, className = '' }) {
   const [lados, setLados] = useState({ esq: false, dir: false })
   useEffect(() => {
     const el = ref.current
-    const medir = () => setLados({ esq: el.scrollLeft > 4, dir: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 })
+    // Só atualiza quando muda um dos lados (antes redesenhava a linha inteira a cada pixel rolado).
+    const medir = () => {
+      const esq = el.scrollLeft > 4, dir = el.scrollLeft + el.clientWidth < el.scrollWidth - 4
+      setLados((l) => (l.esq === esq && l.dir === dir ? l : { esq, dir }))
+    }
     medir()
     el.addEventListener('scroll', medir, { passive: true })
     const ro = new ResizeObserver(medir); ro.observe(el)

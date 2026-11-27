@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, browserPopupRedirectResolver } from 'firebase/auth'
 import { auth, ehAdmin } from './firebase'
 
 const Ctx = createContext({ user: null, isAdmin: false, carregando: true, usuario: null, perfis: [], recarregar: () => {} })
@@ -41,7 +41,7 @@ export const recuperarSenha = (email) => sendPasswordResetEmail(auth, email)
 
 export async function entrarComGoogle() {
   const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' })
-  try { return await signInWithPopup(auth, p) }
+  try { return await signInWithPopup(auth, p, browserPopupRedirectResolver) }
   catch (e) {
     if (e?.code === 'auth/popup-closed-by-user' || e?.code === 'auth/cancelled-popup-request') return null
     if (e?.code === 'auth/popup-blocked') throw new Error('O navegador bloqueou a janela do Google. Libere pop-ups ou abra o site no Chrome/Safari.')

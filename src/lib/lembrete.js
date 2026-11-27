@@ -1,6 +1,6 @@
 // Lembrete no celular (notificação push) algumas horas antes do evento.
 // Guarda no Firestore só o evento, o aparelho e o endereço de entrega da notificação.
-import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
+import { doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore/lite'
 import { db, app } from './firebase'
 import { clique } from './visitas'
 

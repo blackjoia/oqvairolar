@@ -5,16 +5,18 @@ import { useLayoutEffect, useRef, useState } from 'react'
 export default function Segmentado({ opcoes, valor, onChange, rotulo, cor, tinta }) {
   const trilho = useRef(null)
   const [ind, setInd] = useState(null)
+  // Mede de novo só quando as opções mudam de fato (a lista chega nova a cada redesenho da tela, ex.: ao digitar na busca).
+  const chave = opcoes.map((o) => `${o.id}:${o.n ?? ''}`).join('|')
   useLayoutEffect(() => {
     const el = trilho.current; if (!el) return
     const medir = () => {
       const b = el.querySelector('[aria-checked="true"]')
-      if (b) setInd({ x: b.offsetLeft, w: b.offsetWidth })
+      if (b) setInd((v) => (v && v.x === b.offsetLeft && v.w === b.offsetWidth ? v : { x: b.offsetLeft, w: b.offsetWidth }))
     }
     medir()
     const ro = new ResizeObserver(medir); ro.observe(el)
     return () => ro.disconnect()
-  }, [valor, opcoes])
+  }, [valor, chave]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div ref={trilho} role="radiogroup" aria-label={rotulo}
       className="relative inline-flex shrink-0 items-center rounded-full bg-surface-2 p-1 ring-1 ring-inset ring-line">
